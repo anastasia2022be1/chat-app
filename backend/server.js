@@ -7,8 +7,8 @@ const app = express();
 app.use(express.json());
 
 // Eine einfache Route
-app.get('/', (req, res) => {
-    res.send('Hallo, Welt!');
+app.get('/api/user', (req, res) => {
+    res.send('hi guys!');
 });
 
 // Server starten
