@@ -7,7 +7,7 @@ const app = express();
 app.use(express.json());
 
 // Eine einfache Route
-app.get('/api', (req, res) => {
+app.get('/api/user', (req, res) => {
     res.send('hi guys!');
 });
 
