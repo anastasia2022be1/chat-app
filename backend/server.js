@@ -20,6 +20,7 @@ app.use(express.json());
 
 app.use("/api", userRoutes);
 
+
 const port = process.env.PORT || 3000;
 // Server starten
 app.listen(port, () => console.log(`Server started on port: http://localhost:${port}`));
