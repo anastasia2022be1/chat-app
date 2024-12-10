@@ -2,20 +2,20 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from 'cors';
 
+import userRoutes from './routes/userRoutes.js'
+
 await mongoose.connect(process.env.MONGODB_DB)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.error("MongoDB connection error:", error));
 const app = express();
 
+
+app.use(cors())
 // damit express die daten aus dem body auswertet
 app.use(express.json());
 
-// Eine einfache Route
-app.get('/', (req, res) => {
-    res.send('Hallo, Welt!');
-});
+app.use("/api", userRoutes);
 
+const port = process.env.PORT || 3000;
 // Server starten
-app.listen(3000, () => {
-    console.log('Server läuft auf http://localhost:3000');
-});
+app.listen(port, () => console.log(`Server started on port: http://localhost:${port}`));
