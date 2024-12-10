@@ -4,14 +4,18 @@ import cors from 'cors';
 
 import userRoutes from './routes/userRoutes.js'
 
+// Verbindung zur MongoDB
 await mongoose.connect(process.env.MONGODB_DB)
   .then(() => console.log("MongoDB connected"))
   .catch((error) => console.error("MongoDB connection error:", error));
 const app = express();
 
-
-app.use(cors())
-// damit express die daten aus dem body auswertet
+// CORS-Einstellungen
+app.use(cors({
+        origin: 'http://localhost:5173',
+    }))
+    
+// Middleware zur JSON-Parsierung
 app.use(express.json());
 
 app.use("/api", userRoutes);
