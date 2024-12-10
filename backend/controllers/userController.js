@@ -2,11 +2,17 @@ import bcrypt from "bcrypt";
 import crypto from "node:crypto";
 import { Resend } from "resend";
 import User from "../models/User.js";
+import jwt from "jsonwebtoken";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 const emailAddress = process.env.EMAIL_ADDRESS;
 
-export const registerUser = async(req, res, next) => {
+//----------------------------------------------------------
+
+// register a new user
+// POST: api/register
+
+export const registerUser = async(req, res) => {
     const { username, email, password } = req.body;
 
     if (!username || !email || !password) {
@@ -63,5 +69,87 @@ export const registerUser = async(req, res, next) => {
     } catch (error) {
       console.error("Error during registration:", error.message);
       res.status(500).json({ error: error.message });
+    }
+}
+
+//----------------------------------------------------------
+
+// verification a new user with email 
+// GET: api/verify/:token
+
+export const verifyUser = async (req, res) => {
+    const { token } = req.params;
+  
+    try {
+      const user = await User.findOne({ verificationToken: token });
+  
+      if (!user) {
+        return res.status(404).json({ error: "Invalid token or user not found" });
+      }
+  
+      if (Date.now() > user.tokenExpiresAt) {
+        return res.status(400).json({ error: "Token has expired" });
+      }
+  
+      if (user.isVerified) {
+        return res.status(400).json({ error: "Account is already verified" });
+      }
+  
+      // Update user to mark as verified
+      user.isVerified = true;
+      user.verificationToken = null;
+      user.tokenExpiresAt = null;
+  
+      await user.save();
+  
+      return res.status(200).json({ message: "Account successfully verified" });
+    } catch (error) {
+      console.error("Error verifying account:", error.message);
+      return res.status(500).json({ error: "Internal server error" });
+    }
+  };
+
+
+//-----------------------------------------------------------
+
+// login user
+// POST: api/login
+
+export const loginUser = async(req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+        return res.status(400).json({ error: 'Invalid login' });
+    }
+
+    try {
+
+        const newEmail = email.toLowerCase();
+
+        const user = await User.findOne({ email: newEmail });
+        // console.log(user)
+        if (!user) {
+            return res.status(401).json({ error: 'Invalid login' });
+        }
+
+        if (!user.isVerified) {
+            return res.status(403).json({ error: "Account not verified" });
+        }
+
+        const passwordCorrect = await bcrypt.compare(password, user.password);
+
+        // console.log(passwordCorrect)
+
+        if (!passwordCorrect) {
+            return res.status(401).json({ error: 'Wrong password' });
+        }
+
+        const payload = { userId: user._id };
+        const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
+
+        res.json({ user: user, token: token });
+
+    } catch (error) {
+        res.status(500).json({ error: error.message });
     }
 }
