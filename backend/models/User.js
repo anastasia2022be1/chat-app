@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     profilePicture: {
-        Type: String,
+        type: String,
         default: '',
     },
     isVerified: {
@@ -28,7 +28,7 @@ const userSchema = new mongoose.Schema({
     },
     tokenExpiresAt: {
         type: Date,
-        default: Date.now() + 1000 * 60 * 60
+        default:() => Date.now() + 1000 * 60 * 60
     },
 }, { timestamps: true })
 
