@@ -11,9 +11,12 @@ await mongoose.connect(process.env.MONGODB_DB)
 const app = express();
 
 // CORS-Einstellungen
-app.use(cors({
-        origin: 'http://localhost:5173',
-    }))
+app.use(
+  cors({
+    origin: 'http://localhost:5173', 
+    credentials: true, 
+  })
+);
     
 // Middleware zur JSON-Parsierung
 app.use(express.json());

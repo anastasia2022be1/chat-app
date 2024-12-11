@@ -75,7 +75,15 @@ export default function Register() {
       // Send the form data to the backend
       const response = await fetch("http://localhost:3000/api/register", {
         method: "POST",
-        body: form, // Use FormData for file uploads
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(
+          {
+        username: "exampleUser",
+        email: "example@example.com",
+        password: "password123"
+  }
+)
+        // body: form, // Use FormData for file uploads
       });
 
       const data = await response.json();
