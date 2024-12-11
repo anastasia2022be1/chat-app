@@ -26,6 +26,6 @@ app.use(upload.single('profilePicture'));
 
 app.use("/api", userRoutes);
 
-
+const port = 3000;
 // Server starten
 app.listen(port, () => console.log(`Server started on port: http://localhost:${port}`));

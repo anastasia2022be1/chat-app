@@ -47,7 +47,7 @@ export default function Login() {
       const data = await response.json();
 
       // On successful login, redirect to the dashboard or home page
-      navigate("/profile");
+      navigate("/chat");
     } catch (error) {
       console.error("Login failed:", error);
       setError("An error occurred. Please try again.");
