@@ -8,7 +8,7 @@ app.use(express.json());
 
 
 app.get('/', (req, res) => {
-    res.send('Hallo, Welt!');
+    res.send('Hallo, Arian!');
 })
 
 // Server starten
