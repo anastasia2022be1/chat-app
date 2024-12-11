@@ -1,5 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -120,7 +121,7 @@ export default function Register() {
             <label
               className="block text-lg font-medium"
               onClick={handleFileClick}>
-              click to select a Profile Picture
+              <FontAwesomeIcon icon="fa-solid fa-pen-to-square" />
             </label>
 
             {/* Image Preview */}
