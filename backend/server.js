@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from 'cors';
+import multer from "multer";
 
 import userRoutes from './routes/userRoutes.js'
 
@@ -13,14 +14,17 @@ const app = express();
 // CORS-Einstellungen
 app.use(cors({
         origin: 'http://localhost:5173',
+        credentials: true,
     }))
     
 // Middleware zur JSON-Parsierung
 app.use(express.json());
+const upload = multer();
+app.use(upload.single('profilePicture')); 
 
 app.use("/api", userRoutes);
 
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 // Server starten
 app.listen(port, () => console.log(`Server started on port: http://localhost:${port}`));
