@@ -100,7 +100,7 @@ export default function Register() {
       }, 2000); // Wait 2 seconds before redirecting
     } catch (error) {
       console.error("Registration failed:", error);
-      setError("Registration failed.");
+      setError("Registration failed!!!.");
     }
   };
 
