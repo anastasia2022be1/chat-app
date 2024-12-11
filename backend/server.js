@@ -1,6 +1,7 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from 'cors';
+import multer from "multer";
 
 import userRoutes from './routes/userRoutes.js'
 
@@ -20,10 +21,11 @@ app.use(
     
 // Middleware zur JSON-Parsierung
 app.use(express.json());
+const upload = multer();
+app.use(upload.single('profilePicture')); 
 
 app.use("/api", userRoutes);
 
 
-const port = process.env.PORT || 3000;
 // Server starten
 app.listen(port, () => console.log(`Server started on port: http://localhost:${port}`));

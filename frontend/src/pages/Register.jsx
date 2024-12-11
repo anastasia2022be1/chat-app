@@ -71,6 +71,9 @@ export default function Register() {
     form.append("password", formData.password);
     form.append("profilePicture", formData.profilePicture);
 
+
+
+
     try {
       // Send the form data to the backend
       const response = await fetch("http://localhost:3000/api/register", {
@@ -85,12 +88,13 @@ export default function Register() {
 )
         // body: form, // Use FormData for file uploads
       });
-
+      
       const data = await response.json();
       if (!response.ok) {
         setError(data.message || "Registration failed.");
         return;
       }
+  
 
       // Indicate email verification is required
       setIsVerifying(true);
@@ -119,7 +123,6 @@ export default function Register() {
         {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
         <form onSubmit={handleSubmit} className="space-y-6">
-
           {/* Profile Picture */}
           <div className="flex flex-col items-center">
             <label
