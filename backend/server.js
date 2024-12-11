@@ -12,10 +12,12 @@ await mongoose.connect(process.env.MONGODB_DB)
 const app = express();
 
 // CORS-Einstellungen
-app.use(cors({
-        origin: 'http://localhost:5173',
-        credentials: true,
-    }))
+app.use(
+  cors({
+    origin: 'http://localhost:5173', 
+    credentials: true, 
+  })
+);
     
 // Middleware zur JSON-Parsierung
 app.use(express.json());
@@ -25,7 +27,6 @@ app.use("/uploads", express.static("uploads"));
 
 app.use("/api", userRoutes);
 
-
-const port = process.env.PORT;
+const port = 3000;
 // Server starten
 app.listen(port, () => console.log(`Server started on port: http://localhost:${port}`));

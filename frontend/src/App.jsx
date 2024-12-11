@@ -6,6 +6,8 @@ import "./App.css";
 import Home from "./pages/Home.jsx";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
+import Chat from "./components/Chat.jsx";
+import UserSettings from "./components/UserSettings.jsx";
 
 function App() {
   return (
@@ -15,8 +17,9 @@ function App() {
           <Route index element={<Home />} />
           <Route path="register" element={<Register />} />
           <Route path="login" element={<Login />} />
-          {/* <Route path="profile" element={<Profile />} />
-          <Route path="*" element={<NotFound />} /> */}
+          <Route path="chat" element={<Chat />} />
+          <Route path="settings" element={<UserSettings />} />
+          {/* <Route path="*" element={<NotFound />} /> */}
         </Route>
       </Routes>
     </AuthProvider>

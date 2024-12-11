@@ -72,29 +72,22 @@ export default function Register() {
     form.append("password", formData.password);
     form.append("profilePicture", formData.profilePicture);
 
-
-
-
     try {
       // Send the form data to the backend
       const response = await fetch("http://localhost:3000/api/register", {
         method: "POST",
         body: form, // Use FormData for file uploads
       });
-      
       const data = await response.json();
       if (!response.ok) {
         setError(data.message || "Registration failed.");
         return;
       }
-  
-
       // Indicate email verification is required
       setIsVerifying(true);
       setError(
         "Registration successful! Please check your email to verify your account."
       );
-
       // Navigate to login page after registration
       setTimeout(() => {
         navigate("/login");
