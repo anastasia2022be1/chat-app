@@ -144,7 +144,7 @@ export default function Setting() {
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
-                <span className="text-gray-500">No Picture</span>
+                <span className="text-gray-500">No Picture?</span>
               )}
             </div>
             <button
