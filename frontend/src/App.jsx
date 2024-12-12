@@ -3,10 +3,10 @@ import { Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import Layout from "./layouts/Layout.jsx";
 import "./App.css";
-import Home from "./pages/Home.jsx";
+import Home from "./components/Home.jsx";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
-import Chat from "./components/Chat.jsx";
+import Chat from "./pages/Chat.jsx";
 import Setting from "./pages/Setting.jsx";
 
 function App() {
