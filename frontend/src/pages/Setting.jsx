@@ -112,6 +112,8 @@ export default function Setting() {
 
       const data = await response.json();
       if (response.ok) {
+        console.log(data);
+        
         setUser(data.user);
         setHasChanges(false);
         setProfilePicPreview(data.user.profilePicture); // Update preview with server response
@@ -136,7 +138,7 @@ export default function Setting() {
             <div className="w-32 h-32 rounded-full border-2 border-black flex items-center justify-center mb-4 overflow-hidden">
               {profilePicPreview ? (
                 <img
-                  src={profilePicPreview}
+                  src={"http://localhost:3000"+profilePicPreview}
                   alt="Profile Preview"
                   className="w-full h-full object-cover rounded-full"
                 />
