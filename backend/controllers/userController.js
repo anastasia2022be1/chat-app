@@ -14,6 +14,9 @@ const emailAddress = process.env.EMAIL_ADDRESS;
 
 export const registerUser = async(req, res) => {
     const { username, email, password } = req.body;
+    
+
+   
 
     if (!username || !email || !password) {
 
@@ -30,11 +33,15 @@ export const registerUser = async(req, res) => {
       const hashedPassword = await bcrypt.hash(password, 10);
       const verificationToken = crypto.randomBytes(32).toString("hex");
       const tokenExpiresAt = Date.now() + 1000 * 60 * 60;
+
+      // Processing the profile image
+      const profilePicture = req.file ? `/uploads/${req.file.filename}` : "";  // URL of the uploaded file
   
       const user = await User.create({
         username: username,
         email: email,
         password: hashedPassword,
+        profilePicture: profilePicture,
         verificationToken: verificationToken,
         tokenExpiresAt: tokenExpiresAt,
       });
@@ -156,3 +163,68 @@ export const loginUser = async(req, res) => {
         res.status(500).json({ error: error.message });
     }
 }
+
+//------------------------------------------------------------------------------
+
+// To get user information (Settings Page)
+export const getUserSettings = async (req, res) => {
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({
+      username: user.username,
+      profilePicture: user.profilePicture || null, // Include profile picture URL
+    });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
+
+// To update settings (Username, Password, Profile Picture)
+
+export const updateUserSettings = async (req, res) => {
+  const { username, password, newPassword } = req.body;
+  try {
+    const user = await User.findById(req.user.userId);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    // Change username
+    if (username) {
+      user.username = username;
+    }
+
+    // change password
+    if (password && newPassword) {
+      const passwordCorrect = await bcrypt.compare(password, user.password);
+      if (!passwordCorrect) {
+        return res.status(400).json({ error: "Current password is incorrect" });
+      }
+      user.password = await bcrypt.hash(newPassword, 10);
+    }
+
+    // change profile
+    if (req.file) {
+        user.profilePicture = `/uploads/${req.file.filename}`;
+      }
+  
+      await user.save();
+      res.json({
+        message: "User settings updated successfully",
+        user: {
+          username: user.username,
+          profilePicture: user.profilePicture,
+        },
+      });
+
+
+
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};

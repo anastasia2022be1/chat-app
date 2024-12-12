@@ -20,10 +20,12 @@ app.use(
     
 // Middleware zur JSON-Parsierung
 app.use(express.json());
-const upload = multer();
-app.use(upload.single('profilePicture')); 
+
+// static routes for uploaded files
+app.use("/uploads", express.static("uploads"));
 
 app.use("/api", userRoutes);
+
 
 const port = 3000;
 // Server starten
