@@ -2,13 +2,12 @@ import express from "express";
 import mongoose from "mongoose";
 import cors from 'cors';
 import multer from "multer";
-
+import connect from "./config/db.js";
 import userRoutes from './routes/userRoutes.js'
 
 // Verbindung zur MongoDB
-await mongoose.connect(process.env.MONGODB_DB)
-  .then(() => console.log("MongoDB connected"))
-  .catch((error) => console.error("MongoDB connection error:", error));
+await connect();
+
 const app = express();
 
 // CORS-Einstellungen
