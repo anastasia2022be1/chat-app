@@ -14,7 +14,7 @@ const emailAddress = process.env.EMAIL_ADDRESS;
 
 export const registerUser = async(req, res) => {
     const { username, email, password } = req.body;
-    
+    const profilePicture = req.file ? `/uploads/${req.file.filename}` : null;
 
    
 
@@ -207,7 +207,7 @@ export const updateUserSettings = async (req, res) => {
       }
       user.password = await bcrypt.hash(newPassword, 10);
     }
-
+console.log(req.file)
     // change profile
     if (req.file) {
         user.profilePicture = `/uploads/${req.file.filename}`;
