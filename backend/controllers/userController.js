@@ -14,6 +14,9 @@ const emailAddress = process.env.EMAIL_ADDRESS;
 
 export const registerUser = async(req, res) => {
     const { username, email, password } = req.body;
+    
+
+   
 
     if (!username || !email || !password) {
 
@@ -154,21 +157,14 @@ export const loginUser = async(req, res) => {
         const payload = { userId: user._id };
         const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
 
-        res.cookie("jwt" , token , {
-          httpOnly : true,
-          secure : true ,
-          samesite : "none",
-          maxAge: 1000 * 60 * 60 * 24 * 30,
-        })
-        res.status(200).json({ message: "Login successful!", user });
-        // res.json({ user: user, token: token });
+        res.json({ user: user, token: token });
 
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
 }
 
-
+//------------------------------------------------------------------------------
 
 // To get user information (Settings Page)
 export const getUserSettings = async (req, res) => {
@@ -177,14 +173,17 @@ export const getUserSettings = async (req, res) => {
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json(user);
+    res.json({
+      username: user.username,
+      profilePicture: user.profilePicture || null, // Include profile picture URL
+    });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
 
-//----------------------------------------------------------------------------------------
+
 
 // To update settings (Username, Password, Profile Picture)
 
@@ -215,7 +214,13 @@ export const updateUserSettings = async (req, res) => {
       }
   
       await user.save();
-      res.json({ message: "User settings updated successfully", user });
+      res.json({
+        message: "User settings updated successfully",
+        user: {
+          username: user.username,
+          profilePicture: user.profilePicture,
+        },
+      });
 
 
 

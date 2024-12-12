@@ -1,7 +1,6 @@
 import express from "express";
 import mongoose from "mongoose";
 import cors from 'cors';
-import multer from "multer";
 
 import userRoutes from './routes/userRoutes.js'
 
@@ -26,6 +25,7 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 app.use("/api", userRoutes);
+
 
 const port = 3000;
 // Server starten
