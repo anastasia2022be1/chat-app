@@ -1,18 +1,18 @@
 import jwt from "jsonwebtoken";
 
-// Authorization middleware
-export const authMiddleware = async (req, res, next) => {
-  const token = req.cookies.jwt;
+export const authenticate = (req, res, next) => {
+  const token = req.header("Authorization")?.split(" ")[1]; // Extract token from header
 
   if (!token) {
-    return res.status(401).send({ error: "Unauthorized: No token provided" });
+    return res.status(401).json({ error: "Unauthorized: No token provided" });
   }
 
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET_KEY);
-    req.user = decoded;
+    req.user = decoded; // Attach user info to the request
     next();
-  } catch (error) {
-    return res.status(401).json({ error: "Invalid or expired token" });
+  } catch (err) {
+    return res.status(401).json({ error: "Unauthorized: Invalid token" });
   }
 };
+

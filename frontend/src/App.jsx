@@ -7,7 +7,7 @@ import Home from "./pages/Home.jsx";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import Chat from "./components/Chat.jsx";
-import UserSettings from "./components/UserSettings.jsx";
+import Setting from "./pages/Setting.jsx";
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
           <Route path="register" element={<Register />} />
           <Route path="login" element={<Login />} />
           <Route path="chat" element={<Chat />} />
-          <Route path="settings" element={<UserSettings />} />
+          <Route path="setting" element={<Setting />} />
           {/* <Route path="*" element={<NotFound />} /> */}
         </Route>
       </Routes>
