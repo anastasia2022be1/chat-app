@@ -8,6 +8,7 @@ import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
 import Chat from "./pages/Chat.jsx";
 import Setting from "./pages/Setting.jsx";
+import ProtectedRoute from "./ProtectedRoute.jsx";
 
 function App() {
   return (
@@ -17,8 +18,12 @@ function App() {
           <Route index element={<Home />} />
           <Route path="register" element={<Register />} />
           <Route path="login" element={<Login />} />
-          <Route path="chat" element={<Chat />} />
-          <Route path="setting" element={<Setting />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route path="chat" element={<Chat />} />
+            <Route path="setting" element={<Setting />} />
+          </Route>
+
           {/* <Route path="*" element={<NotFound />} /> */}
         </Route>
       </Routes>
@@ -27,3 +32,4 @@ function App() {
 }
 
 export default App;
+

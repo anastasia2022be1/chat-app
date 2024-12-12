@@ -52,7 +52,7 @@ export default function Login() {
       localStorage.setItem("authToken", data.token);
 
 
-      // On successful login, redirect to the dashboard or home page
+      // On successful login, redirect to the chat page
       navigate("/chat");
     } catch (error) {
       console.error("Login failed:", error);
