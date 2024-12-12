@@ -31,17 +31,15 @@ export default function Setting() {
         });
 
         const data = await response.json();
-        console.log(data)
 
         if (data.error) {
           setError(data.error);
         } else {
           setUser(data);
           setFormData({ ...formData, username: data.username });
-          
+
           if (data.profilePicture) {
             setProfilePicPreview(data.profilePicture); // Set existing profile picture
-            
           }
         }
       } catch (error) {
@@ -51,6 +49,7 @@ export default function Setting() {
 
     fetchUserData();
   }, []);
+
   const handleFileClick = () => {
     fileInputRef.current.click();
   };
@@ -60,7 +59,9 @@ export default function Setting() {
     const newFormData = { ...formData, [name]: value };
     setFormData(newFormData);
     checkForChanges(newFormData);
+    console.log("Form data after change 62:", newFormData);
   };
+
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -77,7 +78,8 @@ export default function Setting() {
       newFormData.username !== user?.username ||
       newFormData.currentPassword !== "" ||
       newFormData.newPassword !== "" ||
-      (newFormData.profilePicture && newFormData.profilePicture !== user?.profilePicture);
+      (newFormData.profilePicture &&
+        newFormData.profilePicture !== user?.profilePicture);
     setHasChanges(isDifferent);
   };
 
@@ -90,7 +92,8 @@ export default function Setting() {
       form.append("password", formData.currentPassword);
       form.append("newPassword", formData.newPassword);
     }
-    if (formData.profilePicture) form.append("profilePicture", formData.profilePicture);
+    if (formData.profilePicture)
+      form.append("profilePicture", formData.profilePicture);
 
     try {
       const token = localStorage.getItem("authToken");
@@ -147,8 +150,7 @@ export default function Setting() {
             <button
               type="button"
               onClick={handleFileClick}
-              className="text-blue-500 font-medium hover:underline"
-            >
+              className="text-blue-500 font-medium hover:underline">
               Change Picture
             </button>
             <input
@@ -182,6 +184,7 @@ export default function Setting() {
               value={formData.currentPassword}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              
             />
           </div>
 
@@ -196,6 +199,7 @@ export default function Setting() {
               value={formData.newPassword}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              
             />
           </div>
 
@@ -207,8 +211,7 @@ export default function Setting() {
               hasChanges
                 ? "bg-blue-500 hover:bg-blue-600"
                 : "bg-gray-300 cursor-not-allowed"
-            }`}
-          >
+            }`}>
             Update
           </button>
         </form>
