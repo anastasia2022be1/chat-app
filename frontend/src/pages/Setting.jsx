@@ -12,6 +12,7 @@ export default function Setting() {
   const [profilePicPreview, setProfilePicPreview] = useState(null); // New state for preview
   const [hasChanges, setHasChanges] = useState(false);
   const [error, setError] = useState("");
+  const [isUpdated, setIsUpdated] = useState(false);
   const fileInputRef = useRef(null);
 
   useEffect(() => {
@@ -61,7 +62,6 @@ export default function Setting() {
     checkForChanges(newFormData);
     console.log("Form data after change 62:", newFormData);
   };
-
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
@@ -116,10 +116,14 @@ export default function Setting() {
       const data = await response.json();
       if (response.ok) {
         console.log(data);
-        
+
         setUser(data.user);
         setHasChanges(false);
         setProfilePicPreview(data.user.profilePicture); // Update preview with server response
+        setIsUpdated(true);
+
+        // Reset the update feedback after 2 seconds
+        setTimeout(() => setIsUpdated(false), 3000);
       } else {
         setError(data.error);
       }
@@ -141,7 +145,7 @@ export default function Setting() {
             <div className="w-32 h-32 rounded-full border-2 border-black flex items-center justify-center mb-4 overflow-hidden">
               {profilePicPreview ? (
                 <img
-                  src={"http://localhost:3000"+profilePicPreview}
+                  src={"http://localhost:3000" + profilePicPreview}
                   alt="Profile Preview"
                   className="w-full h-full object-cover rounded-full"
                 />
@@ -186,7 +190,6 @@ export default function Setting() {
               value={formData.currentPassword}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              
             />
           </div>
 
@@ -201,7 +204,6 @@ export default function Setting() {
               value={formData.newPassword}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              
             />
           </div>
 
@@ -212,9 +214,11 @@ export default function Setting() {
             className={`w-full text-white font-medium py-2 rounded-md transition duration-200 ${
               hasChanges
                 ? "bg-blue-500 hover:bg-blue-600"
+                : isUpdated
+                ? "bg-green-500"
                 : "bg-gray-300 cursor-not-allowed"
             }`}>
-            Update
+            {isUpdated ? "Updated!" : "Update"}
           </button>
         </form>
       )}
