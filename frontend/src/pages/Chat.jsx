@@ -1,7 +1,7 @@
-import Sidebar from "../pages/Sidebar.jsx";
-import Body from "../pages/Body.jsx";
-import Message from "../pages/Message.jsx";
-import Header from "../pages/Header.jsx";
+import Sidebar from "../components/Sidebar.jsx";
+import Body from "../components/Body.jsx";
+import Message from "../components/Message.jsx";
+import Header from "../components/Header.jsx";
 
 const Chat = () => {
   return (

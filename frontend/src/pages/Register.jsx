@@ -1,6 +1,6 @@
 import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -83,9 +83,14 @@ export default function Register() {
         setError(data.message || "Registration failed.");
         return;
       }
+<<<<<<< HEAD
 
 
       
+=======
+    
+
+>>>>>>> 552e65c09ab056b73f42b572b9937e70b72187f9
       // Indicate email verification is required
       setIsVerifying(true);
       setError(

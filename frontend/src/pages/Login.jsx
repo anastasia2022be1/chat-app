@@ -50,9 +50,13 @@ export default function Login() {
 
       // Store token in localStorage
       localStorage.setItem("authToken", data.token);
+<<<<<<< HEAD
+
+=======
+>>>>>>> 552e65c09ab056b73f42b572b9937e70b72187f9
 
 
-      // On successful login, redirect to the dashboard or home page
+      // On successful login, redirect to the chat page
       navigate("/chat");
     } catch (error) {
       console.error("Login failed:", error);

@@ -1,5 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useEffect, useRef, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Setting() {
   const [user, setUser] = useState(null);
@@ -193,6 +195,19 @@ export default function Setting() {
             />
           </div>
 
+          {/* New Password */}
+          <div className="flex flex-col">
+            <label className="text-gray-600 font-medium mb-2">
+              New Password:
+            </label>
+            <input
+              type="password"
+              name="newPassword"
+              value={formData.newPassword}
+              onChange={handleChange}
+              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+          </div>
           {/* New Password */}
           <div className="flex flex-col">
             <label className="text-gray-600 font-medium mb-2">
