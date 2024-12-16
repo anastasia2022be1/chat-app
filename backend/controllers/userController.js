@@ -207,7 +207,7 @@ export const updateUserSettings = async (req, res) => {
       }
       user.password = await bcrypt.hash(newPassword, 10);
     }
-
+console.log(req.file)
     // change profile
     if (req.file) {
         user.profilePicture = `/uploads/${req.file.filename}`;

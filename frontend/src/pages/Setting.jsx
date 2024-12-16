@@ -7,12 +7,19 @@ export default function Setting() {
     username: "",
     currentPassword: "",
     newPassword: "",
+    confirmNewPassword: "",
     profilePicture: null,
   });
   const [profilePicPreview, setProfilePicPreview] = useState(null); // New state for preview
   const [hasChanges, setHasChanges] = useState(false);
   const [error, setError] = useState("");
+  const [isUpdated, setIsUpdated] = useState(false);
   const fileInputRef = useRef(null);
+
+    // States for toggling password visibility
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -31,17 +38,15 @@ export default function Setting() {
         });
 
         const data = await response.json();
-        console.log(data)
 
         if (data.error) {
           setError(data.error);
         } else {
           setUser(data);
           setFormData({ ...formData, username: data.username });
-          
+
           if (data.profilePicture) {
             setProfilePicPreview(data.profilePicture); // Set existing profile picture
-            
           }
         }
       } catch (error) {
@@ -51,6 +56,7 @@ export default function Setting() {
 
     fetchUserData();
   }, []);
+
   const handleFileClick = () => {
     fileInputRef.current.click();
   };
@@ -60,6 +66,7 @@ export default function Setting() {
     const newFormData = { ...formData, [name]: value };
     setFormData(newFormData);
     checkForChanges(newFormData);
+    console.log("Form data after change 62:", newFormData);
   };
 
   const handleFileChange = (e) => {
@@ -77,7 +84,8 @@ export default function Setting() {
       newFormData.username !== user?.username ||
       newFormData.currentPassword !== "" ||
       newFormData.newPassword !== "" ||
-      (newFormData.profilePicture && newFormData.profilePicture !== user?.profilePicture);
+      (newFormData.profilePicture &&
+        newFormData.profilePicture !== user?.profilePicture);
     setHasChanges(isDifferent);
   };
 
@@ -90,7 +98,15 @@ export default function Setting() {
       form.append("password", formData.currentPassword);
       form.append("newPassword", formData.newPassword);
     }
-    if (formData.profilePicture) form.append("profilePicture", formData.profilePicture);
+
+    // Validation: Check if passwords match
+    if (formData.newPassword !== formData.confirmNewPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
+    if (formData.profilePicture)
+      form.append("profilePicture", formData.profilePicture);
 
     try {
       const token = localStorage.getItem("authToken");
@@ -112,9 +128,15 @@ export default function Setting() {
 
       const data = await response.json();
       if (response.ok) {
+        console.log(data);
+
         setUser(data.user);
         setHasChanges(false);
         setProfilePicPreview(data.user.profilePicture); // Update preview with server response
+        setIsUpdated(true);
+
+        // Reset the update feedback after 2 seconds
+        setTimeout(() => setIsUpdated(false), 3000);
       } else {
         setError(data.error);
       }
@@ -136,20 +158,19 @@ export default function Setting() {
             <div className="w-32 h-32 rounded-full border-2 border-black flex items-center justify-center mb-4 overflow-hidden">
               {profilePicPreview ? (
                 <img
-                  src={profilePicPreview}
+                  src={"http://localhost:3000" + profilePicPreview}
                   alt="Profile Preview"
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
-                <span className="text-gray-500">No Picture</span>
+                <span className="text-gray-500">No Picture?</span>
               )}
             </div>
             <button
               type="button"
               onClick={handleFileClick}
-              className="text-blue-500 font-medium hover:underline"
-            >
-              Change Picture
+              className="text-blue-500 font-medium hover:underline">
+              <FontAwesomeIcon icon="fa-solid fa-pen-to-square" />
             </button>
             <input
               type="file"
@@ -168,6 +189,7 @@ export default function Setting() {
               value={formData.username}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Username"
             />
           </div>
 
@@ -176,13 +198,23 @@ export default function Setting() {
             <label className="text-gray-600 font-medium mb-2">
               Current Password:
             </label>
+            <div className="relative">
             <input
-              type="password"
+              type={showCurrentPassword ? "text" : "password"}
               name="currentPassword"
               value={formData.currentPassword}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Current Password"
             />
+             <button
+                type="button"
+                onClick={() => setShowCurrentPassword((prev) => !prev)}
+                className="absolute right-3 top-2 text-gray-600"
+              >
+                {showCurrentPassword ? <FontAwesomeIcon icon="fa-solid fa-eye-slash" /> : <FontAwesomeIcon icon="fa-solid fa-eye" />}
+              </button>
+          </div>
           </div>
 
           {/* New Password */}
@@ -190,27 +222,61 @@ export default function Setting() {
             <label className="text-gray-600 font-medium mb-2">
               New Password:
             </label>
+            <div className="relative">
             <input
-              type="password"
+              type={showNewPassword ? "text" : "password"}
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="New Password"
             />
+            <button type="button"  onClick={() => setShowNewPassword((prev) => !prev)}  className="absolute right-3 top-2 text-gray-600">
+              {showNewPassword ? <FontAwesomeIcon icon="fa-solid fa-eye-slash" /> : <FontAwesomeIcon icon="fa-solid fa-eye" />}
+            </button>
+          </div>
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label className="text-gray-600 font-medium mb-2 ">
+              Confirm Password
+            </label>
+            <div className="relative">
+            <input
+              type={showConfirmNewPassword ? "text" : "password"}
+              name="confirmNewPassword"
+              value={formData.confirmNewPassword}
+              onChange={handleChange}
+              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Confirm New Password"
+            />
+            <button type="button" onClick={() => setShowConfirmNewPassword((prev) => !prev)} className="absolute right-3 top-2 text-gray-600">
+              {showConfirmNewPassword ? <FontAwesomeIcon icon="fa-solid fa-eye-slash" /> : <FontAwesomeIcon icon="fa-solid fa-eye" />}
+            </button>
+          </div>
           </div>
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={!hasChanges}
-            className={`w-full text-white font-medium py-2 rounded-md transition duration-200 ${
-              hasChanges
-                ? "bg-blue-500 hover:bg-blue-600"
-                : "bg-gray-300 cursor-not-allowed"
-            }`}
-          >
-            Update
-          </button>
+          <div className="w-full">
+            {isUpdated && (
+              <p className="text-green-500 mb-4 text-center">
+                Settings updated successfully!
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={!hasChanges}
+              className={`w-full text-white font-medium py-2 rounded-md transition duration-200 ${
+                hasChanges
+                  ? "bg-blue-500 hover:bg-blue-600"
+                  : isUpdated
+                  ? "bg-green-500"
+                  : "bg-gray-300 cursor-not-allowed"
+              }`}>
+              {isUpdated ? "Updated!" : "Update"}
+            </button>
+          </div>
         </form>
       )}
     </div>
