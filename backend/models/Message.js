@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const AttachmentSchema = new mongoose.Schema({
     type: {
         type: String,
-        enum: ['image', 'file', 'video', 'audio', 'other'], // Define allowed types
+        enum: ['image', 'file', 'video', 'audio', 'other'],
         required: true
     },
     url: {
@@ -12,7 +12,7 @@ const AttachmentSchema = new mongoose.Schema({
     }
 });
 
-messageSchema = new mongoose.Schema({
+const messageSchema = new mongoose.Schema({
     chatId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Chat",

@@ -5,6 +5,7 @@ import multer from "multer";
 import connect from "./config/db.js";
 import userRoutes from './routes/userRoutes.js'
 import chatRoutes from './routes/chatRoutes.js'
+import messageRoutes from './routes/messageRoutes.js'
 
 // Verbindung zur MongoDB
 await connect();
@@ -26,7 +27,8 @@ app.use(express.json());
 app.use("/uploads", express.static("uploads"));
 
 app.use("/api", userRoutes);
-app.use("/api", chatRoutes)
+app.use("/api", chatRoutes);
+app.use("/api", messageRoutes);
 
 
 const port = 3000;
