@@ -44,7 +44,7 @@ export default function Login() {
        const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Email or password is wrong.");
+        setError(data.message || "Login failed.");
         return;
       }
 
