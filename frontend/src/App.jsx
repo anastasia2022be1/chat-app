@@ -9,6 +9,7 @@ import Login from "./pages/Login.jsx";
 import Chat from "./pages/Chat.jsx";
 import Setting from "./pages/Setting.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
+import AddContact from "./pages/AddContact.jsx";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="chat" element={<Chat />} />
             <Route path="setting" element={<Setting />} />
+            <Route path="/AddContact" element={<AddContact />} />
           </Route>
 
           {/* <Route path="*" element={<NotFound />} /> */}
