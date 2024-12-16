@@ -1,7 +1,5 @@
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { useEffect, useRef, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function Setting() {
   const [user, setUser] = useState(null);
@@ -9,6 +7,7 @@ export default function Setting() {
     username: "",
     currentPassword: "",
     newPassword: "",
+    confirmNewPassword: "",
     profilePicture: null,
   });
   const [profilePicPreview, setProfilePicPreview] = useState(null); // New state for preview
@@ -16,6 +15,11 @@ export default function Setting() {
   const [error, setError] = useState("");
   const [isUpdated, setIsUpdated] = useState(false);
   const fileInputRef = useRef(null);
+
+    // States for toggling password visibility
+    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+    const [showNewPassword, setShowNewPassword] = useState(false);
+    const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -94,6 +98,13 @@ export default function Setting() {
       form.append("password", formData.currentPassword);
       form.append("newPassword", formData.newPassword);
     }
+
+    // Validation: Check if passwords match
+    if (formData.newPassword !== formData.confirmNewPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
     if (formData.profilePicture)
       form.append("profilePicture", formData.profilePicture);
 
@@ -159,7 +170,7 @@ export default function Setting() {
               type="button"
               onClick={handleFileClick}
               className="text-blue-500 font-medium hover:underline">
-              Change Picture
+              <FontAwesomeIcon icon="fa-solid fa-pen-to-square" />
             </button>
             <input
               type="file"
@@ -178,6 +189,7 @@ export default function Setting() {
               value={formData.username}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Username"
             />
           </div>
 
@@ -186,13 +198,23 @@ export default function Setting() {
             <label className="text-gray-600 font-medium mb-2">
               Current Password:
             </label>
+            <div className="relative">
             <input
-              type="password"
+              type={showCurrentPassword ? "text" : "password"}
               name="currentPassword"
               value={formData.currentPassword}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Current Password"
             />
+             <button
+                type="button"
+                onClick={() => setShowCurrentPassword((prev) => !prev)}
+                className="absolute right-3 top-2 text-gray-600"
+              >
+                {showCurrentPassword ? <FontAwesomeIcon icon="fa-solid fa-eye-slash" /> : <FontAwesomeIcon icon="fa-solid fa-eye" />}
+              </button>
+          </div>
           </div>
 
           {/* New Password */}
@@ -200,41 +222,61 @@ export default function Setting() {
             <label className="text-gray-600 font-medium mb-2">
               New Password:
             </label>
+            <div className="relative">
             <input
-              type="password"
+              type={showNewPassword ? "text" : "password"}
               name="newPassword"
               value={formData.newPassword}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="New Password"
             />
+            <button type="button"  onClick={() => setShowNewPassword((prev) => !prev)}  className="absolute right-3 top-2 text-gray-600">
+              {showNewPassword ? <FontAwesomeIcon icon="fa-solid fa-eye-slash" /> : <FontAwesomeIcon icon="fa-solid fa-eye" />}
+            </button>
           </div>
-          {/* New Password */}
-          <div className="flex flex-col">
-            <label className="text-gray-600 font-medium mb-2">
-              New Password:
+          </div>
+
+          {/* Confirm Password */}
+          <div>
+            <label className="text-gray-600 font-medium mb-2 ">
+              Confirm Password
             </label>
+            <div className="relative">
             <input
-              type="password"
-              name="newPassword"
-              value={formData.newPassword}
+              type={showConfirmNewPassword ? "text" : "password"}
+              name="confirmNewPassword"
+              value={formData.confirmNewPassword}
               onChange={handleChange}
               className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              placeholder="Confirm New Password"
             />
+            <button type="button" onClick={() => setShowConfirmNewPassword((prev) => !prev)} className="absolute right-3 top-2 text-gray-600">
+              {showConfirmNewPassword ? <FontAwesomeIcon icon="fa-solid fa-eye-slash" /> : <FontAwesomeIcon icon="fa-solid fa-eye" />}
+            </button>
+          </div>
           </div>
 
           {/* Submit Button */}
-          <button
-            type="submit"
-            disabled={!hasChanges}
-            className={`w-full text-white font-medium py-2 rounded-md transition duration-200 ${
-              hasChanges
-                ? "bg-blue-500 hover:bg-blue-600"
-                : isUpdated
-                ? "bg-green-500"
-                : "bg-gray-300 cursor-not-allowed"
-            }`}>
-            {isUpdated ? "Updated!" : "Update"}
-          </button>
+          <div className="w-full">
+            {isUpdated && (
+              <p className="text-green-500 mb-4 text-center">
+                Settings updated successfully!
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={!hasChanges}
+              className={`w-full text-white font-medium py-2 rounded-md transition duration-200 ${
+                hasChanges
+                  ? "bg-blue-500 hover:bg-blue-600"
+                  : isUpdated
+                  ? "bg-green-500"
+                  : "bg-gray-300 cursor-not-allowed"
+              }`}>
+              {isUpdated ? "Updated!" : "Update"}
+            </button>
+          </div>
         </form>
       )}
     </div>

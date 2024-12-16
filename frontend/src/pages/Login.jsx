@@ -44,16 +44,12 @@ export default function Login() {
        const data = await response.json();
 
       if (!response.ok) {
-        setError(data.message || "Login failed.");
+        setError(data.message || "Email or password is wrong.");
         return;
       }
 
       // Store token in localStorage
       localStorage.setItem("authToken", data.token);
-<<<<<<< HEAD
-
-=======
->>>>>>> 552e65c09ab056b73f42b572b9937e70b72187f9
 
 
       // On successful login, redirect to the chat page

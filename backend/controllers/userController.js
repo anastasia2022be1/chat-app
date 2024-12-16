@@ -14,11 +14,7 @@ const emailAddress = process.env.EMAIL_ADDRESS;
 
 export const registerUser = async(req, res) => {
     const { username, email, password } = req.body;
-<<<<<<< HEAD
-    const profilePicture = req.file ? `/uploads/${req.file.filename}` : null;
-=======
     
->>>>>>> 552e65c09ab056b73f42b572b9937e70b72187f9
 
    
 
