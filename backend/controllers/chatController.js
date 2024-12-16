@@ -8,6 +8,7 @@ export const createChat = async (req, res) => {
     try {
         const { senderId, recieverId } = req.body;
         const newChat = await Chat.create({ participants: [senderId, recieverId] });
+        // const sender = await User.findByIdAndUpdate({}) // Schicken Datei in User => in Model User(chats) 
         res.status(200).json({ message: 'Chat created successfully', newChat });
     } catch (error) {
         console.log(error, 'Error');
@@ -20,20 +21,25 @@ export const createChat = async (req, res) => {
 export const getChats = async (req, res) => {
     try {
         const userId = req.params.userId;
-        const chats = await Chat.find({ participants: { $in: [userId] } });
 
-        const chatUserData = await Promise.all(
-            chats.map(async (chat) => {
-                const recieverId = chat.participants.find((participant) => participant !== userId);
-                const user = await User.findById(recieverId);
-                return { user: { email: user.email, username: user.username }, chatId: chat._id }
-            })
-        );
+        const currentUser = await User.findById(userId)
+        //     .populate("participants", "username email")
 
-        // console.log("chatUserData: ", chatUserData);
-        res.status(200).json(chatUserData);
+
+        // const chatUserData = chats.map(chat => {
+        //     const otherParticipant = chat.participants.find(participant => participant._id.toString() !== userId);
+        //     return {
+        //         chatId: chat._id,
+        //         otherParticipant: {
+        //             username: otherParticipant.username,
+        //             email: otherParticipant.email
+        //         }
+        //     };
+        // });
+
+        res.status(200).json(currentUser.chats);
     } catch (error) {
-        console.log(error, 'Error');
+        console.error(error, 'Error');
         res.status(500).json({ error: 'Internal Server Error' });
     }
 };
