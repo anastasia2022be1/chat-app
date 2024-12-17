@@ -80,7 +80,7 @@ export default function Register() {
       });
       const data = await response.json();
       if (!response.ok) {
-        setError(data.message || "Registration failed.");
+        setError(data.message || "Account with this email already exists!");
         return;
       }
     

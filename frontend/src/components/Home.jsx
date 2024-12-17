@@ -32,9 +32,9 @@ export default function Home() {
           ) : (
             <div>
               <p className="text-lg">Welcome back! Ready to chat?</p>
-              <Link to="/profile">
+              <Link to="/chat">
                 <button className="px-6 py-3 bg-purple-600 text-white  rounded-lg hover:bg-purple-500 transition mt-4">
-                  Go to Profile
+                  Go to Chat
                 </button>
               </Link>
             </div>

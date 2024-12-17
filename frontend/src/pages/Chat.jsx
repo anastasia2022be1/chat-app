@@ -1,9 +1,15 @@
-import Sidebar from "../pages/Sidebar.jsx";
-import Body from "../pages/Body.jsx";
-import Message from "../pages/Message.jsx";
-import Header from "../pages/Header.jsx";
+import socketIO from 'socket.io-client'
+
+import Sidebar from "../components/Sidebar.jsx";
+import Body from "../components/Body.jsx";
+import Message from "../components/Message.jsx";
+import Header from "../components/Header.jsx";
+
+const socket = socketIO.connect('http://localhost:3000');
 
 const Chat = () => {
+  
+
   return (
     <div className="h-screen flex flex-col bg-gray-100">
       {/* Header */}
@@ -17,10 +23,10 @@ const Chat = () => {
         </aside>
         <div className="flex flex-col flex-grow">
           <div className="flex-grow overflow-y-auto">
-            <Body />
+            <Body socket={socket} />
           </div>
           <footer className="bg-white border-t border-gray-300">
-            <Message />
+            <Message socket={socket} />
           </footer>
         </div>
       </div>
