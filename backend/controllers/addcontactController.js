@@ -17,14 +17,18 @@ export const addContact = async (req, res) => {
 
     // Check if the user is trying to add themselves
     if (contactUser._id.toString() === userId) {
-      return res.status(400).json({ error: "You cannot add yourself as a contact" });
+      return res
+        .status(400)
+        .json({ error: "You cannot add yourself as a contact" });
     }
 
     const user = await User.findById(userId);
 
     // Ensure the contact is not already in the list
     if (user.contacts.includes(contactUser._id)) {
-      return res.status(400).json({ error: "This user is already in your contacts" });
+      return res
+        .status(400)
+        .json({ error: "This user is already in your contacts" });
     }
 
     // Add the contact to the user's list
@@ -35,5 +39,30 @@ export const addContact = async (req, res) => {
   } catch (error) {
     console.error("Error adding contact:", error.message);
     res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+
+
+
+//--------------------------------------------------------------------------
+
+export const contactsList = async (req, res) => {
+  const userId = req.user.userId; // From the JWT token
+
+  try {
+    const user = await User.findById(userId).populate(
+      "contacts",
+      "username  profilePicture "
+    );
+
+    if (!user) {
+      return res.status(404).json({ error: "User not found." });
+    }
+
+    res.status(200).json(user.contacts);
+  } catch (error) {
+    console.error("Error fetching contacts:", error.message);
+    res.status(500).json({ error: "Failed to fetch contacts." });
   }
 };

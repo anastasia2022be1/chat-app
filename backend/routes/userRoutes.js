@@ -8,7 +8,10 @@ import {
 } from "../controllers/userController.js";
 import { upload } from "../middleware/upload.js";
 import { authenticate } from "../middleware/authMiddleware.js";
-import { addContact } from "../controllers/addcontactController.js";
+import {
+  addContact,
+  contactsList,
+} from "../controllers/addcontactController.js";
 
 const router = express.Router();
 
@@ -39,7 +42,8 @@ router.put(
 
 //add contact part:
 
- router.post("/addcontact", authenticate, addContact);
+router.get("/contactslist", authenticate, contactsList);
+router.post("/addcontact", authenticate, addContact);
 
 
 export default router;
