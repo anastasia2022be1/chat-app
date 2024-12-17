@@ -13,6 +13,15 @@ const Sidebar = () => {
         Search
       </button>
 
+      <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition mb-4">
+        contacts list
+      </button>
+
+
+      <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition mb-4">
+       chats
+      </button>
+
       
       <button
         onClick={handleAddContact}

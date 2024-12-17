@@ -43,7 +43,7 @@ export default function AddContact() {
       setError("");
       setSuccessMessage("🎉 Contact added successfully! 🎉");
 
-      // Wait for 2 seconds, then navigate to the chat page
+      // Wait for 4 seconds, then navigate to the chat page
       setTimeout(() => {
         setSuccessMessage(""); 
         navigate("/chat");
