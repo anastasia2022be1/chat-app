@@ -26,12 +26,13 @@ const server = http.Server(app);
 
 const io = new SocketIOServer(server, {
   cors: {
-    origin: 'http://localhost:5174',
+    origin: 'http://localhost:5173',
   },
 });
 
 // Middleware zur JSON-Parsierung
 app.use(express.json());
+app.use(cors());
 
 // static routes for uploaded files
 app.use("/uploads", express.static("uploads"));
@@ -40,7 +41,19 @@ app.use("/api", userRoutes);
 app.use("/api", chatRoutes);
 app.use("/api", messageRoutes);
 
+// Socket.io
+io.on('connection', (socket) => {
+  // console.log(socket)
+  console.log(`User  ${socket.id} connected`);
+  socket.on('message', (data) => {
+      console.log(data);
+      io.emit('message', data);
+  });
+  socket.on('disconnect', () => {
+      console.log(`User ${socket.id} disconnected`);
+  });
+});
 
 const port = 3000;
 // Server starten
-app.listen(port, () => console.log(`Server started on port: http://localhost:${port}`));
+server.listen(port, () => console.log(`Server started on port: http://localhost:${port}`));

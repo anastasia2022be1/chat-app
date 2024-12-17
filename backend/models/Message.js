@@ -10,7 +10,7 @@ const AttachmentSchema = new mongoose.Schema({
     }
   });
 
-messageSchema = new mongoose.Schema({
+const messageSchema = new mongoose.Schema({
     chatId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Chat",
