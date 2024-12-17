@@ -28,6 +28,11 @@ const Sidebar = () => {
         className="mt-auto w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition">
         Add new contact
       </button>
+      </div>
+      
+      <div className="chats">
+        <button>Chat</button>
+      </div>
     </aside>
   );
 };

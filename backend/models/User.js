@@ -28,11 +28,15 @@ const userSchema = new mongoose.Schema({
     },
     tokenExpiresAt: {
         type: Date,
-        default:() => Date.now() + 1000 * 60 * 60
+        default: () => Date.now() + 1000 * 60 * 60
     },
     contacts: [{
         type: mongoose.Schema.Types.ObjectId,
-        ref: "User", 
+        ref: 'User'
+    }],
+    chats: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Chat'
     }],
 }, { timestamps: true })
 
