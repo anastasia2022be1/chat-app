@@ -30,6 +30,14 @@ const userSchema = new mongoose.Schema({
         type: Date,
         default:() => Date.now() + 1000 * 60 * 60
     },
+    chats: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Chat"
+    }],
+    contacts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User'
+    }]
 }, { timestamps: true })
 
 const User = mongoose.model("User", userSchema);
