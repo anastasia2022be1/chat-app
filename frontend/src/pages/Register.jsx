@@ -78,8 +78,10 @@ export default function Register() {
         method: "POST",
         body: form, // Use FormData for file uploads
       });
-      const data = await response.json();
+      console.log(response);
       
+      const data = await response.json();
+      console.log(data)
       if (!response.ok) {
         setError(data.error || "Account with this email already exists!");
         return;
