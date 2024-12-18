@@ -48,9 +48,12 @@ export default function Login() {
         return;
       }
 
-      // Store token in localStorage
-      localStorage.setItem("authToken", data.token);
+      console.log(data);
+      
 
+      // Store token and usetId in localStorage
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("userId", data.userId);
 
       // On successful login, redirect to the chat page
       navigate("/chat");

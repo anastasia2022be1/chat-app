@@ -1,37 +1,37 @@
 import mongoose from "mongoose";
 
 const AttachmentSchema = new mongoose.Schema({
-    type: {
-      type: String,
-      enum: ['image', 'file', 'video', 'audio', 'other'], // Define allowed types
-    },
-    url: {
-      type: String,
-    }
-  });
+  type: {
+    type: String,
+    enum: ['image', 'file', 'video', 'audio', 'other'], // Define allowed types
+  },
+  url: {
+    type: String,
+  }
+});
 
 const messageSchema = new mongoose.Schema({
-    chatId: {
+  chatId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Chat",
     required: true,
-    },
-    content: {
+  },
+  content: {
     type: String,
     required: true
-    },
-    sender: {
+  },
+  senderId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
     required: true
-    },
-    attachments: [AttachmentSchema],
-    status : {
+  },
+  attachments: [AttachmentSchema],
+  status: {
     type: String,
-    enum:  ["sent", "read"],
+    enum: ["sent", "read"],
     default: "sent"
-    }
-},{ timestamps: true})
+  }
+}, { timestamps: true })
 
 const Message = mongoose.model("Message", messageSchema);
 

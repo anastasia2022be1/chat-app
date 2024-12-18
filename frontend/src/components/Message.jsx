@@ -6,19 +6,15 @@ function Message({socket}) {
   
   const handleSend = (e) => {
     e.preventDefault();
-    // console.log({
-    //   user: localStorage.getItem("username"),
-    //   message,
-    // });
-    // if(message.trim() && localStorage.getItem('username')) {
-    //   // with emit we send the message to the server
-
+    
+   // with emit we send the message to the server
       socket.emit("message", {
-        text: message,
+        content: message,
         id: `${socket.id}-${Math.random()}`,
-        socketID: socket.id
+        socketID: socket.id,
       });
-    }
+  }
+  
   return (
     <form onSubmit={handleSend} className="flex items-center p-4 bg-gray-100 border-t border-gray-300">
       {/* Input Field */}

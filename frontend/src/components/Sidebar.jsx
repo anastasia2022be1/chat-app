@@ -43,8 +43,33 @@ const Sidebar = () => {
     setIsListVisible(!isListVisible);
   };
 
+ const handleContactClick = async (contactId) => {
+  try {
+    const token = localStorage.getItem("authToken");
 
+    const response = await fetch("http://localhost:3000/api/chat", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        senderId: localStorage.getItem("userId"), 
+        recieverId: contactId,
+      }),
+    });
 
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.error || "Failed to create chat");
+    }
+
+    navigate(`/chat/${data.newChat._id}`);
+  } catch (err) {
+    setError(err.message);
+  }
+};
 
   return (
     <aside className="w-64 h-full bg-gray-100 flex flex-col p-4 border-r border-gray-300 z-10">
@@ -69,7 +94,7 @@ const Sidebar = () => {
                   <li
                     key={index}
                     className="flex items-center py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300 transition"  
-                    onClick={() => navigate(`/chat/${contact._id}`)}
+                    onClick={() => handleContactClick(contact._id)}
                     >
                       
                      

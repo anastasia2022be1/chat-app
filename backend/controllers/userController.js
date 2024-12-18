@@ -157,7 +157,20 @@ export const loginUser = async(req, res) => {
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
-}
+
+    const passwordCorrect = await bcrypt.compare(password, user.password);
+    if (!passwordCorrect) {
+      return res.status(401).json({ error: 'Wrong password' });
+    }
+
+    const payload = { userId: user._id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' }); // 1-hour token expiry
+
+    res.json({ user, token, userId: user._id });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+};
 
 // To get user information (Settings Page)
 export const getUserSettings = async (req, res) => {

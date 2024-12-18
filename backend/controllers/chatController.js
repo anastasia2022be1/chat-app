@@ -44,30 +44,31 @@ export const getChats = async (req, res) => {
   try {
     const userId = req.params.userId;
 
-    // Find all chats where the user is a paticitant
-    const chats = await Chat.find({ participants: userId })
-      .populate("participants", "username email") // Load participant data
-      .populate("messages"); // If necessary, load messages
+        // Find all chats where the user is a paticitant
+        const chats = await Chat.find({ participants: userId })
+            .populate("participants", "username email") // Load participant data
+            .populate({
+                path: "messages",
+                options: { sort: { createdAt: -1 }, limit: 5 }
+            }); // If necessary, load messages
 
-    // Optional: Format the data to give to the client
-    const chatUserData = chats.map((chat) => {
-      const otherParticipant = chat.participants.find(
-        (participant) => participant._id.toString() !== userId
-      );
-      return {
-        chatId: chat._id,
-        otherParticipant: otherParticipant
-          ? {
-              username: otherParticipant.username,
-              email: otherParticipant.email,
-            }
-          : null,
-      };
-    });
+        // Optional: Format the data to give to the client
+        // const chatUserData = chats.map(chat => {
+        //     const otherParticipant = chat.participants.find(participant => participant._id.toString() !== userId);
+        //     return {
+        //         chatId: chat._id,
+        //         otherParticipant: {
+        //             username: otherParticipant.username,
+        //             email: otherParticipant.email
+        //         }
+        //     };
+        // });
 
-    res.status(200).json(chatUserData);
-  } catch (error) {
-    console.error(error, "Error");
-    res.status(500).json({ error: "Internal Server Error" });
-  }
+        res.status(200).json(chats);
+    } catch (error) {
+        console.error(error, 'Error');
+        res.status(500).json({ error: 'Internal Server Error' });
+    }
 };
+
+
