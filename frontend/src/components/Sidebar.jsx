@@ -44,10 +44,7 @@ const Sidebar = () => {
   };
 
 
-  const handleContactClick = () => {
-    // Navigate to the chat page 
-    navigate(`/Chat}`);
-  };
+
 
   return (
     <aside className="w-64 h-full bg-gray-100 flex flex-col p-4 border-r border-gray-300 z-10">
@@ -71,7 +68,10 @@ const Sidebar = () => {
                 {contacts.map((contact, index) => (
                   <li
                     key={index}
-                    className="flex items-center py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300 transition">
+                    className="flex items-center py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300 transition"  
+                    onClick={() => navigate(`/chat/${contact._id}`)}
+                    >
+                      
                      
                     <div className="mr-3">
                       {/* Check if contact has a profile picture */}
