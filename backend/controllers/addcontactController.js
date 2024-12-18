@@ -42,9 +42,6 @@ export const addContact = async (req, res) => {
   }
 };
 
-
-
-
 //--------------------------------------------------------------------------
 
 export const contactsList = async (req, res) => {
@@ -64,5 +61,33 @@ export const contactsList = async (req, res) => {
   } catch (error) {
     console.error("Error fetching contacts:", error.message);
     res.status(500).json({ error: "Failed to fetch contacts." });
+  }
+};
+
+//-----------------------------------------------------------------------------------
+
+export const searchContact = async (req, res) => {
+  const userId = req.user.userId;
+
+  const { query } = req.body;
+
+  if (!query) {
+    return res.status(400).json({ error: "Search query is required" });
+  }
+
+  try {
+    const user = await User.findById(userId).populate("contacts");
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    const filteredContacts = user.contacts.filter((contact) =>
+      contact.username.toLowerCase().includes(query.toLowerCase())
+    );
+
+    res.status(200).json(filteredContacts);
+  } catch (error) {
+    console.error("Error searching contacts:", error.message);
+    res.status(500).json({ error: "Failed to search contacts." });
   }
 };

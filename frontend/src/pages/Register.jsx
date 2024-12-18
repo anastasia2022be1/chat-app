@@ -79,8 +79,9 @@ export default function Register() {
         body: form, // Use FormData for file uploads
       });
       const data = await response.json();
+      console.log(data)
       if (!response.ok) {
-        setError(data.message || "Account with this email already exists!");
+        setError(data.error || "Account with this email already exists!");
         return;
       }
     

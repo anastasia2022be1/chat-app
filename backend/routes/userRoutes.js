@@ -11,6 +11,7 @@ import { authenticate } from "../middleware/authMiddleware.js";
 import {
   addContact,
   contactsList,
+  searchContact,
 } from "../controllers/addcontactController.js";
 
 const router = express.Router();
@@ -44,6 +45,7 @@ router.put(
 
 router.get("/contactslist", authenticate, contactsList);
 router.post("/addcontact", authenticate, addContact);
+router.post("/search", authenticate, searchContact);
 
 
 export default router;
