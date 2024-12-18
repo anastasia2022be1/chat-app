@@ -6,39 +6,8 @@ import jwt from "jsonwebtoken";
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
-
-// Utility to hash passwords
-const hashPassword = async (password) => bcrypt.hash(password, 10);
-
-// Utility to generate a random verification token
-const generateVerificationToken = () => ({
-  token: crypto.randomBytes(32).toString("hex"),
-  expiresAt: Date.now() + 1000 * 60 * 60, // 1 hour
-});
-
-// Utility to send verification email
-const sendVerificationEmail = async (email, token) => {
-  return await resend.emails.send({
-    from: "talki@resend.dev",
-    to: email,
-    subject: "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
-    html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
-        <h1 style="color: #4CAF50; text-align: center;">Willkommen bei Talki.dev!</h1>
-        <p style="color: #333; line-height: 1.6;">Danke, dass Sie sich bei Talki.dev registriert haben. Bitte bestätigen Sie Ihre E-Mail-Adresse, um Ihr Konto zu aktivieren.</p>
-        <div style="text-align: center; margin: 20px 0;">
-          <a href="http://localhost:3000/api/verify/${token}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; font-size: 16px; border-radius: 4px; display: inline-block;">E-Mail bestätigen</a>
-        </div>
-        <p style="color: #555; line-height: 1.4;">Wenn Sie sich nicht registriert haben, können Sie diese Nachricht ignorieren.</p>
-        <footer style="text-align: center; font-size: 12px; color: #999; margin-top: 20px;">
-          © 2024 Talki.dev. Alle Rechte vorbehalten.
-        </footer>
-      </div>
-    `,
-  });
-};
-
 // Register a new user
+// POST: api/register
 export const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
 
@@ -47,40 +16,62 @@ export const registerUser = async (req, res) => {
   }
 
   try {
-    // Check if user already exists
     const existingUser = await User.findOne({ email });
     if (existingUser) {
       return res.status(400).json({ error: "User with this email already exists" });
     }
 
-    // Create user
-    const hashedPassword = await hashPassword(password);
-    const { token, expiresAt } = generateVerificationToken();
-    const profilePicture = req.file ? `/uploads/${req.file.filename}` : "";
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const verificationToken = crypto.randomBytes(32).toString("hex");
+    const tokenExpiresAt = Date.now() + 1000 * 60 * 60; // 1 hour expiry
+
+    // Processing the profile image
+    const profilePicture = req.file ? `/uploads/${req.file.filename}` : ""; // URL of the uploaded file
 
     const user = await User.create({
       username,
       email,
       password: hashedPassword,
       profilePicture,
-      verificationToken: token,
-      tokenExpiresAt: expiresAt,
+      verificationToken,
+      tokenExpiresAt,
     });
 
-    // Send verification email
-    const emailResponse = await sendVerificationEmail(email, token);
+    const emailResponse = await resend.emails.send({
+      from: "talki@resend.dev",
+      to: email, // Send to the user's email
+      subject: "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
+          <h1 style="color: #4CAF50; text-align: center;">Willkommen bei Talki.dev!</h1>
+          <p style="color: #333; line-height: 1.6;">Danke, dass Sie sich bei Talki.dev registriert haben. Bitte bestätigen Sie Ihre E-Mail-Adresse, um Ihr Konto zu aktivieren.</p>
+          <div style="text-align: center; margin: 20px 0;">
+            <a href="http://localhost:3000/api/verify/${verificationToken}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; font-size: 16px; border-radius: 4px; display: inline-block;">E-Mail bestätigen</a>
+          </div>
+          <p style="color: #555; line-height: 1.4;">Wenn Sie sich nicht registriert haben, können Sie diese Nachricht ignorieren.</p>
+          <footer style="text-align: center; font-size: 12px; color: #999; margin-top: 20px;">
+            © 2024 Talki.dev. Alle Rechte vorbehalten.
+          </footer>
+        </div>
+      `,
+    });
+
     if (emailResponse.error) {
-      return res.status(500).json({ error: "Failed to send verification email" });
+      return res.status(500).json({
+        error: "Failed to send verification email",
+        details: emailResponse.error.message
+      });
     }
 
-    res.status(201).json({ message: "User registered successfully. Please verify your email." });
+    res.status(201).json(user);
   } catch (error) {
     console.error("Error during registration:", error.message);
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 };
 
-// Verify user email
+// Verify a new user with email
+// GET: api/verify/:token
 export const verifyUser = async (req, res) => {
   const { token } = req.params;
 
@@ -99,32 +90,35 @@ export const verifyUser = async (req, res) => {
       return res.status(400).json({ error: "Account is already verified" });
     }
 
-    // Mark user as verified
+    // Update user to mark as verified
     user.isVerified = true;
     user.verificationToken = null;
     user.tokenExpiresAt = null;
 
     await user.save();
 
-    res.status(200).json({ message: "Account successfully verified" });
+    return res.status(200).json({ message: "Account successfully verified" });
   } catch (error) {
     console.error("Error verifying account:", error.message);
-    res.status(500).json({ error: "Internal server error" });
+    return res.status(500).json({ error: "Internal server error" });
   }
 };
 
 // Login user
+// POST: api/login
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
-    return res.status(400).json({ error: "Please fill all required fields" });
+    return res.status(400).json({ error: 'Please fill all required fields' });
   }
 
   try {
-    const user = await User.findOne({ email: email.toLowerCase() });
+    const newEmail = email.toLowerCase();
+    const user = await User.findOne({ email: newEmail });
+
     if (!user) {
-      return res.status(401).json({ error: "Invalid login" });
+      return res.status(401).json({ error: 'Invalid login' });
     }
 
     if (!user.isVerified) {
@@ -133,67 +127,76 @@ export const loginUser = async (req, res) => {
 
     const passwordCorrect = await bcrypt.compare(password, user.password);
     if (!passwordCorrect) {
-      return res.status(401).json({ error: "Wrong password" });
+      return res.status(401).json({ error: 'Wrong password' });
     }
 
-    const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET_KEY);
-    res.json({ message: "Login successful", token });
+    const payload = { userId: user._id };
+    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' }); // 1-hour token expiry
+
+    res.json({ user, token });
   } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
+    res.status(500).json({ error: error.message });
   }
 };
 
-
-//------------------------------------------------------------------------------------------- 
-
-// Get user settings
+// To get user information (Settings Page)
 export const getUserSettings = async (req, res) => {
   try {
     const user = await User.findById(req.user.userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
-    res.json({ username: user.username, profilePicture: user.profilePicture || null });
+    res.json({
+      username: user.username,
+      profilePicture: user.profilePicture || null, // Include profile picture URL
+    });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
-// Update user settings
+// To update settings (Username, Password, Profile Picture)
+
 export const updateUserSettings = async (req, res) => {
   const { username, password, newPassword } = req.body;
-
   try {
     const user = await User.findById(req.user.userId);
     if (!user) {
       return res.status(404).json({ error: "User not found" });
     }
 
-    // Update username
+    // Change username
     if (username) {
       user.username = username;
     }
 
-    // Update password
+    // Change password
     if (password && newPassword) {
       const passwordCorrect = await bcrypt.compare(password, user.password);
       if (!passwordCorrect) {
         return res.status(400).json({ error: "Current password is incorrect" });
       }
-      user.password = await hashPassword(newPassword);
+      user.password = await bcrypt.hash(newPassword, 10);
     }
 
-    // Update profile picture
+    // Change profile picture
     if (req.file) {
       user.profilePicture = `/uploads/${req.file.filename}`;
     }
 
     await user.save();
-    res.json({ message: "User settings updated successfully" });
+    res.json({
+      message: "User settings updated successfully",
+      user: {
+        username: user.username,
+        profilePicture: user.profilePicture,
+      },
+    });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 };
+//------------------------------------------------------------------------------
 
 
 

@@ -24,6 +24,7 @@ function App() {
             <Route path="chat" element={<Chat />} />
             <Route path="setting" element={<Setting />} />
             <Route path="/AddContact" element={<AddContact />} />
+            <Route path="/chat/:contactId" element={<Chat />} />
           </Route>
 
           {/* <Route path="*" element={<NotFound />} /> */}

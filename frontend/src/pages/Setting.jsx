@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router-dom";
 
 export default function Setting() {
   const [user, setUser] = useState(null);
@@ -20,6 +21,8 @@ export default function Setting() {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+
+    const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -59,6 +62,10 @@ export default function Setting() {
 
   const handleFileClick = () => {
     fileInputRef.current.click();
+  };
+
+  const handleClick = () => {
+    navigate('/Chat');
   };
 
   const handleChange = (e) => {
@@ -147,6 +154,12 @@ export default function Setting() {
 
   return (
     <div className="min-h-screen flex flex-col items-center justify-center bg-blue-50 p-6">
+      <button
+      onClick={handleClick}
+      className="bg-green-400  text-white  py-3 px-8 rounded-lg "
+    >
+      Go to Chat
+    </button>
       <h2 className="text-2xl font-bold text-gray-800 mb-6">Settings</h2>
 
       {error && <p className="text-red-500 mb-4">{error}</p>}
