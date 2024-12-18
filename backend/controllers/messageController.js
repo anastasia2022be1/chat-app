@@ -4,25 +4,26 @@ import Chat from "../models/Chat.js";
 // POST - create message
 // http://localhost:3000/api/message
 
-export const createMessage = async (req, res) => {
-    try {
-        const { chatId, content, senderId } = req.body;
+// export const createMessage = async (req, res) => {
+//     try {
+//         const { chatId, content, senderId } = req.body;
 
 
-        const newMessage = await Message.create({ chatId, content, senderId });
+//         const newMessage = await Message.create({ chatId, content, senderId });
 
-        // Add the ID of the new message to the messages array of the  chat
-        await Chat.findByIdAndUpdate(chatId,
-            { $push: { messages: newMessage._id } },
-            { new: true }
-        );
+//         // Add the ID of the new message to the messages array of the  chat
+//         await Chat.findByIdAndUpdate(chatId,
+//             { $push: { messages: newMessage._id } },
+//             { new: true }
+//         );
 
-        res.status(201).json({ message: 'Message created successfully', newMessage });
-    } catch (error) {
-        console.error(error, 'Error');
-        res.status(500).json({ error: 'Failed to create message' });
-    }
-};
+//         res.status(201).json({ message: 'Message created successfully', newMessage });
+//     } catch (error) {
+//         console.error(error, 'Error');
+//         res.status(500).json({ error: 'Failed to create message' });
+//     }
+// };
+
 
 
 

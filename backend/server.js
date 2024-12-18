@@ -4,6 +4,7 @@ import connect from "./config/db.js";
 import userRoutes from './routes/userRoutes.js'
 import chatRoutes from './routes/chatRoutes.js'
 import messageRoutes from './routes/messageRoutes.js'
+import Message from "./models/Message.js";
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 
@@ -43,14 +44,25 @@ app.use("/api", messageRoutes);
 
 // Socket.io
 io.on('connection', (socket) => {
-  // console.log(socket)
   console.log(`User  ${socket.id} connected`);
-  socket.on('message', (data) => {
-      console.log(data);
-      io.emit('message', data);
+  socket.on('message', async ({ chatId, senderId, content }) => {
+    // console.log(data);
+    try {
+      const newMessage = await Message.create({
+        chatId,
+        senderId,
+        content,
+      });
+
+      await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } });
+
+      io.to(chatId).emit('message', newMessage);
+    } catch (error) {
+      console.log('Error: ', error);
+    }
   });
   socket.on('disconnect', () => {
-      console.log(`User ${socket.id} disconnected`);
+    console.log(`User ${socket.id} disconnected`);
   });
 });
 
