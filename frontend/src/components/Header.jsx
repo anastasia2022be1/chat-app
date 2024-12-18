@@ -11,19 +11,19 @@ const Header = () => {
     navigate("/setting");
   };
 
-    const handleLogout = () => {
-      logout(); 
+  const handleLogout = () => {
+    logout();
+    localStorage.removeItem("userId");
+    localStorage.removeItem("authToken");
     navigate("/login");
   };
 
   return (
     <header className="flex items-center justify-between bg-blue-600 text-white p-4 shadow-md">
       <p className="text-xl font-bold tracking-wide">LOGO</p>
-      
+
       <button onClick={handleSettingsClick}>Setting</button>
       <button onClick={handleLogout}>Logout</button>
-
-      
     </header>
   );
 };
