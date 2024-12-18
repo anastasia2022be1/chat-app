@@ -133,7 +133,7 @@ export const loginUser = async (req, res) => {
     const payload = { userId: user._id };
     const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' }); // 1-hour token expiry
 
-    res.json({ user, token });
+    res.json({ user, token, userId: user._id });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
