@@ -35,6 +35,10 @@ export const getChats = async (req, res) => {
                 options: { sort: { createdAt: -1 }, limit: 5 }
             }); // If necessary, load messages
 
+        if (!chats || chats.length === 0) {
+            return res.status(404).json({ error: "Chats not found" });
+        }
+
         // Optional: Format the data to give to the client
         // const chatUserData = chats.map(chat => {
         //     const otherParticipant = chat.participants.find(participant => participant._id.toString() !== userId);

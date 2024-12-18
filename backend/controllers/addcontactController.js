@@ -42,9 +42,6 @@ export const addContact = async (req, res) => {
   }
 };
 
-
-
-
 //--------------------------------------------------------------------------
 
 export const contactsList = async (req, res) => {

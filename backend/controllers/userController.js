@@ -10,6 +10,7 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // POST: api/register
 export const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
+  const emailAddress = process.env.EMAIL_ADDRESS;
 
   if (!username || !email || !password) {
     return res.status(400).json({ error: "All fields are required" });
@@ -17,9 +18,12 @@ export const registerUser = async (req, res) => {
 
   try {
     const existingUser = await User.findOne({ email });
+    console.log(existingUser);
     if (existingUser) {
       return res.status(400).json({ error: "User with this email already exists" });
     }
+
+    console.log(existingUser)
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const verificationToken = crypto.randomBytes(32).toString("hex");
@@ -39,7 +43,7 @@ export const registerUser = async (req, res) => {
 
     const emailResponse = await resend.emails.send({
       from: "talki@resend.dev",
-      to: email, // Send to the user's email
+      to: emailAddress, // Send to the user's email
       subject: "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
@@ -156,7 +160,6 @@ export const getUserSettings = async (req, res) => {
 };
 
 // To update settings (Username, Password, Profile Picture)
-
 export const updateUserSettings = async (req, res) => {
   const { username, password, newPassword } = req.body;
   try {
