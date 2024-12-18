@@ -120,57 +120,44 @@ export const verifyUser = async (req, res) => {
 // login user
 // POST: api/login
 
-export const loginUser = async(req, res) => {
-    const { email, password } = req.body;
+export const loginUser = async (req, res) => {
+  const { email, password } = req.body;
 
-    if (!email || !password) {
-        return res.status(400).json({ error: 'Invalid login' });
-    }
+  if (!email || !password) {
+      return res.status(400).json({ error: 'Invalid login' });
+  }
 
-    try {
+  try {
+      const newEmail = email.toLowerCase();
 
-        const newEmail = email.toLowerCase();
+      // Check if user exists
+      const user = await User.findOne({ email: newEmail });
+      if (!user) {
+          return res.status(401).json({ error: 'Invalid login' });
+      }
 
-        const user = await User.findOne({ email: newEmail });
-        // console.log(user)
-        if (!user) {
-            return res.status(401).json({ error: 'Invalid login' });
-        }
+      // Check if account is verified
+      if (!user.isVerified) {
+          return res.status(403).json({ error: 'Account not verified' });
+      }
 
-        if (!user.isVerified) {
-            return res.status(403).json({ error: "Account not verified" });
-        }
+      // Validate password
+      const passwordCorrect = await bcrypt.compare(password, user.password);
+      if (!passwordCorrect) {
+          return res.status(401).json({ error: 'Wrong password' });
+      }
 
-        const passwordCorrect = await bcrypt.compare(password, user.password);
+      // Generate JWT token
+      const payload = { userId: user._id };
+      const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' }); // 1-hour token expiry
 
-        // console.log(passwordCorrect)
-
-        if (!passwordCorrect) {
-            return res.status(401).json({ error: 'Wrong password' });
-        }
-
-        const payload = { userId: user._id };
-        const token = jwt.sign(payload, process.env.JWT_SECRET_KEY);
-
-        res.json({ user: user, token: token });
-
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
-
-    const passwordCorrect = await bcrypt.compare(password, user.password);
-    if (!passwordCorrect) {
-      return res.status(401).json({ error: 'Wrong password' });
-    }
-
-    const payload = { userId: user._id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' }); // 1-hour token expiry
-
-    res.json({ user, token, userId: user._id });
+      // Respond with user and token
+      res.json({ user, token });
   } catch (error) {
-    res.status(500).json({ error: error.message });
+      res.status(500).json({ error: error.message });
   }
 };
+
 
 // To get user information (Settings Page)
 export const getUserSettings = async (req, res) => {
