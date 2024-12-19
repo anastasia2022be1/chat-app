@@ -5,9 +5,10 @@ import SearchBar from "./Sidebar/SearchBar.jsx";
 import ContactList from "./Sidebar/ContactList.jsx";
 import ChatList from "./Sidebar/ChatList.jsx";
 
-const Sidebar = () => {
+const Sidebar = ({ chats, setChats }) => {
+  console.log(chats);
+  
   const [contacts, setContacts] = useState([]);
-  const [chats, setChats] = useState([]);
   const [modus, setModus] = useState(false);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");

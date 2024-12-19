@@ -22,7 +22,7 @@ const Body = ({ socket }) => {
         {messages.map((msg, index) => (
           <div key={index} className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}>
             <div className={`px-4 py-2 rounded-lg max-w-md shadow-md ${msg.isUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
-              {msg.text}
+              {msg.content}
             </div>
           </div>
         ))}
