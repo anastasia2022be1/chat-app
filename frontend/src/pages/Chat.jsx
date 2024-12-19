@@ -1,3 +1,4 @@
+
 import socketIO from 'socket.io-client'
 
 import Sidebar from "../components/Sidebar.jsx";
@@ -5,10 +6,13 @@ import Body from "../components/Body.jsx";
 import Message from "../components/Message.jsx";
 import Header from "../components/Header.jsx";
 
+
+
+
 const socket = socketIO.connect('http://localhost:3000');
 
 const Chat = () => {
-  
+
 
   return (
     <div className="h-screen flex flex-col bg-gray-100">
