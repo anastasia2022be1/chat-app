@@ -6,7 +6,7 @@ import "./App.css";
 import Home from "./components/Home.jsx";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
-import Chat from "./pages/Chat.jsx";
+import Dashboard from "./pages/Dashboard.jsx";
 import Setting from "./pages/Setting.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import AddContact from "./pages/AddContact.jsx";
@@ -21,10 +21,10 @@ function App() {
           <Route path="login" element={<Login />} />
 
           <Route element={<ProtectedRoute />}>
-            <Route path="chat" element={<Chat />} />
+            <Route path="chat" element={<Dashboard />} />
             <Route path="setting" element={<Setting />} />
             <Route path="/AddContact" element={<AddContact />} />
-            <Route path="/chat/:contactId" element={<Chat />} />
+            <Route path="/chat/:contactId" element={<Dashboard />} />
           </Route>
 
           {/* <Route path="*" element={<NotFound />} /> */}

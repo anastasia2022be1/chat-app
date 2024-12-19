@@ -8,22 +8,12 @@ import Message from "./models/Message.js";
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 
-
 // Verbindung zur MongoDB
 await connect();
 
 const app = express();
 
 const server = http.Server(app);
-
-// CORS-Einstellungen
-// app.use(
-//   cors({
-//     origin: 'http://localhost:5173',
-//     credentials: true,
-//   })
-// );
-
 
 const io = new SocketIOServer(server, {
   cors: {
