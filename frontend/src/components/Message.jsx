@@ -12,6 +12,7 @@ function Message({socket}) {
         content: message,
         id: `${socket.id}-${Math.random()}`,
         socketID: socket.id,
+         
       });
   }
   
