@@ -112,7 +112,7 @@ const Sidebar = () => {
 
   function handleSearch() {
     const filteredContacts = contacts.filter(contact => {
-      return contact.username.slice(0, searchQuery.length)=== searchQuery
+      return contact.username.slice(0, searchQuery.length).toLowerCase()=== searchQuery.toLowerCase()
       
     })
     setSearchResults(filteredContacts)
