@@ -6,13 +6,24 @@ function Message({socket}) {
   
   const handleSend = (e) => {
     e.preventDefault();
+
+    socket.on('connect', () => {
+      console.log('I connected', socket.id);
+
+      socket.emit('message:created', ' Hello server' )
+    })
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected');
+      
+    })
     
    // with emit we send the message to the server
-      socket.emit("message", {
-        content: message,
-        id: `${socket.id}-${Math.random()}`,
-        socketID: socket.id,
-      });
+      // socket.emit("message", {
+      //   content: message,
+      //   id: `${socket.id}-${Math.random()}`,
+      //   socketID: socket.id,
+      // });
   }
   
   return (

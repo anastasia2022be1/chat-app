@@ -15,6 +15,7 @@ const app = express();
 
 const server = http.Server(app);
 
+// Initializing Socket.IO
 const io = new SocketIOServer(server, {
   cors: {
     origin: 'http://localhost:5173',
@@ -33,28 +34,42 @@ app.use("/api", chatRoutes);
 app.use("/api", messageRoutes);
 
 // Socket.io
-io.on('connection', (socket) => {
-  console.log(`User  ${socket.id} connected`);
-  socket.on('message', async ({ chatId, senderId, content }) => {
-    // console.log(data);
-    try {
-      const newMessage = await Message.create({
-        chatId,
-        senderId,
-        content,
-      });
+// io.on('connection', (socket) => {
+//   console.log(`User  ${socket.id} connected`);
+//   socket.on('message', async ({ chatId, senderId, content }) => {
+//     // console.log(data);
+//     try {
+//       const newMessage = await Message.create({
+//         chatId,
+//         senderId,
+//         content,
+//       });
 
-      await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } });
+//       await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } });
 
-      io.to(chatId).emit('message', newMessage);
-    } catch (error) {
-      console.log('Error: ', error);
-    }
-  });
-  socket.on('disconnect', () => {
-    console.log(`User ${socket.id} disconnected`);
-  });
-});
+//       io.to(chatId).emit('message', newMessage);
+//     } catch (error) {
+//       console.log('Error: ', error);
+//     }
+//   });
+//   socket.on('disconnect', () => {
+//     console.log(`User ${socket.id} disconnected`);
+//   });
+// });
+
+io.on('connection', onConnection);
+
+function onConnection(socket) {
+  console.log('New connection', socket.id)
+  const { room } = socket.handshake.query;
+
+  socket.join(room);
+
+  socket.on('message:created', (message) => {
+    console.log('New message', message);
+    io.to(room).emit('message:created', message)
+  })
+}
 
 const port = 3000;
 // Server starten

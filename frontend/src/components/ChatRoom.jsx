@@ -2,6 +2,7 @@ import socketIO from 'socket.io-client'
 import Body from './Body.jsx'
 import Message from './Message.jsx'
 
+// Initializing Socket.IO
 const socket = socketIO.connect('http://localhost:3000');
 
 const ChatRoom = () => {
