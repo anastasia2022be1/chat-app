@@ -43,11 +43,11 @@ export default function AddContact() {
       setError("");
       setSuccessMessage("🎉 Contact added successfully! 🎉");
 
-      // Wait for 4 seconds, then navigate to the chat page
+      // Wait for 2 seconds, then navigate to the chat page
       setTimeout(() => {
         setSuccessMessage(""); 
         navigate("/chat");
-      }, 4000);
+      }, 2000);
     } catch (error) {
       console.error("Error adding contact:", error);
       setError("An error occurred. Please try again.");
