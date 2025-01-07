@@ -5,6 +5,9 @@ import {
   registerUser,
   updateUserSettings,
   verifyUser,
+  forgotPassword,
+  resetPassword,
+  getResetPasswordPage
 } from "../controllers/userController.js";
 import { upload } from "../middleware/upload.js";
 import { authenticate } from "../middleware/authMiddleware.js";
@@ -26,9 +29,23 @@ router.get("/verify/:token", verifyUser);
 router.post("/login", loginUser);
 
 //--------------------------------------------------------
+// Forgot password
+router.post("/forgot-password", forgotPassword)
+
+//---------------------------------------------------------
+
+// GET: /reset-password/:token
+router.get("/reset-password/:token", getResetPasswordPage);
+
+// //POST: Reset password
+// router.post("/reset-password/:token", resetPassword);
+
+//--------------------------------------------------------
 
 // get user settings (GET: api/settings)
 router.get("/settings", authenticate, getUserSettings);
+
+//---------------------------------------------------------
 
 //  update user settings (PUT: api/settings/update)
 router.put(
