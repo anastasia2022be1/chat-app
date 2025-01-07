@@ -39,7 +39,7 @@ export const registerUser = async (req, res) => {
 
     const emailResponse = await resend.emails.send({
       from: "talki@resend.dev",
-      to: email, // Send to the user's email
+      to: process.env.EMAIL_ADDRESS,
       subject: "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
@@ -69,6 +69,7 @@ export const registerUser = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+//--------------------------------------------------------------
 
 // Verify a new user with email
 // GET: api/verify/:token
@@ -103,6 +104,7 @@ export const verifyUser = async (req, res) => {
     return res.status(500).json({ error: "Internal server error" });
   }
 };
+//--------------------------------------------------------------
 
 // Login user
 // POST: api/login
@@ -138,6 +140,114 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ error: error.message });
   }
 };
+//--------------------------------------------------------------
+
+// Forgot Password
+// POST: api/forgot-password
+export const forgotPassword = async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json({ error: "Email is required" });
+  }
+
+  try {
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(404).json({ error: "User with this email does not exist" });
+    }
+
+    // Generate a reset token
+    const resetToken = crypto.randomBytes(32).toString("hex");
+    const tokenExpiresAt = Date.now() + 1000 * 60 * 60; // 1 hour expiry
+
+    // Save token and expiry to user record
+    user.resetPasswordToken = resetToken;
+    user.resetPasswordExpires = tokenExpiresAt;
+    await user.save();
+
+    // Generate reset link
+    const resetLink = `http://localhost:3000/api/reset-password/${resetToken}`;
+
+    // Send email with reset link
+    const emailResponse = await resend.emails.send({
+      from: "talki@resend.dev",
+      to: process.env.EMAIL_ADDRESS,
+      subject: "Password Reset Request",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
+          <h1 style="color: #4CAF50; text-align: center;">Password Reset</h1>
+          <p style="color: #333; line-height: 1.6;">
+            You have requested to reset your password. Please click the button below to reset your password:
+          </p>
+          <div style="text-align: center; margin: 20px 0;">
+            <a href="${resetLink}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; font-size: 16px; border-radius: 4px; display: inline-block;">
+              Reset Password
+            </a>
+          </div>
+          <p style="color: #555; line-height: 1.4;">
+            If you did not request a password reset, please ignore this email.
+          </p>
+          <footer style="text-align: center; font-size: 12px; color: #999; margin-top: 20px;">
+            © 2024 Talki.dev. All rights reserved.
+          </footer>
+        </div>
+      `,
+    });
+
+    if (emailResponse.error) {
+      return res.status(500).json({
+        error: "Failed to send password reset email",
+        details: emailResponse.error.message,
+      });
+    }
+
+    res.status(200).json({ message: "Password reset email sent successfully" });
+  } catch (error) {
+    console.error("Error in forgotPassword:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+//--------------------------------------------------------------
+// Reset Password
+// POST: api/reset-password/:token
+export const resetPassword = async (req, res) => {
+  const { token } = req.params;
+  const { newPassword } = req.body;
+
+  if (!newPassword) {
+    return res.status(400).json({ error: "New password is required" });
+  }
+
+  try {
+    const user = await User.findOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: { $gt: Date.now() }, // Token should not be expired
+    });
+
+    if (!user) {
+      return res.status(400).json({ error: "Invalid or expired token" });
+    }
+
+    // Hash the new password
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+
+    // Update the user's password and clear the reset token
+    user.password = hashedPassword;
+    user.resetPasswordToken = null;
+    user.resetPasswordExpires = null;
+
+    await user.save();
+
+    res.status(200).json({ message: "Password successfully reset" });
+  } catch (error) {
+    console.error("Error in resetPassword:", error.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+//----------------------------------------------------
 
 // To get user information (Settings Page)
 export const getUserSettings = async (req, res) => {
@@ -156,7 +266,6 @@ export const getUserSettings = async (req, res) => {
 };
 
 // To update settings (Username, Password, Profile Picture)
-
 export const updateUserSettings = async (req, res) => {
   const { username, password, newPassword } = req.body;
   try {
