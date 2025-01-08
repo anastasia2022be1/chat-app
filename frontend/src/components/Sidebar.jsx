@@ -1,13 +1,13 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SearchBar from "./Sidebar/SearchBar.jsx";
 import ContactList from "./Sidebar/ContactList.jsx";
 import ChatList from "./Sidebar/ChatList.jsx";
 
 const Sidebar = ({ chats, setChats }) => {
   console.log(chats);
-  
+
   const [contacts, setContacts] = useState([]);
   const [modus, setModus] = useState(false);
   const [error, setError] = useState("");
@@ -45,12 +45,15 @@ const Sidebar = ({ chats, setChats }) => {
         const token = localStorage.getItem("authToken");
         const userId = localStorage.getItem("userId");
 
-        const response = await fetch(`http://localhost:3000/api/chat/${userId}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `http://localhost:3000/api/chat/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const data = await response.json();
 
@@ -125,46 +128,64 @@ const Sidebar = ({ chats, setChats }) => {
   };
 
   return (
-    <aside className="w-64 h-full bg-gray-100 flex flex-col p-4 border-r border-gray-300 z-10">
+    <aside className="w-full sm:w-72 h-full bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md overflow-y-auto">
+      {/* Search Bar */}
       <SearchBar
         searchQuery={searchQuery}
         handleQueryChange={handleQueryChange}
         handleSearch={handleSearch}
       />
-      <div className="search-results">
+
+      {/* Search Results */}
+      <div className="search-results mb-4">
         {searchResults.length > 0 && (
-          <ContactList contacts={searchResults} handleContactClick={handleContactClick} />
+          <ContactList
+            contacts={searchResults}
+            handleContactClick={handleContactClick}
+          />
         )}
       </div>
 
+      {/* Toggle Button */}
       <button
         onClick={toggleButton}
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition mb-4"
+        className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center"
       >
-        {!modus ? "Contacts" : "Chats"}
+        {modus ? (
+          <FontAwesomeIcon icon="fa-regular fa-comment" className="mr-2" />
+        ) : (
+          <FontAwesomeIcon icon="fa-solid fa-user-group" className="mr-2" />
+        )}
+        <span className="hidden sm:inline">
+          {!modus ? "Contacts" : "Chats"}
+        </span>
       </button>
 
-      <div>
+      {/* Content Area */}
+      <div className="flex-grow">
         {modus ? (
           error ? (
             <p className="text-red-500 text-center">{error}</p>
           ) : (
-            <ContactList contacts={contacts} handleContactClick={handleContactClick} />
+            <ContactList
+              contacts={contacts}
+              handleContactClick={handleContactClick}
+            />
           )
+        ) : error ? (
+          <p className="text-error dark:text-errorDark text-center">{error}</p>
         ) : (
-          error ? (
-            <p className="text-red-500 text-center">{error}</p>
-          ) : (
-            <ChatList chats={chats} handleChatClick={handleChatClick} />
-          )
+          <ChatList chats={chats} handleChatClick={handleChatClick} />
         )}
       </div>
 
+      {/* Add Contact Button */}
       <button
         onClick={handleAddContact}
-        className="mt-auto w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition"
+        className="mt-56  w-full bg-green-500 text-white py-2 px-4 rounded-xl hover:bg-green-600 transition"
       >
-        Add New Contact
+        <FontAwesomeIcon icon="fa-solid fa-user-plus" className="mr-2" />
+        <span className="hidden sm:inline">Add New Contact</span>
       </button>
     </aside>
   );

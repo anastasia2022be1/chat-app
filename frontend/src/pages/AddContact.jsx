@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function AddContact() {
   const [contactEmail, setContactEmail] = useState("");
@@ -45,9 +46,9 @@ export default function AddContact() {
 
       // Wait for 4 seconds, then navigate to the chat page
       setTimeout(() => {
-        setSuccessMessage(""); 
+        setSuccessMessage("");
         navigate("/chat");
-      }, 4000);
+      }, 200000);
     } catch (error) {
       console.error("Error adding contact:", error);
       setError("An error occurred. Please try again.");
@@ -55,88 +56,60 @@ export default function AddContact() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-blue-50 p-6">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-semibold text-center mb-6">
-          Add New Contact
+    <div className="flex flex-col items-center justify-center p-20">
+      <div className="w-full max-w-lg bg-white dark:bg-gray-800 p-8 rounded-lg shadow-md">
+        {/* Header */}
+        <h2 className="text-2xl font-semibold text-center mb-6 text-backgroundChatDark dark:text-textColorDark">
+          <FontAwesomeIcon icon="fa-solid fa-address-book" className="mr-2" />
+          <span className="hidden md:inline">Add New Contact</span>
         </h2>
 
         {/* Error Message */}
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        {error && (
+          <p className="flex items-center justify-center mb-4 text-red-500 bg-red-100 dark:bg-red-900 rounded-lg shadow p-3">
+            <FontAwesomeIcon
+              icon="fa-solid fa-exclamation"
+              className="mr-2 text-lg"
+            />
+            <span>{error}</span>
+          </p>
+        )}
 
         {/* Success Message */}
         {successMessage && (
-          <p className="text-green-500 text-center mb-4 ">
+          <p className="text-green-500 text-center mb-4 text-lg">
             {successMessage}
           </p>
         )}
 
+        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Contact Email */}
-          <div>
-            <label className="block text-lg font-medium">Contact Email</label>
+          <div className="flex flex-col">
+            <label
+              htmlFor="contactEmail"
+              className="block text-md font-medium text-title dark:text-titleDark">
+              Contact Email
+            </label>
             <input
+              id="contactEmail"
               type="email"
               name="contactEmail"
               value={contactEmail}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
               placeholder="Enter contact's email"
             />
           </div>
 
           {/* Submit Button */}
-          <div className="text-center">
-            <button
-              type="submit"
-              className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-500 transition"
-            >
-              Add Contact
-            </button>
-          </div>
+          <button
+            type="submit"
+            className="w-full py-3 bg-button mt-6  text-white font-semibold rounded-lg hover:bg-blueCustom transition">
+            Add Contact
+          </button>
         </form>
       </div>
     </div>
   );
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

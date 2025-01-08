@@ -13,10 +13,12 @@ import Dashboard from "./pages/Dashboard.jsx";
 import Setting from "./pages/Setting.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
 import AddContact from "./pages/AddContact.jsx";
+import { ThemeProvider } from "./context/ThemeContext.jsx";
 
 function App() {
   return (
     <AuthProvider>
+       <ThemeProvider>
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
@@ -33,9 +35,12 @@ function App() {
             <Route path="/chat/:contactId" element={<Dashboard />} />
           </Route>
 
+         
+
           {/* <Route path="*" element={<NotFound />} /> */}
         </Route>
       </Routes>
+      </ThemeProvider>
     </AuthProvider>
   );
 }

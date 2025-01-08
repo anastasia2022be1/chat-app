@@ -11,6 +11,8 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 // POST: api/register
 export const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
+  const emailAddress = process.env.EMAIL_ADDRESS;
+
 
   // Check if all required fields are provided
   if (!username || !email || !password) {
