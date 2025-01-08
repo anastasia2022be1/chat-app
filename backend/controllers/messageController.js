@@ -1,6 +1,5 @@
 import Message from "../models/Message.js";
 import Chat from "../models/Chat.js";
-import { getRecieverSocketId } from "../server.js";
 
 // POST - create message
 // http://localhost:3000/api/message

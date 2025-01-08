@@ -7,7 +7,7 @@ const Dashboard = () => {
   const [chats, setChats] = useState([]);
 
   return (
-    <div className="p-4 mt-2  flex flex-col">
+    <div className="p-4 mt-2  flex flex-col h-screen">
       {/* Header */}
       <header>
         <Header />
