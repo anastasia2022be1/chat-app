@@ -4,7 +4,7 @@ const ChatList = ({ chats, handleChatClick }) => (
     {chats.map((chat) => (
       <li
         key={chat._id}
-        className="flex items-center py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300 transition"
+        className="flex items-center py-2 px-4 bg-gray-200 rounded-lg "
         onClick={() => handleChatClick(chat._id)}
       >
         <div className="mr-3">

@@ -16,12 +16,21 @@ const Body = ({ socket }) => {
   }, [socket]);
 
   return (
-    <section className="flex flex-col flex-grow bg-gray-50 p-4 overflow-y-auto">
+    <section className="flex flex-col flex-grow h-full bg-blue-50 dark:bg-sky-950 p-4 sm:px-6 lg:px-8 overflow-y-auto">
       {/* Chat Messages */}
       <div className="space-y-4">
         {messages.map((msg, index) => (
-          <div key={index} className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}>
-            <div className={`px-4 py-2 rounded-lg max-w-md shadow-md ${msg.isUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
+          <div
+            key={index}
+            className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}
+          >
+            <div
+              className={`px-4 py-2 rounded-lg shadow-md max-w-[75%] sm:max-w-[65%] lg:max-w-[50%] ${
+                msg.isUser
+                  ? 'bg-recievedMessageDark text-white'
+                  : 'bg-gray-200 text-gray-800'
+              }`}
+            >
               {msg.content}
             </div>
           </div>

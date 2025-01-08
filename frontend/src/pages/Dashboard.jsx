@@ -1,23 +1,20 @@
-
 import Sidebar from "../components/Sidebar.jsx";
 import Header from "../components/Header.jsx";
-import { useState } from 'react';
+import { useState } from "react";
 import ChatRoom from "../components/ChatRoom.jsx";
 
 const Dashboard = () => {
-
   const [chats, setChats] = useState([]);
 
-
   return (
-    <div className="h-screen flex flex-col bg-gray-100">
+    <div className="p-4 mt-2  flex flex-col">
       {/* Header */}
-      <header className="bg-white shadow-md">
+      <header>
         <Header />
       </header>
 
-      <div className="flex flex-grow overflow-hidden">
-        <aside className="bg-gray-200 w-64 p-4 border-r border-gray-300 hidden md:block">
+      <div className="flex flex-grow ">
+        <aside className="bg-gray-200 w-50 p-4  border-gray-300  ">
           <Sidebar chats={chats} setChats={setChats} />
         </aside>
 

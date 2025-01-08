@@ -104,26 +104,30 @@ export default function Register() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-blue-50 p-6">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-semibold text-center mb-6">
+    <div className="flex flex-col items-center justify-center p-7 max-h-screen ">
+      <div className="p-6 mt-4 rounded-lg shadow-lg w-full max-w-md sm:max-w-lg bg-white bg-opacity-90 dark:bg-gray-800 transition-all transform hover:scale-105">
+        <h2 className="text-2xl font-semibold text-center mb-6 text-backgroundChatDark dark:text-textColorDark">
           Create an Account
         </h2>
 
-        {/* Error Message */}
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        {error && (
+          <p className="text-center mb-4 text-yellow-800 bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
+            <FontAwesomeIcon
+              icon="fa-solid fa-info-circle"
+              className="text-xl text-yellow-800"
+            />
+            <span>{error}</span>
+          </p>
+        )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-2">
           {/* Profile Picture */}
           <div className="flex flex-col items-center">
-            <label
-              className="block text-lg font-medium"
-              onClick={handleFileClick}>
-              <FontAwesomeIcon icon="fa-solid fa-pen-to-square" />
-            </label>
-
-            {/* Image Preview */}
-            <div className="w-32 h-32 rounded-full border-2 border-black flex items-center justify-center mb-4">
+            <button
+              type="button"
+              onClick={handleFileClick}
+              aria-label="Upload Profile Picture"
+              className="w-24 h-24 rounded-full border-4 border-blue-500 flex items-center justify-center mb-4 shadow-lg hover:shadow-xl transition-all focus:outline-none">
               {profilePicPreview ? (
                 <img
                   src={profilePicPreview}
@@ -131,62 +135,69 @@ export default function Register() {
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
-                <span className="text-gray-500 ">Profile Picture</span>
+                <FontAwesomeIcon
+                  icon="fa-solid fa-camera"
+                  className="text-gray-500 text-2xl"
+                />
               )}
-            </div>
-
+            </button>
             <input
               type="file"
               name="profilePicture"
               onChange={handleChange}
               ref={fileInputRef}
-              className="w-full p-3 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-              style={{ display: "none" }}
+              className="hidden"
             />
           </div>
 
           {/* Username */}
           <div>
-            <label className="block text-lg font-medium">Username</label>
+            <label className="block text-sm font-medium text-title dark:text-titleDark">
+              Username
+            </label>
             <input
               type="text"
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full p-3 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:border-gray-600 dark:text-white"
               placeholder="Enter your username"
             />
           </div>
 
           {/* Email */}
           <div>
-            <label className="block text-lg font-medium">Email</label>
+            <label className="block text-lg font-medium text-title">
+              Email
+            </label>
             <input
               type="email"
               name="email"
               value={formData.email}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
               placeholder="Enter your email"
             />
           </div>
 
           {/* Password */}
           <div>
-            <label className="block text-lg font-medium">Password</label>
+            <label className="block text-lg font-medium text-title">
+              Password
+            </label>
             <input
               type="password"
               name="password"
               value={formData.password}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
               placeholder="Enter your password"
             />
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label className="block text-lg font-medium">
+            <label className="block text-lg font-medium text-title">
               Confirm Password
             </label>
             <input
@@ -194,7 +205,7 @@ export default function Register() {
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className="w-full p-3 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
               placeholder="Confirm your password"
             />
           </div>
@@ -203,17 +214,17 @@ export default function Register() {
           <div className="text-center">
             <button
               type="submit"
-              className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-500 transition">
+              className="w-full py-3 bg-button mt-6  text-white font-semibold rounded-lg hover:bg-blueCustom transition">
               Register
             </button>
           </div>
         </form>
 
         {/* Link to Login Page */}
-        <div className="mt-4 text-center">
+        <div className="mt-4 text-center text-black dark:text-white">
           <p>
-            Already have an account?
-            <a href="/login" className="text-blue-600 hover:underline">
+            Already have an account?{" "}
+            <a href="/login" className="text-title hover:underline">
               Login here
             </a>
           </p>
