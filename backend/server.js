@@ -22,12 +22,6 @@ const io = new SocketIOServer(server, {
   },
 });
 
-// Function to get the receiver socket ID based on `receiverId`
-// export const getRecieverSocketId = (receiverId) => {
-//   return socketIds[receiverId];  
-// };
-
-
 // Middleware zur JSON-Parsierung
 app.use(express.json());
 app.use(cors());
@@ -52,8 +46,7 @@ io.on('connection', (socket) => {
       });
 
       await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } });
-      
-     // send the message to the specific chat room
+
       io.to(chatId).emit('message', newMessage);
     } catch (error) {
       console.log('Error: ', error);
