@@ -6,6 +6,9 @@ import "./App.css";
 import Home from "./components/Home.jsx";
 import Register from "./pages/Register.jsx";
 import Login from "./pages/Login.jsx";
+import ForgotPassword from "./pages/ForgotPassword";
+import ValidateResetToken from "./components/ValidateResetToken.jsx";
+import ResetPassword from "./pages/ResetPassword.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Setting from "./pages/Setting.jsx";
 import ProtectedRoute from "./ProtectedRoute.jsx";
@@ -19,6 +22,9 @@ function App() {
           <Route index element={<Home />} />
           <Route path="register" element={<Register />} />
           <Route path="login" element={<Login />} />
+          <Route path="/forgot-password" element={<ForgotPassword />} />
+          <Route path="/validate-reset-password/:token" element={<ValidateResetToken />} />
+          <Route path="/reset-password/:token" element={<ResetPassword />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path="chat" element={<Dashboard />} />
