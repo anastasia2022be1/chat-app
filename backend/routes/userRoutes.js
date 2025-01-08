@@ -8,6 +8,7 @@ import {
   forgotPassword,
   getResetPasswordPage,
   resetPassword,
+  deleteUserAccount
 } from "../controllers/userController.js";
 import { upload } from "../middleware/upload.js";
 import { authenticate } from "../middleware/authMiddleware.js";
@@ -67,5 +68,10 @@ router.get("/contactslist", authenticate, contactsList);
 router.post("/addcontact", authenticate, addContact);
 router.post("/search", authenticate, searchContact);
 
+// --------------------------------------------------------------
+// Delete User Account(DELETE: api/delete-acount)
+router.delete("/delete-account", authenticate, deleteUserAccount);
+
+// ---------------------------------------------------------------
 
 export default router;

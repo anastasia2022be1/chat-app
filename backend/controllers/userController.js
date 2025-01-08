@@ -361,6 +361,34 @@ export const updateUserSettings = async (req, res) => {
 };
 //---------------------------------------------------------------
 
+// DELETE: api/delete-account
+export const deleteUserAccount = async (req, res) => {
+  try {
+    // Get user ID from token (assuming middleware validates JWT and adds userId to req.user)
+    const userId = req.user.userId;
+
+    // Find the user in the database
+    const user = await User.findById(userId);
+
+    // If the user is not found
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+
+    // Delete user
+    await User.findByIdAndDelete(userId);
+
+
+    // Send a response about successful deletion
+    res.status(200).json({
+      message: "Account deleted successfully"
+    });
+  } catch (error) {
+    console.error("Error deleting account:", error.message);
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};
+
 
 
 
