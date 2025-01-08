@@ -161,6 +161,40 @@ export default function Setting() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete your account? This action cannot be undone."
+  );
+  if (!confirmed) return;
+
+  try {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setError("You are not authorized! Please login.");
+      return;
+    }
+
+    const response = await fetch("http://localhost:3000/api/delete-account", {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Your account has been successfully deleted.");
+      localStorage.removeItem("authToken"); // Delete token
+      navigate("/login"); // 
+      setError(data.error || "Failed to delete account.");
+    }
+  } catch (err) {
+    setError("An error occurred while deleting your account.");
+  }
+};
+
+
   return (
     <div className="max-h-screen flex flex-col items-center justify-center px-4 md:px-8">
       {/* Go to Chat Button */}
@@ -347,6 +381,15 @@ export default function Setting() {
                   : "bg-gray-300 cursor-not-allowed"
               }`}>
               {isUpdated ? "Updated!" : "Update"}
+            </button>
+          </div>
+
+          <div className="text-center mt-6">
+            <button
+              type="button"
+              onClick={handleDeleteAccount}
+              className="w-full text-white bg-red-500 font-medium py-3 rounded-md hover:bg-red-600 transition duration-200">
+              Delete account
             </button>
           </div>
         </form>
