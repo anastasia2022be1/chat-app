@@ -1,18 +1,21 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SearchBar from "./Sidebar/SearchBar.jsx";
 import ContactList from "./Sidebar/ContactList.jsx";
 import ChatList from "./Sidebar/ChatList.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
-const Sidebar = ({handleSelectChat}) => {
+const Sidebar = ({ handleSelectChat }) => {
+  console.log('handleSelectChat in Sidebar:', handleSelectChat);
   const [contacts, setContacts] = useState([]);
+  const [chats, setChats] = useState([]);
   const [modus, setModus] = useState(false);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-  const [chats, setChats] = useState([]);
+ 
+
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -34,6 +37,7 @@ const Sidebar = ({handleSelectChat}) => {
         }
 
         setContacts(data);
+        console.log(data);
       } catch (err) {
         setError(err.message);
       }
@@ -60,7 +64,7 @@ const Sidebar = ({handleSelectChat}) => {
           throw new Error(data.error || "Failed to fetch chats");
         }
         console.log(data);
-        
+
         setChats(data);
       } catch (err) {
         setError(err.message);
@@ -110,30 +114,30 @@ const Sidebar = ({handleSelectChat}) => {
   const handleChatClick = async(id) => {
     console.log(id)
     handleSelectChat(id);
-    
-  }
+  };
 
   function handleSearch() {
-    const filteredContacts = contacts.filter(contact => {
-      return contact.username.slice(0, searchQuery.length).toLowerCase()=== searchQuery.toLowerCase()
-      
-    })
-    setSearchResults(filteredContacts)
+    const filteredContacts = contacts.filter((contact) => {
+      return (
+        contact.username.slice(0, searchQuery.length).toLowerCase() ===
+        searchQuery.toLowerCase()
+      );
+    });
+    setSearchResults(filteredContacts);
     console.log(filteredContacts);
-    
   }
 
   const handleQueryChange = (e) => {
     setSearchQuery(e.target.value);
     if (e.target.value.trim() === "") {
-      setSearchResults([]);
+      setSearchResults([]); // Clear results when the input is empty
     } else {
-      handleSearch();
+      handleSearch(); // Perform search when typing
     }
   };
 
   return (
-    <aside className="w-full sm:w-72 h-full bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md overflow-y-auto">
+    <aside className="w-full sm:w-72 bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md h-full">
       {/* Search Bar */}
       <SearchBar
         searchQuery={searchQuery}
@@ -141,21 +145,40 @@ const Sidebar = ({handleSelectChat}) => {
         handleSearch={handleSearch}
       />
 
-      {/* Search Results */}
-      <div className="search-results mb-4">
+      {/* Show search results */}
+      <div className="search-results">
         {searchResults.length > 0 && (
-          <ContactList
-            contacts={searchResults}
-            handleContactClick={handleContactClick}
-          />
+          <ul className="space-y-2">
+            {searchResults.map((contact, index) => (
+              <li
+                key={index}
+                className="flex items-center py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300 transition"
+                onClick={() => handleContactClick(contact._id)}>
+                <div className="mr-3">
+                  {contact.profilePicture ? (
+                    <img
+                      src={"http://localhost:3000" + contact.profilePicture}
+                      alt="Profile"
+                      width={40}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs">No Image</span>
+                    </div>
+                  )}
+                </div>
+                <p className="text-sm">{contact.username}</p>
+              </li>
+            ))}
+          </ul>
         )}
       </div>
 
       {/* Toggle Button */}
       <button
         onClick={toggleButton}
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center"
-      >
+        className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center">
         {modus ? (
           <FontAwesomeIcon icon="fa-regular fa-comment" className="mr-2" />
         ) : (
@@ -166,60 +189,24 @@ const Sidebar = ({handleSelectChat}) => {
         </span>
       </button>
 
-      {/* Content Area */}
-      <div className="flex-grow">
+      {/* Scrollable Content Area */}
+      <div className="flex-grow overflow-y-auto">
         {modus ? (
-          <div className="overflow-hidden transition-all duration-300 ease-in-out">
-            {error ? (
-              <p className="text-red-500 text-center">{error}</p>
-            ) : (
-              <ul className="space-y-2">
-                {contacts.map((contact, index) => (
-                  <li
-                    key={index}
-                    className="flex items-center py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300 transition"
-                    onClick={() => handleContactClick(contact._id)}
-                  >
-                    <div className="mr-3">
-                      {contact.profilePicture ? (
-                        <img
-                          src={"http://localhost:3000" + contact.profilePicture}
-                          alt="Profile"
-                          width={40}
-                          className="rounded-full"
-                        />
-                      ) : (
-                        <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                          <span className="text-white text-xs">No Image</span>
-                        </div>
-                      )}
-                    </div>
-                    <p className="text-sm">{contact.username}</p>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
+          error ? (
+            <p className="text-red-500 text-center">{error}</p>
+          ) : (
+            <div className="max-h-[400px] overflow-y-auto ">
+              <ContactList
+                contacts={contacts}
+                handleContactClick={handleContactClick}
+              />
+            </div>
+          )
+        ) : error ? (
+          <p className="text-error dark:text-errorDark text-center">{error}</p>
         ) : (
-          <div className="overflow-hidden transition-all duration-300 ease-in-out">
-            {error ? (
-              <p className="text-red-500 text-center">{error}</p>
-            ) : (
-              <ul className="space-y-2">
-                {chats.map((chat, index) => (
-                  <li
-                    key={chat._id}
-                    className="flex items-center py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300 transition"
-                    onClick={() => handleChatClick(chat._id)}
-                  >
-                    <div className="mr-3">
-                      <h4>chatid: {chat._id}</h4>
-                      ul
-                    </div>
-                  </li>
-                ))}
-              </ul>
-            )}
+          <div className="max-h-[400px] overflow-y-auto">
+            <ChatList chats={chats} handleChatClick={handleChatClick} />
           </div>
         )}
       </div>
@@ -227,8 +214,7 @@ const Sidebar = ({handleSelectChat}) => {
       {/* Add Contact Button */}
       <button
         onClick={handleAddContact}
-        className="mt-56  w-full bg-green-500 text-white py-2 px-4 rounded-xl hover:bg-green-600 transition"
-      >
+        className="mt-6 w-full bg-green-500 text-white py-2 px-4 rounded-xl hover:bg-green-600 transition">
         <FontAwesomeIcon icon="fa-solid fa-user-plus" className="mr-2" />
         <span className="hidden sm:inline">Add New Contact</span>
       </button>

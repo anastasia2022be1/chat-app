@@ -1,14 +1,15 @@
 import express from "express";
-import cors from 'cors';
+import cors from "cors";
 import connect from "./config/db.js";
-import userRoutes from './routes/userRoutes.js'
-import chatRoutes from './routes/chatRoutes.js'
-import messageRoutes from './routes/messageRoutes.js'
+import userRoutes from "./routes/userRoutes.js";
+import chatRoutes from "./routes/chatRoutes.js";
+import messageRoutes from "./routes/messageRoutes.js";
 import Message from "./models/Message.js";
 import Chat from "./models/Chat.js";
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { log } from "console";
+
 
 // Verbindung zur MongoDB
 await connect();
@@ -20,7 +21,7 @@ const server = http.Server(app);
 // Initializing Socket.IO
 const io = new SocketIOServer(server, {
   cors: {
-    origin: 'http://localhost:5173',
+    origin: "http://localhost:5173",
   },
 });
 
@@ -36,9 +37,9 @@ app.use("/api", chatRoutes);
 app.use("/api", messageRoutes);
 
 // Socket.io
-io.on('connection', (socket) => {
+io.on("connection", (socket) => {
   console.log(`User  ${socket.id} connected`);
-  socket.on('message', async ({ chatId, senderId, content }) => {
+  socket.on("message", async ({ chatId, senderId, content }) => {
     // console.log(data);
     try {
       const newMessage = await Message.create({
@@ -57,10 +58,10 @@ io.on('connection', (socket) => {
       console.log(checkResult.messages)
       io.emit('message', checkResult.messages);
     } catch (error) {
-      console.log('Error: ', error);
+      console.log("Error: ", error);
     }
   });
-  socket.on('disconnect', () => {
+  socket.on("disconnect", () => {
     console.log(`User ${socket.id} disconnected`);
   });
 });
@@ -81,4 +82,6 @@ io.on('connection', (socket) => {
 
 const port = 3000;
 // Server starten
-server.listen(port, () => console.log(`Server started on port: http://localhost:${port}`));
+server.listen(port, () =>
+  console.log(`Server started on port: http://localhost:${port}`)
+);
