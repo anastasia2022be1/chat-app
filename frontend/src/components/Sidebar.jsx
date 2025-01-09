@@ -5,8 +5,6 @@ import SearchBar from "./Sidebar/SearchBar.jsx";
 import ContactList from "./Sidebar/ContactList.jsx";
 import ChatList from "./Sidebar/ChatList.jsx";
 
-const Sidebar = ({ chats, setChats }) => {
-  console.log(chats);
 
 const Sidebar = ({handleSelectChat}) => {
   const [contacts, setContacts] = useState([]);
@@ -14,7 +12,7 @@ const Sidebar = ({handleSelectChat}) => {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
-
+  const [chats, setChats] = useState([]);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -110,6 +108,7 @@ const Sidebar = ({handleSelectChat}) => {
   };
 
   const handleChatClick = async(id) => {
+    console.log(id)
     handleSelectChat(id);
     
   }
