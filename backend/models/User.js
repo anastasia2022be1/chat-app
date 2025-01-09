@@ -37,7 +37,11 @@ const userSchema = new mongoose.Schema({
     contacts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User'
-    }]
+    }],
+    resetPasswordToken:
+        { type: String, default: null },
+    resetPasswordExpires:
+        { type: Date, default: null },
 }, { timestamps: true })
 
 const User = mongoose.model("User", userSchema);

@@ -15,7 +15,9 @@ function Message({socket, chosenChatID}) {
     setMessage(""); // Clear the input field after sending the message
   };
   return (
-    <form onSubmit={handleSend} className="flex items-center p-4 bg-gray-100 border-t border-gray-300">
+    <form
+      onSubmit={handleSend}
+      className="flex items-center p-4 bg-input dark:bg-inputDark border-t border-blue-800 dark:border-gray-700 ">
       {/* Input Field */}
       <input
         type="text"
@@ -26,11 +28,13 @@ function Message({socket, chosenChatID}) {
       />
 
       {/* Send Button */}
-      <button type="submit" className="p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
+      <button
+        type="submit"
+        className="p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition  w-1/6">
         Send
       </button>
     </form>
   );
-  }
+}
 
   export default Message;

@@ -10,7 +10,6 @@ import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 import { log } from "console";
 
-
 // Verbindung zur MongoDB
 await connect();
 
@@ -18,15 +17,7 @@ const app = express();
 
 const server = http.Server(app);
 
-// CORS-Einstellungen
-// app.use(
-//   cors({
-//     origin: 'http://localhost:5173',
-//     credentials: true,
-//   })
-// );
-
-
+// Initializing Socket.IO
 const io = new SocketIOServer(server, {
   cors: {
     origin: 'http://localhost:5173',
@@ -73,6 +64,20 @@ io.on('connection', (socket) => {
     console.log(`User ${socket.id} disconnected`);
   });
 });
+
+// io.on('connection', onConnection);
+
+// function onConnection(socket) {
+//   console.log('New connection', socket.id)
+//   const { room } = socket.handshake.query;
+
+//   socket.join(room);
+
+//   socket.on('message:created', (message) => {
+//     console.log('New message', message);
+//     io.to(room).emit('message:created', message)
+//   })
+// }
 
 const port = 3000;
 // Server starten

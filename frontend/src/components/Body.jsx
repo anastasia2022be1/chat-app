@@ -18,7 +18,7 @@ const Body = ({ socket, chosenChatID }) => {
   }, [chosenChatID]);
 
   return (
-    <section className="flex flex-col flex-grow bg-gray-50 p-4 overflow-y-auto">
+    <section className="flex flex-col flex-grow h-full bg-blue-50 dark:bg-sky-950 p-4 sm:px-6 lg:px-8 overflow-y-auto">
       {/* Chat Messages */}
       <header>{chosenChatID}</header>
       <div className="space-y-4">

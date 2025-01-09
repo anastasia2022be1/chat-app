@@ -17,12 +17,12 @@ export default function Setting() {
   const [isUpdated, setIsUpdated] = useState(false);
   const fileInputRef = useRef(null);
 
-    // States for toggling password visibility
-    const [showCurrentPassword, setShowCurrentPassword] = useState(false);
-    const [showNewPassword, setShowNewPassword] = useState(false);
-    const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+  // States for toggling password visibility
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
 
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -60,12 +60,21 @@ export default function Setting() {
     fetchUserData();
   }, []);
 
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError("");
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
   const handleFileClick = () => {
     fileInputRef.current.click();
   };
 
   const handleClick = () => {
-    navigate('/Chat');
+    navigate("/Chat");
   };
 
   const handleChange = (e) => {
@@ -152,23 +161,79 @@ export default function Setting() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+  const confirmed = window.confirm(
+    "Are you sure you want to delete your account? This action cannot be undone."
+  );
+  if (!confirmed) return;
+
+  try {
+    const token = localStorage.getItem("authToken");
+    if (!token) {
+      setError("You are not authorized! Please login.");
+      return;
+    }
+
+    const response = await fetch("http://localhost:3000/api/delete-account", {
+      method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      alert("Your account has been successfully deleted.");
+      localStorage.removeItem("authToken"); // Delete token
+      navigate("/login"); // 
+      setError(data.error || "Failed to delete account.");
+    }
+  } catch (err) {
+    setError("An error occurred while deleting your account.");
+  }
+};
+
+
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-blue-50 p-6">
-      <button
-      onClick={handleClick}
-      className="bg-green-400  text-white  py-3 px-8 rounded-lg "
-    >
-      Go to Chat
-    </button>
-      <h2 className="text-2xl font-bold text-gray-800 mb-6">Settings</h2>
+    <div className="max-h-screen flex flex-col items-center justify-center px-4 md:px-8">
+      {/* Go to Chat Button */}
+      <div className="fixed bottom-14  md:bottom-12 md:right-10  z-50 flex flex-col items-center">
+        <div
+          onClick={handleClick}
+          className="bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600 dark:from-blue-700 dark:to-blue-800 rounded-full p-4 shadow-lg flex items-center justify-center text-white dark:text-gray-200 hover:scale-105 transition-transform duration-300">
+          <FontAwesomeIcon
+            icon="fa-solid fa-comments"
+            className="text-md  md:text-2xl "
+          />
+        </div>
+      </div>
 
-      {error && <p className="text-red-500 mb-4">{error}</p>}
+      {/* Settings Header */}
+      <h2 className="text-2xl font-semibold text-center mb-5 mt-5 text-backgroundChatDark dark:text-textColorDark">
+        <FontAwesomeIcon icon="fa-solid fa-gear" className="mr-2" />
+        <span className="hidden md:inline">Settings</span>
+      </h2>
 
+      {/* Error Message */}
+      {error && (
+        <p className="text-center mb-4 text-error dark:text-textColorDark bg-red-100 dark:bg-errorDark rounded-lg shadow-lg px-4 py-3 flex items-center space-x-2">
+          <FontAwesomeIcon
+            icon="fa-solid fa-exclamation"
+            className="text-xl text-error dark:text-textColorDark"
+          />
+          <span>{error}</span>
+        </p>
+      )}
+
+      {/* Settings Form */}
       {user && (
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form
+          onSubmit={handleSubmit}
+          className="space-y-3 md:space-y-5 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-lg md:max-w-xl">
           {/* Profile Picture */}
           <div className="flex flex-col items-center">
-            <div className="w-32 h-32 rounded-full border-2 border-black flex items-center justify-center mb-4 overflow-hidden">
+            <div className="w-32 h-32 rounded-full border-4 border-blue-500 flex items-center justify-center mb-4 overflow-hidden shadow-lg sm:w-30 sm:h-30">
               {profilePicPreview ? (
                 <img
                   src={"http://localhost:3000" + profilePicPreview}
@@ -183,7 +248,7 @@ export default function Setting() {
               type="button"
               onClick={handleFileClick}
               className="text-blue-500 font-medium hover:underline">
-              <FontAwesomeIcon icon="fa-solid fa-pen-to-square" />
+              <FontAwesomeIcon icon="fa-solid fa-pen-to-square" /> Change Photo
             </button>
             <input
               type="file"
@@ -195,99 +260,136 @@ export default function Setting() {
 
           {/* Username */}
           <div className="flex flex-col">
-            <label className="text-gray-600 font-medium mb-2">Username:</label>
+            <label className="block text-sm font-medium text-title dark:text-titleDark">
+              Username:
+            </label>
             <input
               type="text"
               name="username"
               value={formData.username}
               onChange={handleChange}
-              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
               placeholder="Username"
             />
           </div>
 
           {/* Current Password */}
           <div className="flex flex-col">
-            <label className="text-gray-600 font-medium mb-2">
+            <label className="block text-sm font-medium text-title dark:text-titleDark">
               Current Password:
             </label>
             <div className="relative">
-            <input
-              type={showCurrentPassword ? "text" : "password"}
-              name="currentPassword"
-              value={formData.currentPassword}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="Current Password"
-            />
-             <button
+              <input
+                type={showCurrentPassword ? "text" : "password"}
+                name="currentPassword"
+                value={formData.currentPassword}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+                placeholder="Current Password"
+              />
+              <button
                 type="button"
                 onClick={() => setShowCurrentPassword((prev) => !prev)}
-                className="absolute right-3 top-2 text-gray-600"
-              >
-                {showCurrentPassword ? <FontAwesomeIcon icon="fa-solid fa-eye-slash" /> : <FontAwesomeIcon icon="fa-solid fa-eye" />}
+                className="absolute right-3 top-2 text-gray-600">
+                {showCurrentPassword ? (
+                  <FontAwesomeIcon
+                    icon="fa-solid fa-eye-slash"
+                    className="mt-4"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon="fa-solid fa-eye" className="mt-4" />
+                )}
               </button>
-          </div>
+            </div>
           </div>
 
           {/* New Password */}
           <div className="flex flex-col">
-            <label className="text-gray-600 font-medium mb-2">
+            <label className="block text-sm font-medium text-title dark:text-titleDark">
               New Password:
             </label>
             <div className="relative">
-            <input
-              type={showNewPassword ? "text" : "password"}
-              name="newPassword"
-              value={formData.newPassword}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="New Password"
-            />
-            <button type="button"  onClick={() => setShowNewPassword((prev) => !prev)}  className="absolute right-3 top-2 text-gray-600">
-              {showNewPassword ? <FontAwesomeIcon icon="fa-solid fa-eye-slash" /> : <FontAwesomeIcon icon="fa-solid fa-eye" />}
-            </button>
-          </div>
+              <input
+                type={showNewPassword ? "text" : "password"}
+                name="newPassword"
+                value={formData.newPassword}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+                placeholder="New Password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowNewPassword((prev) => !prev)}
+                className="absolute right-3 top-2 text-gray-600">
+                {showNewPassword ? (
+                  <FontAwesomeIcon
+                    icon="fa-solid fa-eye-slash"
+                    className="mt-4"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon="fa-solid fa-eye" className="mt-4" />
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Confirm Password */}
           <div>
-            <label className="text-gray-600 font-medium mb-2 ">
+            <label className="block text-sm font-medium text-title dark:text-titleDark">
               Confirm Password
             </label>
             <div className="relative">
-            <input
-              type={showConfirmNewPassword ? "text" : "password"}
-              name="confirmNewPassword"
-              value={formData.confirmNewPassword}
-              onChange={handleChange}
-              className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              placeholder="Confirm New Password"
-            />
-            <button type="button" onClick={() => setShowConfirmNewPassword((prev) => !prev)} className="absolute right-3 top-2 text-gray-600">
-              {showConfirmNewPassword ? <FontAwesomeIcon icon="fa-solid fa-eye-slash" /> : <FontAwesomeIcon icon="fa-solid fa-eye" />}
-            </button>
-          </div>
+              <input
+                type={showConfirmNewPassword ? "text" : "password"}
+                name="confirmNewPassword"
+                value={formData.confirmNewPassword}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+                placeholder="Confirm New Password"
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmNewPassword((prev) => !prev)}
+                className="absolute right-3 top-2 text-gray-600">
+                {showConfirmNewPassword ? (
+                  <FontAwesomeIcon
+                    icon="fa-solid fa-eye-slash"
+                    className="mt-4"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon="fa-solid fa-eye" className="mt-4" />
+                )}
+              </button>
+            </div>
           </div>
 
           {/* Submit Button */}
-          <div className="w-full">
+          <div className="text-center">
             {isUpdated && (
-              <p className="text-green-500 mb-4 text-center">
+              <p className="text-green-500 mb-4">
                 Settings updated successfully!
               </p>
             )}
             <button
               type="submit"
               disabled={!hasChanges}
-              className={`w-full text-white font-medium py-2 rounded-md transition duration-200 ${
+              className={`w-full text-black font-medium py-3 rounded-md transition duration-200 ${
                 hasChanges
-                  ? "bg-blue-500 hover:bg-blue-600"
+                  ? "bg-button hover:bg-button-600 hover:scale-105"
                   : isUpdated
                   ? "bg-green-500"
                   : "bg-gray-300 cursor-not-allowed"
               }`}>
               {isUpdated ? "Updated!" : "Update"}
+            </button>
+          </div>
+
+          <div className="text-center mt-6">
+            <button
+              type="button"
+              onClick={handleDeleteAccount}
+              className="w-full text-white bg-red-500 font-medium py-3 rounded-md hover:bg-red-600 transition duration-200">
+              Delete account
             </button>
           </div>
         </form>

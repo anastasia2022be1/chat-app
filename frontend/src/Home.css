@@ -1,0 +1,37 @@
+/* پیش‌فرض انیمیشن‌ها */
+@keyframes slideInRight {
+  0% {
+    transform: translateX(150%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideInLeft {
+  0% {
+    transform: translateX(-150%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+.message-right {
+  animation: slideInRight 1s ease-out forwards;
+}
+
+.message-left {
+  animation: slideInLeft 1s ease-out forwards;
+}
+
+/* پنهان کردن شبیه‌سازی چت در موبایل */
+@media (max-width: 768px) {
+  .chat-simulation {
+    display: none;
+  }
+}

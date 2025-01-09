@@ -1,11 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import SearchBar from "./Sidebar/SearchBar.jsx";
+import ContactList from "./Sidebar/ContactList.jsx";
+import ChatList from "./Sidebar/ChatList.jsx";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+const Sidebar = ({ chats, setChats }) => {
+  console.log(chats);
 
 const Sidebar = ({handleSelectChat}) => {
   const [contacts, setContacts] = useState([]);
-  const [chats, setChats] = useState([]);
   const [modus, setModus] = useState(false);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,8 +36,6 @@ const Sidebar = ({handleSelectChat}) => {
         }
 
         setContacts(data);
-        console.log(data);
-        
       } catch (err) {
         setError(err.message);
       }
@@ -42,18 +44,19 @@ const Sidebar = ({handleSelectChat}) => {
     const fetchChats = async () => {
       try {
         const token = localStorage.getItem("authToken");
-        const userId = localStorage.getItem("userId")
+        const userId = localStorage.getItem("userId");
 
-        const response = await fetch(`http://localhost:3000/api/chat/${userId}`, {
-          method: "GET",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
+        const response = await fetch(
+          `http://localhost:3000/api/chat/${userId}`,
+          {
+            method: "GET",
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
         const data = await response.json();
-       
-        
 
         if (!response.ok) {
           throw new Error(data.error || "Failed to fetch chats");
@@ -124,67 +127,48 @@ const Sidebar = ({handleSelectChat}) => {
   const handleQueryChange = (e) => {
     setSearchQuery(e.target.value);
     if (e.target.value.trim() === "") {
-      setSearchResults([]);  // Clear results when the input is empty
+      setSearchResults([]);
     } else {
-      handleSearch();  // Perform search when typing
+      handleSearch();
     }
   };
 
   return (
-    <aside className="w-64 h-full bg-gray-100 flex flex-col p-4 border-r border-gray-300 z-10">
-      <div className="search-bar mb-4 relative">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={handleQueryChange}
-          placeholder="Search Contacts"
-          className="w-full p-2 border border-gray-300 rounded-md"
-        />
-        <FontAwesomeIcon 
-          icon="fa-solid fa-magnifying-glass" 
-          onClick={handleSearch} 
-          className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500"
-        />
-      </div>
-      {/* Show search results */}
-      <div className="search-results">
+    <aside className="w-full sm:w-72 h-full bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md overflow-y-auto">
+      {/* Search Bar */}
+      <SearchBar
+        searchQuery={searchQuery}
+        handleQueryChange={handleQueryChange}
+        handleSearch={handleSearch}
+      />
+
+      {/* Search Results */}
+      <div className="search-results mb-4">
         {searchResults.length > 0 && (
-          <ul className="space-y-2">
-            {searchResults.map((contact, index) => (
-              <li
-                key={index}
-                className="flex items-center py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300 transition"
-                onClick={() => handleContactClick(contact._id)}
-              >
-                <div className="mr-3">
-                  {contact.profilePicture ? (
-                    <img
-                      src={"http://localhost:3000" + contact.profilePicture}
-                      alt="Profile"
-                      width={40}
-                      className="rounded-full"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs">No Image</span>
-                    </div>
-                  )}
-                </div>
-                <p className="text-sm">{contact.username}</p>
-              </li>
-            ))}
-          </ul>
+          <ContactList
+            contacts={searchResults}
+            handleContactClick={handleContactClick}
+          />
         )}
       </div>
 
+      {/* Toggle Button */}
       <button
         onClick={toggleButton}
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition mb-4"
+        className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center"
       >
-        {!modus ? "Contacts" : "Chats"}
+        {modus ? (
+          <FontAwesomeIcon icon="fa-regular fa-comment" className="mr-2" />
+        ) : (
+          <FontAwesomeIcon icon="fa-solid fa-user-group" className="mr-2" />
+        )}
+        <span className="hidden sm:inline">
+          {!modus ? "Contacts" : "Chats"}
+        </span>
       </button>
 
-      <div>
+      {/* Content Area */}
+      <div className="flex-grow">
         {modus ? (
           <div className="overflow-hidden transition-all duration-300 ease-in-out">
             {error ? (
@@ -241,15 +225,13 @@ const Sidebar = ({handleSelectChat}) => {
         )}
       </div>
 
-      <button className="w-full bg-blue-500 text-white py-2 px-4 rounded-md hover:bg-blue-600 transition mb-4">
-        Chats
-      </button>
-
+      {/* Add Contact Button */}
       <button
         onClick={handleAddContact}
-        className="mt-auto w-full bg-green-500 text-white py-2 px-4 rounded-md hover:bg-green-600 transition"
+        className="mt-56  w-full bg-green-500 text-white py-2 px-4 rounded-xl hover:bg-green-600 transition"
       >
-        Add New Contact
+        <FontAwesomeIcon icon="fa-solid fa-user-plus" className="mr-2" />
+        <span className="hidden sm:inline">Add New Contact</span>
       </button>
     </aside>
   );
