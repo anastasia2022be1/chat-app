@@ -18,20 +18,20 @@ function Message({ socket }) {
   return (
     <form
       onSubmit={handleSend}
-      className="flex items-center p-4 bg-input dark:bg-inputDark border-t border-blue-800 dark:border-gray-700 ">
+      className="flex flex-col md:flex-row items-center p-4 bg-input dark:bg-inputDark border-t border-blue-800 dark:border-gray-700 gap-3">
       {/* Input Field */}
       <input
         type="text"
         placeholder="Type your message..."
         value={message}
         onChange={(e) => setMessage(e.target.value)}
-        className="flex-grow p-3 border border-blue-500  dark:border-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mr-3"
+        className="flex-grow w-full md:w-auto p-3 border border-blue-500 dark:border-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
       />
 
       {/* Send Button */}
       <button
         type="submit"
-        className="p-3 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition  w-1/6">
+        className="p-3 w-full md:w-1/6 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition">
         Send
       </button>
     </form>

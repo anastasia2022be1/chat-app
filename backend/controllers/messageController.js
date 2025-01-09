@@ -1,6 +1,5 @@
 import Message from "../models/Message.js";
 import Chat from "../models/Chat.js";
-import { getRecieverSocketId } from "../server.js";
 
 // POST - create message
 // http://localhost:3000/api/message
@@ -35,22 +34,22 @@ export const getMessages = async (req, res) => {
       res.status(200).json([]);
     }
 
-    // const messages = await Message.find({ chatId }).sort({ createdAt: 1 }); // Sort by ascending time
+     const messages = await Message.find({ chatId }).sort({ createdAt: 1 }); // Sort by ascending time
 
    // Search for messages sent to the chat by the user
-    const messagesFromMe = await Message.find({
-      senderId: myId,
-      receiverId: chatId,
-    });
+  //   const messagesFromMe = await Message.find({
+  //     senderId: myId,
+  //     receiverId: chatId,
+  //   });
 
-   // Search for messages sent to the user from the chat
-    const messagesToMe = await Message.find({
-      senderId: chatId,
-      receiverId: myId,
-    });
+  //  // Search for messages sent to the user from the chat
+  //   const messagesToMe = await Message.find({
+  //     senderId: chatId,
+  //     receiverId: myId,
+  //   });
 
-   // Combine searched messages
-    const messages = [...messagesFromMe, ...messagesToMe];
+  //  // Combine searched messages
+  //   const messages = [...messagesFromMe, ...messagesToMe];
 
    
 

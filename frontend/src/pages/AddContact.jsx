@@ -48,7 +48,7 @@ export default function AddContact() {
       setTimeout(() => {
         setSuccessMessage("");
         navigate("/chat");
-      }, 200000);
+      }, 1000);
     } catch (error) {
       console.error("Error adding contact:", error);
       setError("An error occurred. Please try again.");

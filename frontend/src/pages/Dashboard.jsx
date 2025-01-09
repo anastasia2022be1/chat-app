@@ -7,20 +7,28 @@ const Dashboard = () => {
   const [chats, setChats] = useState([]);
 
   return (
-    <div className="p-4 mt-2  flex flex-col">
-      {/* Header */}
-      <header>
-        <Header />
-      </header>
+    
+      <div className="h-screen flex flex-col m-3   ">
+        <div>
+        {/* Header */}
+        <header>
+          <Header />
+        </header>
 
-      <div className="flex flex-grow ">
-        <aside className="bg-gray-200 w-50 p-4  border-gray-300  ">
-          <Sidebar chats={chats} setChats={setChats} />
-        </aside>
+        <div className="flex flex-grow flex-row ">
+          {/* Sidebar */}
+          <aside className="bg-gray-200 w-50 p-3 border-gray-300 ">
+            <Sidebar chats={chats} setChats={setChats} />
+          </aside>
 
-        <ChatRoom />
+          {/* ChatRoom */}
+          <div className="flex flex-grow bg-white">
+            <ChatRoom />
+          </div>
+          </div>
+        </div>
       </div>
-    </div>
+    
   );
 };
 

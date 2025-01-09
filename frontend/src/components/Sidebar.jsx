@@ -128,24 +128,14 @@ const Sidebar = ({ chats, setChats }) => {
   };
 
   return (
-    <aside className="w-full sm:w-72 h-full bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md overflow-y-auto">
+    <aside className="w-full sm:w-72 bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md h-full">
       {/* Search Bar */}
       <SearchBar
         searchQuery={searchQuery}
         handleQueryChange={handleQueryChange}
         handleSearch={handleSearch}
       />
-
-      {/* Search Results */}
-      <div className="search-results mb-4">
-        {searchResults.length > 0 && (
-          <ContactList
-            contacts={searchResults}
-            handleContactClick={handleContactClick}
-          />
-        )}
-      </div>
-
+  
       {/* Toggle Button */}
       <button
         onClick={toggleButton}
@@ -156,39 +146,42 @@ const Sidebar = ({ chats, setChats }) => {
         ) : (
           <FontAwesomeIcon icon="fa-solid fa-user-group" className="mr-2" />
         )}
-        <span className="hidden sm:inline">
-          {!modus ? "Contacts" : "Chats"}
-        </span>
+        <span className="hidden sm:inline">{!modus ? "Contacts" : "Chats"}</span>
       </button>
-
-      {/* Content Area */}
-      <div className="flex-grow">
+  
+      {/* Scrollable Content Area */}
+      <div className="flex-grow overflow-y-auto">
         {modus ? (
           error ? (
             <p className="text-red-500 text-center">{error}</p>
           ) : (
-            <ContactList
-              contacts={contacts}
-              handleContactClick={handleContactClick}
-            />
+            <div className="max-h-[400px] overflow-y-auto ">
+              <ContactList
+                contacts={contacts}
+                handleContactClick={handleContactClick}
+              />
+            </div>
           )
         ) : error ? (
           <p className="text-error dark:text-errorDark text-center">{error}</p>
         ) : (
-          <ChatList chats={chats} handleChatClick={handleChatClick} />
+          <div className="max-h-[400px] overflow-y-auto">
+            <ChatList chats={chats} handleChatClick={handleChatClick} />
+          </div>
         )}
       </div>
-
+  
       {/* Add Contact Button */}
       <button
         onClick={handleAddContact}
-        className="mt-56  w-full bg-green-500 text-white py-2 px-4 rounded-xl hover:bg-green-600 transition"
+        className="mt-6 w-full bg-green-500 text-white py-2 px-4 rounded-xl hover:bg-green-600 transition"
       >
         <FontAwesomeIcon icon="fa-solid fa-user-plus" className="mr-2" />
         <span className="hidden sm:inline">Add New Contact</span>
       </button>
     </aside>
   );
+  
 };
 
 export default Sidebar;
