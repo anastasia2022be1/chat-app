@@ -1,27 +1,26 @@
 import { useState } from "react";
 
 // Message Component
-function Message({socket}) {
-  const [message, setMessage] = useState([])
-  
+function Message({socket, chosenChatID}) {
+  const [message, setMessage] = useState("")
+  const userId = localStorage.getItem("userId")
+
   const handleSend = (e) => {
     e.preventDefault();
-    
-   // with emit we send the message to the server
-      socket.emit("message", {
-        content: message,
-        id: `${socket.id}-${Math.random()}`,
-        socketID: socket.id,
-      });
-  }
-  
+    socket.emit("message", {
+      chatId: chosenChatID,
+      senderId: userId,
+      content: message,
+    });
+    setMessage(""); // Clear the input field after sending the message
+  };
   return (
     <form onSubmit={handleSend} className="flex items-center p-4 bg-gray-100 border-t border-gray-300">
       {/* Input Field */}
       <input
         type="text"
         placeholder="Type your message..."
-        value={message}
+        value={chosenChatID === null? "Click on a chat":message}
         onChange={(e) => setMessage(e.target.value) }
         className="flex-grow p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 mr-3"
       />
@@ -34,4 +33,4 @@ function Message({socket}) {
   );
   }
 
-export default Message;
+  export default Message;

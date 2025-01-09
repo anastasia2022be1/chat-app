@@ -1,12 +1,14 @@
 import { useState, useEffect } from 'react';
-
-const Body = ({ socket }) => {
+import PropTypes from 'prop-types';
+const Body = ({ socket, chosenChatID }) => {
   const [messages, setMessages] = useState([]);
-
+  const userId = localStorage.getItem("userId")
   useEffect(() => {
     // Listen for incoming messages
-    socket.on('message', (message) => {
-      setMessages((prevMessages) => [...prevMessages, message]);
+    socket.on('message', (message) => { // what is message prop here
+      setMessages(message);
+      console.log(messages);
+      
     });
 
     // Clean up the event listener on component unmount
@@ -20,9 +22,9 @@ const Body = ({ socket }) => {
       {/* Chat Messages */}
       <div className="space-y-4">
         {messages.map((msg, index) => (
-          <div key={index} className={`flex ${msg.isUser ? 'justify-end' : 'justify-start'}`}>
-            <div className={`px-4 py-2 rounded-lg max-w-md shadow-md ${msg.isUser ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
-              {msg.text}
+          <div key={index} className={`flex ${msg.senderId._id === userId ? 'justify-end' : 'justify-start'}`}>
+            <div className={`px-4 py-2 rounded-lg max-w-md shadow-md ${msg.senderId._id === userId ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
+              {msg.content}
             </div>
           </div>
         ))}
@@ -30,7 +32,12 @@ const Body = ({ socket }) => {
     </section>
   );
 };
-
+Body.propTypes = {
+  socket: PropTypes.shape({
+    on: PropTypes.func.isRequired,
+    off: PropTypes.func.isRequired,
+  }).isRequired,
+};
 export default Body;
 
 

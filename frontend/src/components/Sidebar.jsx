@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
-const Sidebar = () => {
+const Sidebar = ({handleSelectChat}) => {
   const [contacts, setContacts] = useState([]);
   const [chats, setChats] = useState([]);
   const [modus, setModus] = useState(false);
@@ -58,7 +58,8 @@ const Sidebar = () => {
         if (!response.ok) {
           throw new Error(data.error || "Failed to fetch chats");
         }
-
+        console.log(data);
+        
         setChats(data);
       } catch (err) {
         setError(err.message);
@@ -106,7 +107,7 @@ const Sidebar = () => {
   };
 
   const handleChatClick = async(id) => {
-    console.log(id);
+    handleSelectChat(id);
     
   }
 
@@ -229,7 +230,8 @@ const Sidebar = () => {
                     onClick={() => handleChatClick(chat._id)}
                   >
                     <div className="mr-3">
-                      <h4>{chat._id}</h4>
+                      <h4>chatid: {chat._id}</h4>
+                      ul
                     </div>
                   </li>
                 ))}

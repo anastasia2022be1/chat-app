@@ -5,8 +5,10 @@ import userRoutes from './routes/userRoutes.js'
 import chatRoutes from './routes/chatRoutes.js'
 import messageRoutes from './routes/messageRoutes.js'
 import Message from "./models/Message.js";
+import Chat from "./models/Chat.js";
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
+import { log } from "console";
 
 
 // Verbindung zur MongoDB
@@ -54,9 +56,15 @@ io.on('connection', (socket) => {
         content,
       });
 
-      await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } });
-
-      io.to(chatId).emit('message', newMessage);
+      const checkResult = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }).populate('participants', 'username')
+      .populate({
+        path: 'messages',
+        populate: {
+          path: 'senderId',
+          select: 'username email'
+        }});
+      console.log(checkResult.messages)
+      io.emit('message', checkResult.messages);
     } catch (error) {
       console.log('Error: ', error);
     }
