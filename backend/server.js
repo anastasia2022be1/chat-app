@@ -39,28 +39,36 @@ app.use("/api", messageRoutes);
 // Socket.io
 io.on("connection", (socket) => {
   console.log(`User  ${socket.id} connected`);
-  socket.on("message", async ({ chatId, senderId, content }) => {
-    // console.log(data);
+  socket.on("register", async ({chatRoomId}) => {
     try {
-      const newMessage = await Message.create({
-        chatId,
-        senderId,
-        content,
-      });
+      console.log(chatRoomId)
 
-      const checkResult = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }).populate('participants', 'username')
-      .populate({
-        path: 'messages',
-        populate: {
-          path: 'senderId',
-          select: 'username email'
-        }});
-      console.log(checkResult.messages)
-      io.emit('message', checkResult.messages);
+      socket.on("message", async ({ chatId, senderId, content }) => {
+        // console.log(data);
+
+        const newMessage = await Message.create({
+          chatId,
+          senderId,
+          content,
+        });
+
+        const checkResult = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }).populate('participants', 'username')
+          .populate({
+            path: 'messages',
+            populate: {
+              path: 'senderId',
+              select: 'username email'
+            }
+          });
+        console.log(checkResult.messages)
+        io.to(chatRoomId).emit('message', checkResult.messages);
+      });
     } catch (error) {
       console.log("Error: ", error);
     }
-  });
+    
+
+  })
   socket.on("disconnect", () => {
     console.log(`User ${socket.id} disconnected`);
   });

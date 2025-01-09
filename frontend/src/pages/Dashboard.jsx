@@ -50,14 +50,20 @@ const socket = socketIO.connect('http://localhost:3000');
 const Dashboard = () => {
   const [chats, setChats] = useState([]);
   const [chosenChatID, setChosenChatID] = useState(null);
-
+  useEffect(() => {
+    if (chosenChatID !== null) {
+      socket.emit("register", {
+        chatRoomId: chosenChatID
+      })
+    }
+  }, [chosenChatID])
   
   const handleSelectChat = (chatId) => {
     setChosenChatID(chatId);
   };
 
   return (
-    <div className="h-screen flex flex-col">
+    <div className="flex flex-col">
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-10">
         <Header />
