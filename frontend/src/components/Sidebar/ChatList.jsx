@@ -1,5 +1,6 @@
 
 const ChatList = ({ chats, handleChatClick }) => (
+  
   <ul className="space-y-2">
     {chats.map((chat) => (
       <li
@@ -13,6 +14,7 @@ const ChatList = ({ chats, handleChatClick }) => (
       </li>
     ))}
   </ul>
+  
 );
 
 export default ChatList

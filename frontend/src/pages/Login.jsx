@@ -1,6 +1,7 @@
 import { text } from "@fortawesome/fontawesome-svg-core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export default function Login() {
   const [formData, setFormData] = useState({

@@ -1,18 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import SearchBar from "./Sidebar/SearchBar.jsx";
 import ContactList from "./Sidebar/ContactList.jsx";
 import ChatList from "./Sidebar/ChatList.jsx";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Sidebar = ({ chats, setChats }) => {
-  console.log(chats);
 
+const Sidebar = ({ handleSelectChat }) => {
+  console.log('handleSelectChat in Sidebar:', handleSelectChat);
   const [contacts, setContacts] = useState([]);
+  const [chats, setChats] = useState([]);
   const [modus, setModus] = useState(false);
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+ 
 
   const navigate = useNavigate();
 
@@ -35,6 +37,7 @@ const Sidebar = ({ chats, setChats }) => {
         }
 
         setContacts(data);
+        console.log(data);
       } catch (err) {
         setError(err.message);
       }
@@ -60,6 +63,7 @@ const Sidebar = ({ chats, setChats }) => {
         if (!response.ok) {
           throw new Error(data.error || "Failed to fetch chats");
         }
+        console.log(data);
 
         setChats(data);
       } catch (err) {
@@ -107,23 +111,28 @@ const Sidebar = ({ chats, setChats }) => {
     }
   };
 
-  const handleChatClick = (id) => {
-    console.log(id);
+  const handleChatClick = async (id) => {
+    
+    handleSelectChat(id);
   };
 
-  const handleSearch = () => {
-    const filteredContacts = contacts.filter((contact) =>
-      contact.username.toLowerCase().startsWith(searchQuery.toLowerCase())
-    );
+  function handleSearch() {
+    const filteredContacts = contacts.filter((contact) => {
+      return (
+        contact.username.slice(0, searchQuery.length).toLowerCase() ===
+        searchQuery.toLowerCase()
+      );
+    });
     setSearchResults(filteredContacts);
-  };
+    console.log(filteredContacts);
+  }
 
   const handleQueryChange = (e) => {
     setSearchQuery(e.target.value);
     if (e.target.value.trim() === "") {
-      setSearchResults([]);
+      setSearchResults([]); // Clear results when the input is empty
     } else {
-      handleSearch();
+      handleSearch(); // Perform search when typing
     }
   };
 
@@ -135,20 +144,51 @@ const Sidebar = ({ chats, setChats }) => {
         handleQueryChange={handleQueryChange}
         handleSearch={handleSearch}
       />
-  
+
+      {/* Show search results */}
+      <div className="search-results">
+        {searchResults.length > 0 && (
+          <ul className="space-y-2">
+            {searchResults.map((contact, index) => (
+              <li
+                key={index}
+                className="flex items-center py-2 px-4 bg-gray-200 rounded-md hover:bg-gray-300 transition"
+                onClick={() => handleContactClick(contact._id)}>
+                <div className="mr-3">
+                  {contact.profilePicture ? (
+                    <img
+                      src={"http://localhost:3000" + contact.profilePicture}
+                      alt="Profile"
+                      width={40}
+                      className="rounded-full"
+                    />
+                  ) : (
+                    <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
+                      <span className="text-white text-xs">No Image</span>
+                    </div>
+                  )}
+                </div>
+                <p className="text-sm">{contact.username}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+
       {/* Toggle Button */}
       <button
         onClick={toggleButton}
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center"
-      >
+        className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center">
         {modus ? (
           <FontAwesomeIcon icon="fa-regular fa-comment" className="mr-2" />
         ) : (
           <FontAwesomeIcon icon="fa-solid fa-user-group" className="mr-2" />
         )}
-        <span className="hidden sm:inline">{!modus ? "Contacts" : "Chats"}</span>
+        <span className="hidden sm:inline">
+          {!modus ? "Contacts" : "Chats"}
+        </span>
       </button>
-  
+
       {/* Scrollable Content Area */}
       <div className="flex-grow overflow-y-auto">
         {modus ? (
@@ -170,18 +210,16 @@ const Sidebar = ({ chats, setChats }) => {
           </div>
         )}
       </div>
-  
+
       {/* Add Contact Button */}
       <button
         onClick={handleAddContact}
-        className="mt-6 w-full bg-green-500 text-white py-2 px-4 rounded-xl hover:bg-green-600 transition"
-      >
+        className="mt-6 w-full bg-green-500 text-white py-2 px-4 rounded-xl hover:bg-green-600 transition">
         <FontAwesomeIcon icon="fa-solid fa-user-plus" className="mr-2" />
         <span className="hidden sm:inline">Add New Contact</span>
       </button>
     </aside>
   );
-  
 };
 
 export default Sidebar;

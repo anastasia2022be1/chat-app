@@ -23,7 +23,7 @@ const ContactList = ({ contacts, handleContactClick }) => {
           {/* Contacts under the letter */}
           {groupedContacts[letter].map((contact, index) => (
             <li
-              key={contact._id}
+              key={index}
               className="flex items-center py-2 px-4 mb-5 bg-gray-200 dark:bg-gray-200 rounded-xl mx-2"
               onClick={() => handleContactClick(contact._id)}
             >

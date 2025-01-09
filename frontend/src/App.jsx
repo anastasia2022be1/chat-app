@@ -13,6 +13,7 @@ import AddContact from "./pages/AddContact.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 
 function App() {
+  
   return (
     <AuthProvider>
        <ThemeProvider>
