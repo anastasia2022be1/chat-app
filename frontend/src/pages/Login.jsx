@@ -4,6 +4,7 @@ import { text } from "@fortawesome/fontawesome-svg-core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
+
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "",

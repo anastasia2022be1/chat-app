@@ -44,11 +44,11 @@ export default function AddContact() {
       setError("");
       setSuccessMessage("🎉 Contact added successfully! 🎉");
 
-      // Wait for 4 seconds, then navigate to the chat page
+      // Wait for 1 seconds, then navigate to the chat page
       setTimeout(() => {
         setSuccessMessage("");
         navigate("/chat");
-      }, 200000);
+      }, 1000);
     } catch (error) {
       console.error("Error adding contact:", error);
       setError("An error occurred. Please try again.");

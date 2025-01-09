@@ -49,7 +49,7 @@ export const registerUser = async (req, res) => {
     // Send a verification email to the user with the verification token link
     const emailResponse = await resend.emails.send({
       from: "talki@resend.dev",
-      to: process.env.EMAIL_ADDRESS,
+      to: emailAddress, // Send to the user's email
       subject: "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
