@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import PropTypes from 'prop-types';
+// import PropTypes from 'prop-types';
 const Body = ({ socket, chosenChatID }) => {
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("userId")
@@ -15,11 +15,12 @@ const Body = ({ socket, chosenChatID }) => {
     return () => {
       socket.off('message');
     };
-  }, [socket]);
+  }, [chosenChatID]);
 
   return (
     <section className="flex flex-col flex-grow bg-gray-50 p-4 overflow-y-auto">
       {/* Chat Messages */}
+      <header>{chosenChatID}</header>
       <div className="space-y-4">
         {messages.map((msg, index) => (
           <div key={index} className={`flex ${msg.senderId._id === userId ? 'justify-end' : 'justify-start'}`}>
@@ -32,12 +33,12 @@ const Body = ({ socket, chosenChatID }) => {
     </section>
   );
 };
-Body.propTypes = {
-  socket: PropTypes.shape({
-    on: PropTypes.func.isRequired,
-    off: PropTypes.func.isRequired,
-  }).isRequired,
-};
+// Body.propTypes = {
+//   socket: PropTypes.shape({
+//     on: PropTypes.func.isRequired,
+//     off: PropTypes.func.isRequired,
+//   }).isRequired,
+// };
 export default Body;
 
 

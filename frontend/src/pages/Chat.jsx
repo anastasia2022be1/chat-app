@@ -12,7 +12,10 @@ const Chat = () => {
   const [chosenChatID, setChosenChatID] = useState(null)
 
   const handleSelectChat = (chatId) => {
+    console.log(chatId);
+    
     setChosenChatID(chatId);
+
   };
 
   return (
