@@ -29,7 +29,7 @@ function Message({socket, chosenChatID}) {
         className="flex-grow w-full md:w-auto p-3 border border-blue-500 dark:border-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         disabled={chosenChatID === null} // Disable input if no chat is selected
       />
-
+  
       {/* Send Button */}
       <button
         type="submit"
@@ -38,12 +38,12 @@ function Message({socket, chosenChatID}) {
             ? "bg-gray-400 text-gray-700 cursor-not-allowed"
             : "bg-blue-500 text-white hover:bg-blue-600"
         }`}
-        
       >
         Send
       </button>
     </form>
   );
+  
 }
 
 export default Message;

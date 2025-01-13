@@ -9,7 +9,7 @@ const SearchBar = ({ searchQuery, handleQueryChange, handleSearch }) => (
       placeholder="Search Contacts"
       className="w-full p-3  border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 transition "
     />
-    <span className="hidden lg:inline">
+    <span className=" lg:inline">
     <FontAwesomeIcon
       icon="fa-solid fa-magnifying-glass"
       onClick={handleSearch}

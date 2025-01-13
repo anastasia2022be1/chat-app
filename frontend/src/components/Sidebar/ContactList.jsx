@@ -1,4 +1,6 @@
 const ContactList = ({ contacts, handleContactClick }) => {
+
+
   // Group contacts by the first letter of their username
   const groupedContacts = contacts.reduce((acc, contact) => {
     const firstLetter = contact.username[0].toUpperCase();
