@@ -20,7 +20,7 @@ const Header = () => {
   };
 
   return (
-    <header className="flex items-center justify-between bg-button  text-white p-3 rounded-t-xl shadow-md sm:px-6 lg:px-8">
+    <header className="flex items-center justify-between bg-button  text-white p-3  shadow-md sm:px-6 lg:px-8">
       {/* Cloud-like Logo */}
       <div className="hidden sm:flex items-center justify-center relative ">
         <div className="bg-white text-blueCustom font-bold text-lg lg:text-xl px-6 py-3 rounded-full shadow-md relative ">

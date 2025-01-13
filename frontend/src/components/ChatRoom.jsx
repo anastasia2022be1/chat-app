@@ -7,7 +7,7 @@ const socket = socketIO.connect('http://localhost:3000');
 
 const ChatRoom = () => {
   return (
-        <section className="flex flex-col flex-grow  ">
+        <section className="flex flex-col flex-grow   ">
           <div className="flex-grow overflow-y-auto">
             <Body socket={socket} />
           </div>

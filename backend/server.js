@@ -37,42 +37,79 @@ app.use("/api", chatRoutes);
 app.use("/api", messageRoutes);
 
 // Socket.io
+// io.on("connection", (socket) => {
+//   console.log(`User  ${socket.id} connected`);
+//   socket.on("register", async ({chatRoomId}) => {
+//     try {
+//       console.log(chatRoomId)
+
+//       socket.on("message", async ({ chatId, senderId, content }) => {
+//         // console.log(data);
+
+//         const newMessage = await Message.create({
+//           chatId,
+//           senderId,
+//           content,
+//         });
+
+//         const checkResult = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }).populate('participants', 'username')
+//           .populate({
+//             path: 'messages',
+//             populate: {
+//               path: 'senderId',
+//               select: 'username email'
+//             }
+//           });
+//         console.log(checkResult.messages)
+//         io.to(chatRoomId).emit('message', checkResult.messages);
+//       });
+//     } catch (error) {
+//       console.log("Error: ", error);
+//     }
+    
+
+//   })
+//   socket.on("disconnect", () => {
+//     console.log(`User ${socket.id} disconnected`);
+//   });
+// });
+
 io.on("connection", (socket) => {
-  console.log(`User  ${socket.id} connected`);
-  socket.on("register", async ({chatRoomId}) => {
+  console.log(`User ${socket.id} connected`);
+  
+  socket.on("register", async ({ chatRoomId }) => {
     try {
-      console.log(chatRoomId)
+      console.log("Registered for chat room:", chatRoomId);
+
+      // Join the socket to the chat room
+      socket.join(chatRoomId);
 
       socket.on("message", async ({ chatId, senderId, content }) => {
-        // console.log(data);
+        // Check if message already exists in the chat
+        const existingMessage = await Message.findOne({ chatId, senderId, content });
 
-        const newMessage = await Message.create({
-          chatId,
-          senderId,
-          content,
-        });
+        if (!existingMessage) {
+          const newMessage = await Message.create({ chatId, senderId, content });
 
-        const checkResult = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }).populate('participants', 'username')
-          .populate({
-            path: 'messages',
-            populate: {
-              path: 'senderId',
-              select: 'username email'
-            }
-          });
-        console.log(checkResult.messages)
-        io.to(chatRoomId).emit('message', checkResult.messages);
+          // Update the chat with the new message
+          const updatedChat = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }, { new: true })
+            .populate('participants', 'username')
+            .populate({ path: 'messages', populate: { path: 'senderId', select: 'username email' } });
+
+          // Emit the new message to all members in the chat room
+          io.to(chatRoomId).emit('message', newMessage); // Send the new message to the client
+        }
       });
     } catch (error) {
       console.log("Error: ", error);
     }
-    
+  });
 
-  })
   socket.on("disconnect", () => {
     console.log(`User ${socket.id} disconnected`);
   });
 });
+
 
 // io.on('connection', onConnection);
 

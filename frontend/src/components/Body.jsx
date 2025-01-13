@@ -3,34 +3,60 @@ import { useState, useEffect } from 'react';
 const Body = ({ socket, chosenChatID }) => {
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("userId")
-  useEffect(() => {
-    // Listen for incoming messages
-    socket.on('message', (message) => { // what is message prop here
-      setMessages(message);
-      console.log(messages);
+
+
+  // useEffect(() => {
+  //   // Listen for incoming messages
+  //   socket.on('message', (message) => { // what is message prop here
+  //     setMessages(message);
+  //     console.log(messages);
       
+  //   });
+
+  //   // Clean up the event listener on component unmount
+  //   return () => {
+  //     socket.off('message');
+  //   };
+  // }, [chosenChatID]);
+
+  useEffect(() => {
+    // Add a listener for the message event
+    socket.on('message', (newMessage) => {
+      // Avoid adding duplicate messages
+      setMessages((prevMessages) => {
+        // Only add newMessage if it's not already in the array
+        if (!prevMessages.some(msg => msg._id === newMessage._id)) {
+          return [...prevMessages, newMessage];
+        }
+        return prevMessages;
+      });
     });
 
-    // Clean up the event listener on component unmount
-    return () => {
+     // Clean up the event listener on component unmount or when chat changes
+     return () => {
       socket.off('message');
     };
-  }, [chosenChatID]);
+  }, [chosenChatID, socket]); // Run when chosenChatID changes
 
   return (
     <section className="flex flex-col flex-grow h-full bg-blue-50 dark:bg-sky-950 p-4 sm:px-6 lg:px-8 overflow-y-auto">
-      {/* Chat Messages */}
-      <header>{chosenChatID}</header>
-      <div className="space-y-4">
-        {messages.map((msg, index) => (
-          <div key={index} className={`flex ${msg.senderId._id === userId ? 'justify-end' : 'justify-start'}`}>
-            <div className={`px-4 py-2 rounded-lg max-w-md shadow-md ${msg.senderId._id === userId ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}>
-              {msg.content}
-            </div>
+    {/* Chat Messages */}
+    <header className="font-bold text-xl text-center mb-4">{chosenChatID}</header>
+    <div className="space-y-4">
+      {messages.map((msg, index) => (
+        <div
+          key={index}
+          className={`flex ${msg.senderId._id === userId ? 'justify-end' : 'justify-start'}`}
+        >
+          <div
+            className={`px-4 py-2 rounded-lg max-w-md shadow-md ${msg.senderId._id === userId ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+          >
+            {msg.content}
           </div>
-        ))}
-      </div>
-    </section>
+        </div>
+      ))}
+    </div>
+  </section>
   );
 };
 // Body.propTypes = {
@@ -40,7 +66,6 @@ const Body = ({ socket, chosenChatID }) => {
 //   }).isRequired,
 // };
 export default Body;
-
 
 
 // const Body = ({socket}) => {
