@@ -8,16 +8,17 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Sidebar = ({ handleSelectChat }) => {
   console.log('handleSelectChat in Sidebar:', handleSelectChat);
-  const [contacts, setContacts] = useState([]);
-  const [chats, setChats] = useState([]);
-  const [modus, setModus] = useState(false);
-  const [error, setError] = useState("");
-  const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  const [contacts, setContacts] = useState([]); // contact-list
+  const [chats, setChats] = useState([]); // chat-list
+  const [modus, setModus] = useState(false); // switch between contact and chat display modes
+  const [error, setError] = useState(""); // error message
+  const [searchQuery, setSearchQuery] = useState(""); // text to search for contacts
+  const [searchResults, setSearchResults] = useState([]); // contact search results
  
 
   const navigate = useNavigate();
 
+  // loads contacts and chats when the modus value changes
   useEffect(() => {
     const fetchContacts = async () => {
       try {
@@ -75,14 +76,17 @@ const Sidebar = ({ handleSelectChat }) => {
     fetchChats();
   }, [modus]);
 
+  // Redirects the user to the page for adding a new contact.
   const handleAddContact = () => {
     navigate("/AddContact");
   };
 
+  // Switches between contacts and chats viewing modes.
   const toggleButton = () => {
     setModus(!modus);
   };
 
+  // Creates a new chat by sending a POST request to the server.
   const handleContactClick = async (contactId) => {
     try {
       const token = localStorage.getItem("authToken");
@@ -116,6 +120,7 @@ const Sidebar = ({ handleSelectChat }) => {
     handleSelectChat(chat._id);
   };
 
+  // filters contacts by name based on searchQuery
   function handleSearch() {
     const filteredContacts = contacts.filter((contact) => {
       return (
@@ -127,6 +132,7 @@ const Sidebar = ({ handleSelectChat }) => {
     console.log(filteredContacts);
   }
 
+  // updates the search text and calls handleSearch
   const handleQueryChange = (e) => {
     setSearchQuery(e.target.value);
     if (e.target.value.trim() === "") {
