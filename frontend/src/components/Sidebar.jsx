@@ -6,7 +6,7 @@ import ChatList from "./Sidebar/ChatList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
-const Sidebar = ({ handleSelectChat }) => {
+const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
   console.log('handleSelectChat in Sidebar:', handleSelectChat);
   const [contacts, setContacts] = useState([]);
   const [chats, setChats] = useState([]);
@@ -17,7 +17,9 @@ const Sidebar = ({ handleSelectChat }) => {
  
 
   const navigate = useNavigate();
-
+  useEffect(() => {
+    
+  }, [chosenChatID])
   useEffect(() => {
     const fetchContacts = async () => {
       try {
@@ -113,6 +115,7 @@ const Sidebar = ({ handleSelectChat }) => {
 
   const handleChatClick = async(chat) => {
     console.log(chat)
+    setChosenChatMessages(chat.messages)
     handleSelectChat(chat._id);
   };
 
