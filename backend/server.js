@@ -84,6 +84,7 @@ io.on("connection", (socket) => {
       // Join the socket to the chat room
       socket.join(chatRoomId);
 
+
       socket.on("message", async ({ chatId, senderId, content }) => {
         // Check if message already exists in the chat
         const existingMessage = await Message.findOne({ chatId, senderId, content });
@@ -96,7 +97,9 @@ io.on("connection", (socket) => {
             .populate('participants', 'username')
             .populate({ path: 'messages', populate: { path: 'senderId', select: 'username email' } });
 
+
           // Emit the new message to all members in the chat room
+          console.log(newMessage)
           io.to(chatRoomId).emit('message', newMessage); // Send the new message to the client
         }
       });

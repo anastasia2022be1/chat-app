@@ -104,7 +104,7 @@ export default function Register() {
   };
 
   return (
-    <div className="flex flex-col items-center justify-center p-7 max-h-screen ">
+    <div className="flex flex-col items-center justify-center mt-5 max-h-screen ">
       <div className="p-6 mt-4 rounded-lg shadow-lg w-full max-w-md sm:max-w-lg bg-white bg-opacity-90 dark:bg-gray-800 transition-all transform hover:scale-105">
         <h2 className="text-2xl font-semibold text-center mb-6 text-backgroundChatDark dark:text-textColorDark">
           Create an Account
