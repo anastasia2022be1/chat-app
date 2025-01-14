@@ -111,9 +111,9 @@ const Sidebar = ({ handleSelectChat }) => {
     }
   };
 
-  const handleChatClick = async(id) => {
-    console.log(id)
-    handleSelectChat(id);
+  const handleChatClick = async(chat) => {
+    console.log(chat)
+    handleSelectChat(chat._id);
   };
 
   function handleSearch() {
