@@ -6,7 +6,7 @@ const ChatList = ({ chats, handleChatClick }) => (
       <li
         key={chat._id}
         className="flex items-center py-2 px-4 bg-gray-200 rounded-lg mx-2 "
-        onClick={() => handleChatClick(chat._id)}
+        onClick={() => handleChatClick(chat)}
       >
         <div className="mr-3">
           <h4>{chat._id}</h4>

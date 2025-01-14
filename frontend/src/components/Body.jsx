@@ -2,10 +2,16 @@ import { useState, useEffect } from 'react';
 
 
 // import PropTypes from 'prop-types';
-const Body = ({ socket, chosenChatID }) => {
+const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("userId")
 
+  useEffect(() => {
+    // Messages leeren wenn neuer Chat geklickt wird
+    setMessages([]);
+    setMessages(chosenChatMessages)
+
+  }, [chosenChatID])
 
   // useEffect(() => {
   //   // Listen for incoming messages

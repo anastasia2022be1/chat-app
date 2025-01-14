@@ -111,17 +111,21 @@ import Message from '../components/Message.jsx';
 const socket = socketIO.connect('http://localhost:3000');
 
 const Dashboard = () => {
-  const [chats, setChats] = useState([]);
   const [chosenChatID, setChosenChatID] = useState(null);
-
+  const [chosenChatMessages, setChosenChatMessages] = useState([]);
   useEffect(() => {
+    console.log("current chatmessages in dashboard : " + chosenChatMessages)
+  
     if (chosenChatID !== null) {
       socket.emit("register", {
         chatRoomId: chosenChatID,
       });
     }
-  }, [chosenChatID]);
 
+  }, [chosenChatID])
+
+
+  
   const handleSelectChat = (chatId) => {
     setChosenChatID(chatId);
   };
@@ -136,14 +140,21 @@ const Dashboard = () => {
       <div className="flex flex-col lg:flex-row flex-grow   ">
         {/* Sidebar */}
         <aside className="bg-gray-200 p-4 border-gray-00  ">
-          <Sidebar chats={chats} handleSelectChat={handleSelectChat} />
+          <Sidebar 
+          handleSelectChat={handleSelectChat} 
+          chosenChatID={chosenChatID}
+          setChosenChatMessages={setChosenChatMessages}
+          />
         </aside>
 
         {/* Main Content */}
         <div className="flex flex-col flex-grow">
           {/* Chat Display Area */}
           <div className="flex-grow bg-gray-50 overflow-y-auto p-4">
-            <Body socket={socket} chosenChatID={chosenChatID} />
+            <Body socket={socket} 
+            chosenChatID={chosenChatID}
+            chosenChatMessages={chosenChatMessages}
+            />
           </div>
 
           {/* Message Input */}
