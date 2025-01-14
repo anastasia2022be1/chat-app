@@ -196,9 +196,9 @@ export default function Setting() {
 
 
   return (
-    <div className="max-h-screen flex flex-col items-center justify-center px-4 md:px-8">
+    <div className="max-h-screen flex flex-col items-center justify-center  ">
       {/* Go to Chat Button */}
-      <div className="fixed bottom-14  md:bottom-12 md:right-10  z-50 flex flex-col items-center">
+      <div className="fixed bottom-12 right-5 md:bottom-18 md:right-10  z-50 flex flex-col items-center">
         <div
           onClick={handleClick}
           className="bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600 dark:from-blue-700 dark:to-blue-800 rounded-full p-4 shadow-lg flex items-center justify-center text-white dark:text-gray-200 hover:scale-105 transition-transform duration-300">

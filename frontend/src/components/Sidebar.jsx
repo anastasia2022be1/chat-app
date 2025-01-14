@@ -6,7 +6,7 @@ import ChatList from "./Sidebar/ChatList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
-const Sidebar = ({ handleSelectChat }) => {
+const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
   console.log('handleSelectChat in Sidebar:', handleSelectChat);
   const [contacts, setContacts] = useState([]); // contact-list
   const [chats, setChats] = useState([]); // chat-list
@@ -17,7 +17,10 @@ const Sidebar = ({ handleSelectChat }) => {
  
 
   const navigate = useNavigate();
-
+  useEffect(() => {
+    
+  }, [chosenChatID])
+  
   // loads contacts and chats when the modus value changes
   useEffect(() => {
     const fetchContacts = async () => {
@@ -117,6 +120,7 @@ const Sidebar = ({ handleSelectChat }) => {
 
   const handleChatClick = async(chat) => {
     console.log(chat)
+    setChosenChatMessages(chat.messages)
     handleSelectChat(chat._id);
   };
 
@@ -143,7 +147,7 @@ const Sidebar = ({ handleSelectChat }) => {
   };
 
   return (
-    <aside className="w-full sm:w-72 bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md h-full">
+    <aside className="w-full bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md h-3/4 lg:h-full">
       {/* Search Bar */}
       <SearchBar
         searchQuery={searchQuery}
@@ -184,7 +188,7 @@ const Sidebar = ({ handleSelectChat }) => {
       {/* Toggle Button */}
       <button
         onClick={toggleButton}
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center">
+        className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center ">
         {modus ? (
           <FontAwesomeIcon icon="fa-regular fa-comment" className="mr-2" />
         ) : (
@@ -196,7 +200,7 @@ const Sidebar = ({ handleSelectChat }) => {
       </button>
 
       {/* Scrollable Content Area */}
-      <div className="flex-grow overflow-y-auto">
+      <div className="flex-grow overflow-y-auto h-20  lg:h-fit">
         {modus ? (
           error ? (
             <p className="text-red-500 text-center">{error}</p>
