@@ -8,8 +8,6 @@ import Message from "./models/Message.js";
 import Chat from "./models/Chat.js";
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
-import { log } from "console";
-
 
 // Verbindung zur MongoDB
 await connect();
@@ -36,47 +34,9 @@ app.use("/api", userRoutes);
 app.use("/api", chatRoutes);
 app.use("/api", messageRoutes);
 
-// Socket.io
-// io.on("connection", (socket) => {
-//   console.log(`User  ${socket.id} connected`);
-//   socket.on("register", async ({chatRoomId}) => {
-//     try {
-//       console.log(chatRoomId)
-
-//       socket.on("message", async ({ chatId, senderId, content }) => {
-//         // console.log(data);
-
-//         const newMessage = await Message.create({
-//           chatId,
-//           senderId,
-//           content,
-//         });
-
-//         const checkResult = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }).populate('participants', 'username')
-//           .populate({
-//             path: 'messages',
-//             populate: {
-//               path: 'senderId',
-//               select: 'username email'
-//             }
-//           });
-//         console.log(checkResult.messages)
-//         io.to(chatRoomId).emit('message', checkResult.messages);
-//       });
-//     } catch (error) {
-//       console.log("Error: ", error);
-//     }
-    
-
-//   })
-//   socket.on("disconnect", () => {
-//     console.log(`User ${socket.id} disconnected`);
-//   });
-// });
-
 io.on("connection", (socket) => {
   console.log(`User ${socket.id} connected`);
-  
+
   socket.on("register", async ({ chatRoomId }) => {
     try {
       console.log("Registered for chat room:", chatRoomId);
@@ -109,21 +69,6 @@ io.on("connection", (socket) => {
     console.log(`User ${socket.id} disconnected`);
   });
 });
-
-
-// io.on('connection', onConnection);
-
-// function onConnection(socket) {
-//   console.log('New connection', socket.id)
-//   const { room } = socket.handshake.query;
-
-//   socket.join(room);
-
-//   socket.on('message:created', (message) => {
-//     console.log('New message', message);
-//     io.to(room).emit('message:created', message)
-//   })
-// }
 
 const port = 3000;
 // Server starten
