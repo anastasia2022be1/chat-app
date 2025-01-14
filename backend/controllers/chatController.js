@@ -7,39 +7,11 @@ import User from "../models/User.js";
 export const createChat = async (req, res) => {
     try {
         const { senderId, recieverId } = req.body;
+        const newChat = await Chat.create({ participants: [senderId, recieverId] });
 
-        // Checking that both users exist
-        const sender = await User.findById(senderId);
-        const receiver = await User.findById(recieverId);
-
-        if (!sender) {
-            // return res.status(404).json({ error: `Sender with ID ${senderId} not found` });
-            console.log('Not sender')
-        }
-
-        if (!receiver) {
-            // return res.status(404).json({ error: `Receiver with ID ${recieverId} not found` });
-            console.log('Not reciever')
-        }
-
-
-        // Checking an existing chat between two users
-        const existingChat = await Chat.findOne({
-            participants: { $all: [senderId, recieverId], $size: 2 }
-        });
-
-        if (existingChat) {
-            return res.status(200).json({ message: "Chat already exists", chat: existingChat });
-        }
-
-        // Creating new chat
-        const newChat = await Chat.create({
-            participants: [senderId, recieverId],
-        });
-
-        // Adding a chat to the list of user chats
         await User.findByIdAndUpdate(senderId, { $push: { chats: newChat._id } });
         await User.findByIdAndUpdate(recieverId, { $push: { chats: newChat._id } });
+
 
         res.status(200).json({ message: 'Chat created successfully', newChat });
     } catch (error) {
