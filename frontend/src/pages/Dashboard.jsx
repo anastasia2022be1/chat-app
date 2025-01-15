@@ -59,9 +59,11 @@ const Dashboard = () => {
       })
     }
 
-  }, [chosenChatID])
+  }, [chosenChatID, chosenChatMessages])
 
-
+  const handleChosenChatMessage = (chatMessage) => {
+    setChosenChatMessages(chatMessage)
+  }
   
   const handleSelectChat = (chatId) => {
     setChosenChatID(chatId);
@@ -80,7 +82,7 @@ const Dashboard = () => {
           <Sidebar 
           handleSelectChat={handleSelectChat} 
           chosenChatID={chosenChatID}
-          setChosenChatMessages={setChosenChatMessages}
+          handleChosenChatMessage={handleChosenChatMessage}
           />
         </aside>
 

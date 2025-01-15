@@ -6,24 +6,12 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
 
   useEffect(() => {
     // Messages leeren wenn neuer Chat geklickt wird
-    setMessages([]);
+    console.log(chosenChatMessages)
     setMessages(chosenChatMessages)
 
-  }, [chosenChatID])
+  }, [chosenChatMessages])
 
-  // useEffect(() => {
-  //   // Listen for incoming messages
-  //   socket.on('message', (message) => { // what is message prop here
-  //     setMessages(message);
-  //     console.log(messages);
-      
-  //   });
 
-  //   // Clean up the event listener on component unmount
-  //   return () => {
-  //     socket.off('message');
-  //   };
-  // }, [chosenChatID]);
 
   useEffect(() => {
     // Add a listener for the message event
@@ -65,44 +53,7 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
   </section>
   );
 };
-// Body.propTypes = {
-//   socket: PropTypes.shape({
-//     on: PropTypes.func.isRequired,
-//     off: PropTypes.func.isRequired,
-//   }).isRequired,
-// };
+
 export default Body;
 
 
-// const Body = ({socket}) => {
-
-//   return (
-//     <section className="flex flex-col flex-grow bg-gray-50 p-4 overflow-y-auto">
-//       {/* Chat Messages */}
-//       <div className="space-y-4">
-//         {/* Message from the user */}
-//         <div className="flex justify-end">
-//           <div className="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-md shadow-md">
-//             Hello! How are you?
-//           </div>
-//         </div>
-
-//         {/* Message from the contact */}
-//         <div className="flex justify-start">
-//           <div className="bg-gray-200 text-gray-800 px-4 py-2 rounded-lg max-w-md shadow-md">
-//             I'm good, thank you! What about you?
-//           </div>
-//         </div>
-
-//         {/* More messages */}
-//         <div className="flex justify-end">
-//           <div className="bg-blue-500 text-white px-4 py-2 rounded-lg max-w-md shadow-md">
-//             I'm doing great! Thanks for asking.
-//           </div>
-//         </div>
-//       </div>
-//     </section>
-//   );
-// };
-
-// export default Body;

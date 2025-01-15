@@ -1,6 +1,29 @@
 import Message from "../models/Message.js";
 import Chat from "../models/Chat.js";
 
+// GET show all messages in one chat
+// http://localhost:3000/api/message:chatId
+export const getMessages = async (req, res) => {
+  try {
+    const chatId = req.params.chatId;
+
+    if (!chatId) {
+      res.status(200).json([]);
+    }
+
+    const messages = await Chat.findById(chatId)
+      //   .populate("participants", "username email")
+      .populate({
+        path: "messages"
+      })
+
+    res.status(200).json(messages.messages);
+  } catch (error) {
+    console.error(error, "Error");
+    res.status(500).json({ error: "Failed to retrieve messages" });
+  }
+};
+
 // POST - create message
 // http://localhost:3000/api/message
 
@@ -26,39 +49,39 @@ import Chat from "../models/Chat.js";
 // GET show all messages in one chat
 // http://localhost:3000/api/message:chatId
 
-export const getMessages = async (req, res) => {
-  try {
-    const chatId = req.params.chatId;
+// export const getMessages = async (req, res) => {
+//   try {
+//     const chatId = req.params.chatId;
 
-    if (!chatId) {
-      res.status(200).json([]);
-    }
+//     if (!chatId) {
+//       res.status(200).json([]);
+//     }
 
-     const messages = await Message.find({ chatId }).sort({ createdAt: 1 }); // Sort by ascending time
+//      const messages = await Message.find({ chatId }).sort({ createdAt: 1 }); // Sort by ascending time
 
-   // Search for messages sent to the chat by the user
-  //   const messagesFromMe = await Message.find({
-  //     senderId: myId,
-  //     receiverId: chatId,
-  //   });
+//    // Search for messages sent to the chat by the user
+//   //   const messagesFromMe = await Message.find({
+//   //     senderId: myId,
+//   //     receiverId: chatId,
+//   //   });
 
-  //  // Search for messages sent to the user from the chat
-  //   const messagesToMe = await Message.find({
-  //     senderId: chatId,
-  //     receiverId: myId,
-  //   });
+//   //  // Search for messages sent to the user from the chat
+//   //   const messagesToMe = await Message.find({
+//   //     senderId: chatId,
+//   //     receiverId: myId,
+//   //   });
 
-  //  // Combine searched messages
-  //   const messages = [...messagesFromMe, ...messagesToMe];
+//   //  // Combine searched messages
+//   //   const messages = [...messagesFromMe, ...messagesToMe];
 
    
 
-    res.status(200).json(messages);
-  } catch (error) {
-    console.error(error, "Error");
-    res.status(500).json({ error: "Failed to retrieve messages" });
-  }
-};
+//     res.status(200).json(messages);
+//   } catch (error) {
+//     console.error(error, "Error");
+//     res.status(500).json({ error: "Failed to retrieve messages" });
+//   }
+// };
 
 
 

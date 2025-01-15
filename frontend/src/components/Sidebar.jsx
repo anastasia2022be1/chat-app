@@ -6,7 +6,7 @@ import ChatList from "./Sidebar/ChatList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
-const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
+const Sidebar = ({ handleSelectChat, handleChosenChatMessage, chosenChatID }) => {
   console.log('handleSelectChat in Sidebar:', handleSelectChat);
   const [contacts, setContacts] = useState([]);
   const [chats, setChats] = useState([]);
@@ -17,9 +17,7 @@ const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
  
 
   const navigate = useNavigate();
-  useEffect(() => {
-    
-  }, [chosenChatID])
+
   useEffect(() => {
     const fetchContacts = async () => {
       try {
@@ -126,38 +124,32 @@ const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
   };
 
 
-  // const handleContactClick = async (contactId) => {
-  //   try {
-  //     const token = localStorage.getItem("authToken");
-
-  //     const response = await fetch("http://localhost:3000/api/chat", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //         Authorization: `Bearer ${token}`,
-  //       },
-  //       body: JSON.stringify({
-  //         senderId: localStorage.getItem("userId"),
-  //         recieverId: contactId,
-  //       }),
-  //     });
-
-  //     const data = await response.json();
-
-  //     if (!response.ok) {
-  //       throw new Error(data.error || "Failed to create chat");
-  //     }
-
-  //     navigate(`/chat/${data.newChat._id}`);
-  //   } catch (err) {
-  //     setError(err.message);
-  //   }
-  // };
-
   const handleChatClick = async(chat) => {
     console.log(chat)
+    handleChosenChatMessage([])
+  
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/message/${chat._id}`,
+        {
+          method: "GET",
+        }
+      );
 
-    setChosenChatMessages(chat.messages)
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to fetch chat messages");
+      }
+
+      console.log("Hier die Daten", data); // Update the chat messages state
+     handleChosenChatMessage(data)
+    } catch (err) {
+      setError(err.message);
+    }
+
+
+   
     handleSelectChat(chat._id);
   };
 
