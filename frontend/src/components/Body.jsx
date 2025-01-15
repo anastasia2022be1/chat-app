@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
-
-
 // import PropTypes from 'prop-types';
+
 const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
   const [messages, setMessages] = useState([]);
   const userId = localStorage.getItem("userId")
@@ -12,7 +11,7 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
     setMessages(chosenChatMessages)
 
   }, [chosenChatID])
-  
+
   useEffect(() => {
     // Add a listener for the message event
     socket.on('message', (newMessage) => {
