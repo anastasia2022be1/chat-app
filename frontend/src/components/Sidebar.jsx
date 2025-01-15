@@ -85,36 +85,78 @@ const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
     setModus(!modus);
   };
 
+
+  // Creates a new chat by sending a POST request to the server.
   const handleContactClick = async (contactId) => {
-    try {
-      const token = localStorage.getItem("authToken");
 
-      const response = await fetch("http://localhost:3000/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          senderId: localStorage.getItem("userId"),
-          recieverId: contactId,
-        }),
-      });
+    const allParticipantIds = chats.flatMap(chat => chat.participants.map(participant => participant._id));;// Array of chat participants 
 
-      const data = await response.json();
 
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to create chat");
+
+    if (allParticipantIds.includes(contactId)) {
+      alert('Chat already exist')
+    } else {
+      try {
+        const token = localStorage.getItem("authToken");
+
+        const response = await fetch("http://localhost:3000/api/chat", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            senderId: localStorage.getItem("userId"),
+            recieverId: contactId,
+          }),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to create chat");
+        }
+
+        navigate(`/chat/${data.newChat._id}`);
+      } catch (err) {
+        setError(err.message);
       }
-
-      navigate(`/chat/${data.newChat._id}`);
-    } catch (err) {
-      setError(err.message);
     }
+
   };
+
+
+  // const handleContactClick = async (contactId) => {
+  //   try {
+  //     const token = localStorage.getItem("authToken");
+
+  //     const response = await fetch("http://localhost:3000/api/chat", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         Authorization: `Bearer ${token}`,
+  //       },
+  //       body: JSON.stringify({
+  //         senderId: localStorage.getItem("userId"),
+  //         recieverId: contactId,
+  //       }),
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (!response.ok) {
+  //       throw new Error(data.error || "Failed to create chat");
+  //     }
+
+  //     navigate(`/chat/${data.newChat._id}`);
+  //   } catch (err) {
+  //     setError(err.message);
+  //   }
+  // };
 
   const handleChatClick = async(chat) => {
     console.log(chat)
+
     setChosenChatMessages(chat.messages)
     handleSelectChat(chat._id);
   };
