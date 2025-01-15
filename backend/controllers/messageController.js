@@ -6,9 +6,9 @@ export const getMessages = async (req, res) => {
   try {
     const chatId = req.params.chatId;
 
-    if (!chatId) {
-      res.status(200).json([]);
-    }
+    //     if (!chatId) {
+    //       res.status(200).json([]);
+    //     }
 
     const messages = await Chat.findById(chatId)
       //   .populate("participants", "username email")

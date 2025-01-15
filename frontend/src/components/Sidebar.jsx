@@ -5,23 +5,22 @@ import ContactList from "./Sidebar/ContactList.jsx";
 import ChatList from "./Sidebar/ChatList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
-  // State for managing contacts, chats, mode (contacts or chats), error messages, and search functionality
-  const [contacts, setContacts] = useState([]); // Stores contact list
-  const [chats, setChats] = useState([]); // Stores chat list
-  const [modus, setModus] = useState(false); // Switch between contacts and chats display modes
-  const [error, setError] = useState(""); // Stores error messages
-  const [searchQuery, setSearchQuery] = useState(""); // Current search input
-  const [searchResults, setSearchResults] = useState([]); // Search results for contacts
+const Sidebar = ({
+  handleSelectChat,
+  handleChosenChatMessage,
+  chosenChatID,
+}) => {
+  console.log("handleSelectChat in Sidebar:", handleSelectChat);
+  const [contacts, setContacts] = useState([]);
+  const [chats, setChats] = useState([]);
+  const [modus, setModus] = useState(false);
+  const [error, setError] = useState("");
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
 
   const navigate = useNavigate();
 
-  // Effect triggered when `chosenChatID` changes (placeholder, add functionality if needed)
-  useEffect(() => {}, [chosenChatID]);
-
-  // Fetches contacts and chats when the mode (`modus`) changes
   useEffect(() => {
-    // Fetch contact list
     const fetchContacts = async () => {
       try {
         const token = localStorage.getItem("authToken");
@@ -90,14 +89,14 @@ const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
     setModus(!modus);
   };
 
-  // Handle contact selection and create a new chat if it doesn't already exist
+  // Creates a new chat by sending a POST request to the server.
   const handleContactClick = async (contactId) => {
     const allParticipantIds = chats.flatMap((chat) =>
       chat.participants.map((participant) => participant._id)
-    ); // Get all chat participants
+    ); // Array of chat participants
 
     if (allParticipantIds.includes(contactId)) {
-      alert("Chat already exists");
+      alert("Chat already exist");
     } else {
       try {
         const token = localStorage.getItem("authToken");
@@ -120,41 +119,38 @@ const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
           throw new Error(data.error || "Failed to create chat");
         }
 
-        navigate(`/chat/${data.newChat._id}`); // Redirect to the new chat
+        navigate(`/chat/${data.newChat._id}`);
       } catch (err) {
         setError(err.message);
       }
     }
   };
 
-  // Handle chat selection and fetch chat messages
   const handleChatClick = async (chat) => {
     console.log(chat);
-    setChosenChatMessages([]);
+    handleChosenChatMessage([]);
+
     try {
       const response = await fetch(
         `http://localhost:3000/api/message/${chat._id}`,
         {
           method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-          },
         }
       );
 
       const data = await response.json();
-      console.log(data);
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to fetch chat messages");
       }
 
-      setChosenChatMessages(data); // Update the chat messages state
+      console.log("Hier die Daten", data); // Update the chat messages state
+      handleChosenChatMessage(data);
     } catch (err) {
       setError(err.message);
     }
 
-    handleSelectChat(chat._id); // Update the selected chat
+    handleSelectChat(chat._id);
   };
 
   // Filters contacts based on the search query
