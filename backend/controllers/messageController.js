@@ -1,4 +1,4 @@
-import Message from "../models/Message.js";
+import Chat from "../models/Chat.js";
 
 // GET show all messages in one chat
 // http://localhost:3000/api/message:chatId
@@ -10,7 +10,11 @@ export const getMessages = async (req, res) => {
       res.status(200).json([]);
     }
 
-    const messages = await Message.find({ chatId }).sort({ createdAt: 1 }); // Sort by ascending time
+    const messages = await Chat.findById(chatId)
+      //   .populate("participants", "username email")
+      .populate({
+        path: "messages"
+      })
 
     res.status(200).json(messages);
   } catch (error) {

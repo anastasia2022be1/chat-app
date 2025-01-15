@@ -20,6 +20,8 @@ export const createChat = async (req, res) => {
     }
 }
 
+//-------------------------------------------------------------------
+
 // GET show all chats by userId
 // http://localhost:3000/api/chat/:userId
 
@@ -42,4 +44,4 @@ export const getChats = async (req, res) => {
     }
 };
 
-
+//--------------------------------------------------------------------------------
