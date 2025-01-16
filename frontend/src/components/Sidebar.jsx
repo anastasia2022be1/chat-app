@@ -38,14 +38,13 @@ const Sidebar = ({
           throw new Error(data.error || "Failed to fetch contacts");
         }
 
-        setContacts(data); // Update contacts state
+        setContacts(data);
         console.log(data);
       } catch (err) {
         setError(err.message);
       }
     };
 
-    // Fetch chat list
     const fetchChats = async () => {
       try {
         const token = localStorage.getItem("authToken");
@@ -66,25 +65,22 @@ const Sidebar = ({
         if (!response.ok) {
           throw new Error(data.error || "Failed to fetch chats");
         }
-
-        setChats(data); // Update chats state
         console.log(data);
+
+        setChats(data);
       } catch (err) {
         setError(err.message);
       }
     };
 
-    // Fetch data based on mode
     fetchContacts();
     fetchChats();
   }, [modus]);
 
-  // Redirect to the "Add Contact" page
   const handleAddContact = () => {
     navigate("/AddContact");
   };
 
-  // Toggle between "contacts" and "chats" modes
   const toggleButton = () => {
     setModus(!modus);
   };
@@ -153,38 +149,36 @@ const Sidebar = ({
     handleSelectChat(chat._id);
   };
 
-  // Filters contacts based on the search query
-  const handleSearch = () => {
+  function handleSearch() {
     const filteredContacts = contacts.filter((contact) => {
       return (
         contact.username.slice(0, searchQuery.length).toLowerCase() ===
         searchQuery.toLowerCase()
       );
     });
-    setSearchResults(filteredContacts); // Update search results
-    console.log(filteredContacts); // Debugging
-  };
+    setSearchResults(filteredContacts);
+    console.log(filteredContacts);
+  }
 
-  // Handles changes to the search input
   const handleQueryChange = (e) => {
     setSearchQuery(e.target.value);
     if (e.target.value.trim() === "") {
-      setSearchResults([]); // Clear results if input is empty
+      setSearchResults([]); // Clear results when the input is empty
     } else {
-      handleSearch(); // Perform search
+      handleSearch(); // Perform search when typing
     }
   };
 
   return (
-    <aside className="w-full bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md h-3/4 lg:h-full">
-      {/* Search Bar Component */}
+    <aside className="w-full sm:w-72 bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md h-full">
+      {/* Search Bar */}
       <SearchBar
         searchQuery={searchQuery}
         handleQueryChange={handleQueryChange}
         handleSearch={handleSearch}
       />
 
-      {/* Search Results Display */}
+      {/* Show search results */}
       <div className="search-results">
         {searchResults.length > 0 && (
           <ul className="space-y-2">
@@ -214,10 +208,10 @@ const Sidebar = ({
         )}
       </div>
 
-      {/* Toggle Button (Contacts/Chats) */}
+      {/* Toggle Button */}
       <button
         onClick={toggleButton}
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center ">
+        className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center">
         {modus ? (
           <FontAwesomeIcon icon="fa-regular fa-comment" className="mr-2" />
         ) : (
@@ -229,12 +223,12 @@ const Sidebar = ({
       </button>
 
       {/* Scrollable Content Area */}
-      <div className="flex-grow overflow-y-auto h-20 lg:h-fit">
+      <div className="flex-grow overflow-y-auto">
         {modus ? (
           error ? (
             <p className="text-red-500 text-center">{error}</p>
           ) : (
-            <div className="max-h-[400px] overflow-y-auto">
+            <div className="max-h-[400px] overflow-y-auto ">
               <ContactList
                 contacts={contacts}
                 handleContactClick={handleContactClick}

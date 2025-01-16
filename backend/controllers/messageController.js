@@ -16,7 +16,7 @@ export const getMessages = async (req, res) => {
         path: "messages"
       })
 
-    res.status(200).json(messages);
+    res.status(200).json(messages.messages);
   } catch (error) {
     console.error(error, "Error");
     res.status(500).json({ error: "Failed to retrieve messages" });
