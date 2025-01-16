@@ -23,6 +23,9 @@ const io = new SocketIOServer(server, {
   },
 });
 
+// Set max listeners to avoid memory leak warning
+io.sockets.setMaxListeners(100);
+
 // Middleware zur JSON-Parsierung
 app.use(express.json());
 app.use(cors());
@@ -43,26 +46,27 @@ io.on("connection", (socket) => {
 
       // Join the socket to the chat room
       socket.join(chatRoomId);
+    } catch (error) {
+      console.log("Error: ", error);
+    }
+  });
 
+  socket.on("message", async ({ chatId, senderId, content }) => {
+    try {
+      // Check if message already exists in the chat
+      const existingMessage = await Message.findOne({ chatId, senderId, content });
 
-      socket.on("message", async ({ chatId, senderId, content }) => {
-        // Check if message already exists in the chat
-        const existingMessage = await Message.findOne({ chatId, senderId, content });
+      if (!existingMessage) {
+        const newMessage = await Message.create({ chatId, senderId, content });
 
-        if (!existingMessage) {
-          const newMessage = await Message.create({ chatId, senderId, content });
+        // Update the chat with the new message
+        const updatedChat = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }, { new: true })
+          .populate('participants', 'username')
+          .populate({ path: 'messages', populate: { path: 'senderId', select: 'username email' } });
 
-          // Update the chat with the new message
-          const updatedChat = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }, { new: true })
-            .populate('participants', 'username')
-            .populate({ path: 'messages', populate: { path: 'senderId', select: 'username email' } });
-
-
-          // Emit the new message to all members in the chat room
-          console.log(newMessage)
-          io.to(chatRoomId).emit('message', newMessage); // Send the new message to the client
-        }
-      });
+        // Emit the new message to all members in the chat room
+        io.to(chatId).emit('message', newMessage); // Ensure `chatId` is used here
+      }
     } catch (error) {
       console.log("Error: ", error);
     }
