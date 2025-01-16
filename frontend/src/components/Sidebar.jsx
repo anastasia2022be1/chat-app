@@ -120,6 +120,34 @@ const Sidebar = ({
       }
 
       handleSelectChat(chosenChat._id);
+      alert("Chat already exist");
+      console.log(chats);
+      const chosenChat = chats.find((chat) =>
+        chat.participants.some((participant) => participant._id === contactId)
+      );
+      console.log(chosenChat);
+      handleChosenChatMessage([]);
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/message/${chosenChat._id}`,
+          {
+            method: "GET",
+          }
+        );
+
+        const data = await response.json();
+
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to fetch chat messages");
+        }
+
+        console.log("Hier die Daten", data); // Update the chat messages state
+        handleChosenChatMessage(data);
+      } catch (err) {
+        setError(err.message);
+      }
+
+      handleSelectChat(chosenChat._id);
     } else {
       try {
         const token = localStorage.getItem("authToken");
