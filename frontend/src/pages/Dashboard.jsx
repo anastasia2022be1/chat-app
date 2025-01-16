@@ -5,44 +5,43 @@ import Header from "../components/Header.jsx";
 import Body from "../components/Body.jsx";
 import Message from "../components/Message.jsx";
 
-// Initialize the Socket.IO connection
 const socket = socketIO.connect("http://localhost:3000");
 
 const Dashboard = () => {
-  const [chosenChatID, setChosenChatID] = useState(null); // to store the ID of the currently selected chat
-  const [chosenChatMessages, setChosenChatMessages] = useState([]); // to store the messages of the currently selected chat
-
-  // handle actions when the selected chat changes
+  const [chosenChatID, setChosenChatID] = useState(null);
+  const [chosenChatMessages, setChosenChatMessages] = useState([]);
   useEffect(() => {
     console.log("current chatmessages in dashboard : " + chosenChatMessages);
 
-    // // If a chat is selected, register the chatRoomId with the server
     if (chosenChatID !== null) {
       socket.emit("register", {
         chatRoomId: chosenChatID,
       });
     }
-  }, [chosenChatID]); // Runs whenever chosenChatID changes
+  }, [chosenChatID, chosenChatMessages]);
 
-  // Function to handle chat selection from the sidebar
+  const handleChosenChatMessage = (chatMessage) => {
+    setChosenChatMessages(chatMessage);
+  };
+
   const handleSelectChat = (chatId) => {
     setChosenChatID(chatId);
   };
 
   return (
-    <div className="max-h-screen flex flex-col  justify-center pt-5  lg:p-auto  lg:my-auto ">
+    <div className="p-10 mt-2  flex flex-col h-full ">
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-10">
         <Header />
       </header>
 
-      <div className="flex flex-col lg:flex-row flex-grow   ">
+      <div className="flex flex-grow ">
         {/* Sidebar */}
-        <aside className="bg-gray-200 p-4 border-gray-00  ">
+        <aside className="bg-gray-200 w-50 p-4  border-gray-300 hidden lg:block  ">
           <Sidebar
             handleSelectChat={handleSelectChat}
             chosenChatID={chosenChatID}
-            setChosenChatMessages={setChosenChatMessages}
+            handleChosenChatMessage={handleChosenChatMessage}
           />
         </aside>
 
