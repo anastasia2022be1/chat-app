@@ -107,12 +107,14 @@ import Sidebar from '../components/Sidebar.jsx';
 import Header from '../components/Header.jsx';
 import Body from '../components/Body.jsx';
 import Message from '../components/Message.jsx';
+import "./dashboard.css"
 
 const socket = socketIO.connect('http://localhost:3000');
 
 const Dashboard = () => {
   const [chosenChatID, setChosenChatID] = useState(null);
   const [chosenChatMessages, setChosenChatMessages] = useState([]);
+  const [modus, setModus] = useState(false);
   useEffect(() => {
     console.log("current chatmessages in dashboard : " + chosenChatMessages)
   
@@ -122,16 +124,18 @@ const Dashboard = () => {
       });
     }
 
-  }, [chosenChatID])
+  }, [chosenChatID, chosenChatMessages])
 
-
+  const handleChosenChatMessage = (chatMessage) => {
+    setChosenChatMessages(chatMessage)
+  }
   
   const handleSelectChat = (chatId) => {
     setChosenChatID(chatId);
   };
 
   return (
-    <div className="max-h-screen flex flex-col  justify-center pt-5  lg:p-auto  lg:my-auto ">
+    <div id='main-dashboard' className=" flex flex-col  justify-center pt-5  lg:p-auto  lg:my-auto ">
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-10">
         <Header />
@@ -143,7 +147,7 @@ const Dashboard = () => {
           <Sidebar 
           handleSelectChat={handleSelectChat} 
           chosenChatID={chosenChatID}
-          setChosenChatMessages={setChosenChatMessages}
+          handleChosenChatMessage={handleChosenChatMessage}
           />
         </aside>
 

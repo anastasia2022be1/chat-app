@@ -5,8 +5,8 @@ import ContactList from "./Sidebar/ContactList.jsx";
 import ChatList from "./Sidebar/ChatList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
-  console.log("handleSelectChat in Sidebar:", handleSelectChat);
+const Sidebar = ({ handleSelectChat, handleChosenChatMessage, chosenChatID }) => {
+  console.log('handleSelectChat in Sidebar:', handleSelectChat);
   const [contacts, setContacts] = useState([]);
   const [chats, setChats] = useState([]);
   const [modus, setModus] = useState(false);
@@ -15,7 +15,7 @@ const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
   const [searchResults, setSearchResults] = useState([]);
 
   const navigate = useNavigate();
-  useEffect(() => {}, [chosenChatID]);
+
   useEffect(() => {
     const fetchContacts = async () => {
       try {
@@ -81,14 +81,43 @@ const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
     setModus(!modus);
   };
 
+
   // Creates a new chat by sending a POST request to the server.
   const handleContactClick = async (contactId) => {
-    const allParticipantIds = chats.flatMap((chat) =>
-      chat.participants.map((participant) => participant._id)
-    ); // Array of chat participants
+    setModus(!modus)
+    const allParticipantIds = chats.flatMap(chat => chat.participants.map(participant => participant._id));;// Array of chat participants 
+
+
 
     if (allParticipantIds.includes(contactId)) {
-      alert("Chat already exist");
+      console.log(chats)
+      const chosenChat = chats.find(chat => chat.participants.some(participant => participant._id === contactId))
+      console.log(chosenChat)
+      handleChosenChatMessage([])
+      try {
+        const response = await fetch(
+          `http://localhost:3000/api/message/${chosenChat._id}`,
+          {
+            method: "GET",
+          }
+        );
+  
+        const data = await response.json();
+  
+        if (!response.ok) {
+          throw new Error(data.error || "Failed to fetch chat messages");
+        }
+  
+        console.log("Hier die Daten", data); // Update the chat messages state
+       handleChosenChatMessage(data)
+      } catch (err) {
+        setError(err.message);
+      }
+  
+  
+     
+      handleSelectChat(chosenChat._id)
+      
     } else {
       try {
         const token = localStorage.getItem("authToken");
@@ -116,11 +145,36 @@ const Sidebar = ({ handleSelectChat, setChosenChatMessages, chosenChatID }) => {
         setError(err.message);
       }
     }
+
   };
 
-  const handleChatClick = async (chat) => {
-    console.log(chat);
-    setChosenChatMessages(chat.messages);
+
+  const handleChatClick = async(chat) => {
+    console.log(chat)
+    handleChosenChatMessage([])
+  
+    try {
+      const response = await fetch(
+        `http://localhost:3000/api/message/${chat._id}`,
+        {
+          method: "GET",
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to fetch chat messages");
+      }
+
+      console.log("Hier die Daten", data); // Update the chat messages state
+     handleChosenChatMessage(data)
+    } catch (err) {
+      setError(err.message);
+    }
+
+
+   
     handleSelectChat(chat._id);
   };
 
