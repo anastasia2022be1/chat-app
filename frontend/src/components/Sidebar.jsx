@@ -86,13 +86,12 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage, chosenChatID }) =>
 
   // Creates a new chat by sending a POST request to the server.
   const handleContactClick = async (contactId) => {
-
+    setModus(!modus)
     const allParticipantIds = chats.flatMap(chat => chat.participants.map(participant => participant._id));;// Array of chat participants 
 
 
 
     if (allParticipantIds.includes(contactId)) {
-      alert('Chat already exist')
       console.log(chats)
       const chosenChat = chats.find(chat => chat.participants.some(participant => participant._id === contactId))
       console.log(chosenChat)

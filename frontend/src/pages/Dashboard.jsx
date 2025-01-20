@@ -50,6 +50,7 @@ const socket = socketIO.connect('http://localhost:3000');
 const Dashboard = () => {
   const [chosenChatID, setChosenChatID] = useState(null);
   const [chosenChatMessages, setChosenChatMessages] = useState([]);
+  const [modus, setModus] = useState(false);
   useEffect(() => {
     console.log("current chatmessages in dashboard : " + chosenChatMessages)
   
@@ -78,7 +79,7 @@ const Dashboard = () => {
 
       <div className="flex flex-grow ">
         {/* Sidebar */}
-        <aside className="bg-gray-200 w-50 p-4  border-gray-300 hidden lg:block  ">
+        <aside className="bg-gray-200 w-50 p-4  border-gray-300 hidden lg:block" >
           <Sidebar 
           handleSelectChat={handleSelectChat} 
           chosenChatID={chosenChatID}
