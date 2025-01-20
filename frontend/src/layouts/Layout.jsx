@@ -3,7 +3,7 @@ import Navbar from "../components/Navbar.jsx";
 
 export default function Layout() {
   return (
-    <div className="min-h-screen flex flex-col bg-backgroundChat dark:bg-backgroundChatDark ">
+    <div className="min-h-screen flex flex-col bg-backgroundChat dark:bg-backgroundChatDark  ">
       {/* Header Section */}
       <header className="shadow-lg">
         <Navbar />
