@@ -11,7 +11,7 @@ const socket = socketIO.connect("http://localhost:3000");
 const Dashboard = () => {
   const [chosenChatID, setChosenChatID] = useState(null);
   const [chosenChatMessages, setChosenChatMessages] = useState([]);
-  const [modus, setModus] = useState(false);
+
   useEffect(() => {
     console.log("current chatmessages in dashboard : " + chosenChatMessages);
 

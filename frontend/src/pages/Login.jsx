@@ -4,7 +4,6 @@ import { text } from "@fortawesome/fontawesome-svg-core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
@@ -21,7 +20,6 @@ export default function Login() {
   }
 
   // Handle form submission
-
   async function handleSubmit(e) {
     e.preventDefault();
 
@@ -39,13 +37,12 @@ export default function Login() {
       const response = await fetch("http://localhost:3000/api/login", {
         method: "POST",
         headers: {
-           "Content-Type": "application/json",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
-
-       const data = await response.json();
+      const data = await response.json();
 
       if (!response.ok) {
         setError(data.message || "Login failed.");
@@ -53,12 +50,11 @@ export default function Login() {
       }
 
       console.log(data);
-      
 
       // Store token and usetId in localStorage
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("userId", data.userId);
-     
+
       // On successful login, redirect to the chat page
       navigate("/chat");
     } catch (error) {
@@ -111,7 +107,7 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
-              placeholder="Enter your password" 
+              placeholder="Enter your password"
             />
           </div>
 
@@ -128,15 +124,16 @@ export default function Login() {
         <div className="mt-4 text-center text-black dark:text-white">
           {/* // Link to the ForgotPassword Page */}
           <p>
-            <a href="/forgot-password" className="text-blue-600 hover:underline">
+            <a
+              href="/forgot-password"
+              className="text-blue-600 hover:underline">
               Forgot Password?
             </a>
           </p>
 
           {/* Link to Register Page */}
           <p>
-            Don't have an account?{" "}
-            <span> </span>
+            Don't have an account? <span> </span>
             <a href="/register" className="text-title hover:underline">
               Register here
             </a>

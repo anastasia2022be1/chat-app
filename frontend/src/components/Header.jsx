@@ -1,21 +1,12 @@
 import { useNavigate } from "react-router-dom";
-import { useContext } from "react";
-import { AuthContext } from "../context/AuthContext.jsx";
+import Logout from "./Logout.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Header = ({ handleMobileModus }) => {
+const Header = () => {
   const navigate = useNavigate();
-  const { logout } = useContext(AuthContext) || {};
 
   const handleSettingsClick = () => {
     navigate("/setting");
-  };
-
-  const handleLogout = () => {
-    if (logout) logout();
-    localStorage.removeItem("userId");
-    localStorage.removeItem("authToken");
-    navigate("/login");
   };
 
   return (
@@ -28,14 +19,6 @@ const Header = ({ handleMobileModus }) => {
       </div>
 
       <button
-        onClick={handleMobileModus}
-        className="lg:hidden flex items-center justify-center"
-        aria-label="Mobile Menu"
-        title="Mobile Menu">
-        New BTN
-      </button>
-
-      <button
         onClick={handleSettingsClick}
         aria-label="Settings"
         title="Settings">
@@ -45,12 +28,7 @@ const Header = ({ handleMobileModus }) => {
         />
       </button>
 
-      <button onClick={handleLogout} aria-label="Logout" title="Logout">
-        <FontAwesomeIcon
-          icon="fa-solid fa-right-from-bracket"
-          className="text-xl lg:text-2xl"
-        />
-      </button>
+      <Logout />
     </header>
   );
 };
