@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import "./body.css";
+
 // import PropTypes from 'prop-types';
 
 const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
@@ -31,7 +33,9 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
   }, [chosenChatID, socket]); // Run when chosenChatID changes
 
   return (
-    <section className="flex flex-col flex-grow h-full bg-blue-50 dark:bg-sky-950 p-4 sm:px-6 lg:px-8 overflow-y-auto">
+    <section
+      id="body"
+      className="flex flex-col flex-grow h-48 lg:min-h-[57vh] bg-blue-50 dark:bg-sky-950 p-4 sm:px-6 lg:px-8 overflow-y-auto">
       {/* Chat Messages */}
       <header className="font-bold text-xl text-center mb-4">
         {chosenChatID}
@@ -41,11 +45,11 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
           <div
             key={index}
             className={`flex ${
-              msg.senderId._id === userId ? "justify-end" : "justify-start"
+              msg.senderId === userId ? "justify-end" : "justify-start"
             }`}>
             <div
               className={`px-4 py-2 rounded-lg max-w-md shadow-md ${
-                msg.senderId._id === userId
+                msg.senderId === userId
                   ? "bg-blue-500 text-white"
                   : "bg-gray-200 text-gray-800"
               }`}>

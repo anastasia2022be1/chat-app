@@ -5,7 +5,11 @@ import ContactList from "./Sidebar/ContactList.jsx";
 import ChatList from "./Sidebar/ChatList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
+const Sidebar = ({
+  handleSelectChat,
+  handleChosenChatMessage,
+  chosenChatID,
+}) => {
   console.log("handleSelectChat in Sidebar:", handleSelectChat);
   const [contacts, setContacts] = useState([]);
   const [chats, setChats] = useState([]);
@@ -87,8 +91,18 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
     const allParticipantIds = chats.flatMap((chat) =>
       chat.participants.map((participant) => participant._id)
     ); // Array of chat participants
+    setModus(!modus);
+    const allParticipantIds = chats.flatMap((chat) =>
+      chat.participants.map((participant) => participant._id)
+    ); // Array of chat participants
 
     if (allParticipantIds.includes(contactId)) {
+      console.log(chats);
+      const chosenChat = chats.find((chat) =>
+        chat.participants.some((participant) => participant._id === contactId)
+      );
+      console.log(chosenChat);
+      handleChosenChatMessage([]);
       console.log(chats);
       const chosenChat = chats.find((chat) =>
         chat.participants.some((participant) => participant._id === contactId)
