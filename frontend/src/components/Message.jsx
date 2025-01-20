@@ -33,6 +33,7 @@ function Message({socket, chosenChatID}) {
       {/* Send Button */}
       <button
         type="submit"
+        
         className={`p-3 w-full md:w-1/6 rounded-lg transition ${
           chosenChatID === null
             ? "bg-gray-400 text-gray-700 cursor-not-allowed"

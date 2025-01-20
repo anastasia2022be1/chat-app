@@ -3,14 +3,14 @@ import Navbar from "../components/Navbar.jsx";
 
 export default function Layout() {
   return (
-    <div className="h-screen  flex flex-col bg-backgroundChat dark:bg-backgroundChatDark overflow-hidden  ">
+    <div className="min-h-screen flex flex-col bg-backgroundChat dark:bg-backgroundChatDark  ">
       {/* Header Section */}
       <header className="shadow-lg">
         <Navbar />
       </header>
 
       {/* Main Content Section */}
-      <main className="flex-grow container mx-auto px-6 overflow-hidden ">
+      <main className="flex-grow container mx-auto px-3 ">
         <Outlet />
       </main>
 
