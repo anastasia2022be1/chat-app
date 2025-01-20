@@ -8,18 +8,27 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const token = localStorage.getItem("authToken");
     if (token) {
-      setAuthState({ token }); 
+      setAuthState({ token });
     }
+    const handleBeforeUnload = () => {
+      logout();
+    };
+
+    window.addEventListener("beforeunload", handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener("beforeunload", handleBeforeUnload);
+    };
   }, []);
 
   const login = (userData) => {
     setAuthState(userData);
-    localStorage.setItem("authToken", userData.token); 
+    localStorage.setItem("authToken", userData.token);
   };
 
   const logout = () => {
     setAuthState(null);
-    localStorage.removeItem("authToken"); 
+    localStorage.removeItem("authToken");
   };
 
   return (
@@ -28,4 +37,3 @@ export function AuthProvider({ children }) {
     </AuthContext.Provider>
   );
 }
-

@@ -197,7 +197,7 @@ const Sidebar = ({
   };
 
   return (
-    <aside className="w-full sm:w-72 bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md h-full">
+    <aside className="w-full bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md h-3/4 lg:h-full">
       {/* Search Bar */}
       <SearchBar
         searchQuery={searchQuery}
@@ -238,7 +238,7 @@ const Sidebar = ({
       {/* Toggle Button */}
       <button
         onClick={toggleButton}
-        className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center">
+        className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center ">
         {modus ? (
           <FontAwesomeIcon icon="fa-regular fa-comment" className="mr-2" />
         ) : (
@@ -250,7 +250,7 @@ const Sidebar = ({
       </button>
 
       {/* Scrollable Content Area */}
-      <div className="flex-grow overflow-y-auto">
+      <div className="flex-grow overflow-y-auto h-20  lg:h-fit">
         {modus ? (
           error ? (
             <p className="text-red-500 text-center">{error}</p>
