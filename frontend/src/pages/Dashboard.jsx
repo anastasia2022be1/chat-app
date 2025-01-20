@@ -10,9 +10,9 @@ const socket = socketIO.connect("http://localhost:3000");
 const Dashboard = () => {
   const [chosenChatID, setChosenChatID] = useState(null);
   const [chosenChatMessages, setChosenChatMessages] = useState([]);
-  useEffect(() => {
-    console.log("current chatmessages in dashboard : " + chosenChatMessages);
+  const [modus, setModus] = useState(false);
 
+  useEffect(() => {
     if (chosenChatID !== null) {
       socket.emit("register", {
         chatRoomId: chosenChatID,
@@ -28,16 +28,28 @@ const Dashboard = () => {
     setChosenChatID(chatId);
   };
 
+  const handleMobileModus = () => {
+    setModus((prevModus) => {
+      const newModus = !prevModus;
+      console.log(newModus);
+      return newModus;
+    });
+  };
+
   return (
     <div className="p-10 mt-2  flex flex-col h-full ">
       {/* Header */}
-      <header className="bg-white shadow-md sticky top-0 z-10">
-        <Header />
+
+      <header className="bg-white shadow-md sticky top-0 z-10 flex items-center justify-between px-4">
+        <Header modus={modus} handleMobileModus={handleMobileModus} />
       </header>
 
       <div className="flex flex-grow ">
         {/* Sidebar */}
-        <aside className="bg-gray-200 w-50 p-4  border-gray-300 hidden lg:block  ">
+        <aside
+          className={`bg-gray-200 w-50 p-4  border-gray-300 ${
+            !modus ? "hidden lg:block" : ""
+          }`}>
           <Sidebar
             handleSelectChat={handleSelectChat}
             chosenChatID={chosenChatID}
@@ -46,7 +58,10 @@ const Dashboard = () => {
         </aside>
 
         {/* Main Content */}
-        <div className="flex flex-col flex-grow">
+        <div
+          className={`flex flex-col flex-grow ${
+            !modus ? "hidden lg:block" : ""
+          }`}>
           {/* Chat Display Area */}
           <div className="flex-grow bg-gray-50 overflow-y-auto p-4">
             <Body

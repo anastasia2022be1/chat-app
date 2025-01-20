@@ -5,11 +5,7 @@ import ContactList from "./Sidebar/ContactList.jsx";
 import ChatList from "./Sidebar/ChatList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Sidebar = ({
-  handleSelectChat,
-  handleChosenChatMessage,
-  chosenChatID,
-}) => {
+const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
   console.log("handleSelectChat in Sidebar:", handleSelectChat);
   const [contacts, setContacts] = useState([]);
   const [chats, setChats] = useState([]);
@@ -39,7 +35,7 @@ const Sidebar = ({
         }
 
         setContacts(data);
-        // console.log(data);
+        console.log(data);
       } catch (err) {
         setError(err.message);
       }
@@ -87,40 +83,12 @@ const Sidebar = ({
 
   // Creates a new chat by sending a POST request to the server.
   const handleContactClick = async (contactId) => {
+    setModus(!modus);
     const allParticipantIds = chats.flatMap((chat) =>
       chat.participants.map((participant) => participant._id)
     ); // Array of chat participants
 
     if (allParticipantIds.includes(contactId)) {
-      alert("Chat already exist");
-      console.log(chats);
-      const chosenChat = chats.find((chat) =>
-        chat.participants.some((participant) => participant._id === contactId)
-      );
-      console.log(chosenChat);
-      handleChosenChatMessage([]);
-      try {
-        const response = await fetch(
-          `http://localhost:3000/api/message/${chosenChat._id}`,
-          {
-            method: "GET",
-          }
-        );
-
-        const data = await response.json();
-
-        if (!response.ok) {
-          throw new Error(data.error || "Failed to fetch chat messages");
-        }
-
-        console.log("Hier die Daten", data); // Update the chat messages state
-        handleChosenChatMessage(data);
-      } catch (err) {
-        setError(err.message);
-      }
-
-      handleSelectChat(chosenChat._id);
-      alert("Chat already exist");
       console.log(chats);
       const chosenChat = chats.find((chat) =>
         chat.participants.some((participant) => participant._id === contactId)
