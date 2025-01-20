@@ -40,10 +40,10 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
       {messages.map((msg, index) => (
         <div
           key={index}
-          className={`flex ${msg.senderId._id === userId ? 'justify-end' : 'justify-start'}`}
+          className={`flex ${msg.senderId === userId ? 'justify-end' : 'justify-start'}`}
         >
           <div
-            className={`px-4 py-2 rounded-lg max-w-md shadow-md ${msg.senderId._id === userId ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+            className={`px-4 py-2 rounded-lg max-w-md shadow-md ${msg.senderId === userId ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
           >
             {msg.content}
           </div>
