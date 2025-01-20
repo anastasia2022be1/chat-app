@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import "./body.css"
 
 
 // import PropTypes from 'prop-types';
@@ -36,7 +37,7 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
 
 
   return (
-    <section className="flex flex-col flex-grow h-48 lg:h-full bg-blue-50 dark:bg-sky-950 p-4 sm:px-6 lg:px-8 overflow-y-auto">
+    <section id='body' className="flex flex-col flex-grow h-48 lg:min-h-[57vh] bg-blue-50 dark:bg-sky-950 p-4 sm:px-6 lg:px-8 overflow-y-auto">
     {/* Chat Messages */}
     <header className="font-bold text-xl text-center mb-4">{chosenChatID}</header>
     <div className="space-y-4">
