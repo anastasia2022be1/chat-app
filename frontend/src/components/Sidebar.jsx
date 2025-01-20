@@ -91,18 +91,8 @@ const Sidebar = ({
     const allParticipantIds = chats.flatMap((chat) =>
       chat.participants.map((participant) => participant._id)
     ); // Array of chat participants
-    setModus(!modus);
-    const allParticipantIds = chats.flatMap((chat) =>
-      chat.participants.map((participant) => participant._id)
-    ); // Array of chat participants
 
     if (allParticipantIds.includes(contactId)) {
-      console.log(chats);
-      const chosenChat = chats.find((chat) =>
-        chat.participants.some((participant) => participant._id === contactId)
-      );
-      console.log(chosenChat);
-      handleChosenChatMessage([]);
       console.log(chats);
       const chosenChat = chats.find((chat) =>
         chat.participants.some((participant) => participant._id === contactId)

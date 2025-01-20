@@ -1,7 +1,4 @@
 import { useState, useEffect } from "react";
-import "./body.css";
-
-// import PropTypes from 'prop-types';
 
 const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
   const [messages, setMessages] = useState([]);
