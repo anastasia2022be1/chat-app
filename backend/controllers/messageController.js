@@ -1,14 +1,11 @@
 import Chat from "../models/Chat.js";
+import Message from "../models/Message.js"
 
 // GET show all messages in one chat
 // http://localhost:3000/api/message:chatId
 export const getMessages = async (req, res) => {
   try {
     const chatId = req.params.chatId;
-
-    //     if (!chatId) {
-    //       res.status(200).json([]);
-    //     }
 
     const messages = await Chat.findById(chatId)
       //   .populate("participants", "username email")

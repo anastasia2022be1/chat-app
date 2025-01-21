@@ -3,16 +3,25 @@ import { AuthContext } from "../context/AuthContext";
 import { Link } from "react-router-dom";
 import "../Home.css";
 
+/**
+ * Home component represents the homepage of the application.
+ * - Displays a welcome message to new users and logged-in users.
+ * - Simulates a chat experience with predefined messages that appear sequentially.
+ * - Provides login and registration options if the user is not authenticated.
+ * - Displays a button to navigate to the chat page if the user is authenticated.
+ *
+ * @returns {JSX.Element} The rendered Home component with the welcome section and chat simulation.
+ */
 export default function Home() {
-  const { authState } = useContext(AuthContext);
-  const [messages, setMessages] = useState([]);
+  const { authState } = useContext(AuthContext); // Using AuthContext to check user authentication state
+  const [messages, setMessages] = useState([]); // State to hold chat messages
 
+  // Simulating chat messages with a delay using useEffect
   useEffect(() => {
-    // Simulating chat messages
-    setMessages([
-      { text: "Hey there! Welcome to Talki! 🎉", fromRight: true },
-    ]);
+    // Initial message
+    setMessages([{ text: "Hey there! Welcome to Talki! 🎉", fromRight: true }]);
 
+    // Timer 1: Add a message from the left side after 1 second
     const timer1 = setTimeout(() => {
       setMessages((prev) => [
         ...prev,
@@ -23,13 +32,18 @@ export default function Home() {
       ]);
     }, 1000);
 
+    // Timer 2: Add a message from the right side after 2 seconds
     const timer2 = setTimeout(() => {
       setMessages((prev) => [
         ...prev,
-        { text: "Absolutely! It's fast, simple, and fun to use! 🚀", fromRight: true },
+        {
+          text: "Absolutely! It's fast, simple, and fun to use! 🚀",
+          fromRight: true,
+        },
       ]);
     }, 2000);
 
+    // Timer 3: Add a message from the left side after 3 seconds
     const timer3 = setTimeout(() => {
       setMessages((prev) => [
         ...prev,
@@ -40,13 +54,13 @@ export default function Home() {
       ]);
     }, 3000);
 
+    // Cleanup function to clear timers if component unmounts
     return () => {
       clearTimeout(timer1);
       clearTimeout(timer2);
       clearTimeout(timer3);
     };
   }, []);
-
 
   return (
     <div className="max-h-screen flex flex-col items-center justify-center overflow-hidden bg-backgroundChat dark:bg-backgroundChatDark px-4 sm:px-6 lg:px-8 ">
@@ -60,6 +74,7 @@ export default function Home() {
         </p>
 
         <div className="mt-6 flex flex-col sm:flex-row justify-center gap-4">
+          {/* Conditionally render login, register or chat buttons based on authState */}
           {!authState ? (
             <>
               <Link to="/login">
@@ -79,7 +94,7 @@ export default function Home() {
                 Welcome back! Ready to chat?
               </p>
               <Link to="/chat">
-              <button className="w-full sm:w-40 px-6 py-3 mt-5 bg-button text-backgroundBox rounded-lg hover:bg-blue-400 transition">
+                <button className="w-full sm:w-40 px-6 py-3 mt-5 bg-button text-backgroundBox rounded-lg hover:bg-blue-400 transition">
                   Go to Chat
                 </button>
               </Link>
@@ -91,12 +106,14 @@ export default function Home() {
       {/* Chat Simulation */}
       <div className="chat-simulation text-center mt-12 sm:mt-16 w-full max-w-4xl px-4">
         <div className="flex flex-col space-y-6">
+          {/* Render simulated messages */}
           {messages.map((message, index) => (
             <div
               key={index}
               className={`flex ${
                 message.fromRight ? "justify-end" : "justify-start"
               } items-center space-x-4`}>
+              {/* Display avatar for messages from the left */}
               {!message.fromRight && (
                 <div className="w-10 h-10 rounded-full bg-gray-300 flex items-center justify-center">
                   AB
@@ -110,6 +127,7 @@ export default function Home() {
                 }`}>
                 {message.text}
               </div>
+              {/* Display avatar for messages from the right */}
               {message.fromRight && (
                 <div className="w-10 h-10 rounded-full bg-blue-300 flex items-center justify-center ">
                   CD

@@ -1,57 +1,83 @@
+/**
+ * `AddContact` component allows the user to add a new contact by entering the contact's email.
+ * It handles the validation of the input, sending the request to the server to add the contact,
+ * and displays appropriate success or error messages.
+ * After a successful addition, it redirects the user to the chat page.
+ *
+ * @component
+ * @example
+ * // Usage:
+ * <AddContact />
+ *
+ * @returns {JSX.Element} - A JSX element representing the contact addition form with input for email, error/success messages, and a submit button.
+ */
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 export default function AddContact() {
-  const [contactEmail, setContactEmail] = useState("");
-  const [error, setError] = useState("");
-  const [successMessage, setSuccessMessage] = useState("");
+  const [contactEmail, setContactEmail] = useState(""); // State to store the entered contact email
+  const [error, setError] = useState(""); // State to store error messages
+  const [successMessage, setSuccessMessage] = useState(""); // State to store success messages
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Hook to navigate to different routes
 
+  /**
+   * Handles the change in the contact email input field.
+   *
+   * @param {Object} e - The event object from the input change.
+   * @returns {void}
+   */
   const handleChange = (e) => {
-    setContactEmail(e.target.value);
+    setContactEmail(e.target.value); // Update the contact email state
   };
 
+  /**
+   * Handles the form submission for adding a new contact.
+   * Validates the email, sends a POST request to the server, and displays success or error messages.
+   *
+   * @param {Object} e - The event object from the form submission.
+   * @returns {void}
+   */
   const handleSubmit = async (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent the default form submission behavior
 
     if (!contactEmail) {
-      setError("Contact email is required!");
+      setError("Contact email is required!"); // Display error if email is not entered
       return;
     }
 
-    setError("");
+    setError(""); // Reset the error state
     try {
-      const token = localStorage.getItem("authToken");
+      const token = localStorage.getItem("authToken"); // Get the auth token from localStorage
 
       const response = await fetch("http://localhost:3000/api/addcontact", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // Include the token in the request headers
         },
-        body: JSON.stringify({ contactEmail }),
+        body: JSON.stringify({ contactEmail }), // Send the contact email in the request body
       });
 
-      const data = await response.json();
+      const data = await response.json(); // Parse the response data
 
       if (!response.ok) {
-        setError(data.error || "Failed to add contact!");
+        setError(data.error || "Failed to add contact!"); // Display error if request fails
         return;
       }
 
-      setError("");
-      setSuccessMessage("🎉 Contact added successfully! 🎉");
+      setError(""); // Reset the error state
+      setSuccessMessage("🎉 Contact added successfully! 🎉"); // Display success message
 
-      // Wait for 1 seconds, then navigate to the chat page
+      // Wait for 1 second, then navigate to the chat page
       setTimeout(() => {
-        setSuccessMessage("");
-        navigate("/chat");
+        setSuccessMessage(""); // Clear the success message
+        navigate("/chat"); // Redirect the user to the chat page
       }, 1000);
     } catch (error) {
       console.error("Error adding contact:", error);
-      setError("An error occurred. Please try again.");
+      setError("An error occurred. Please try again."); // Display error if an exception occurs
     }
   };
 

@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Login.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Login.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+/**
+ * Login component provides a user interface for users to log into the application.
+ * It includes form validation, error handling, and sending login data to the server.
+ * Upon successful login, it stores the authentication token and user ID in local storage and redirects to the chat page.
+ *
+ * @component
+ * @example
+ * return (
+ *   &lt;Login />
+ * )
+ */
+export default function Login() {
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  /**
+   * Handles input field changes and updates the form data state.
+   *
+   * @param {Object} e - The event object triggered by input field changes.
+   */
+  function handleChange(e) {
+    const { name, value } = e.target;
+    setFormData((prevData) => ({ ...prevData, [name]: value }));
+  }
+
+  /**
+   * Handles the form submission for logging in.
+   * It validates the input fields, sends a POST request to the backend for authentication,
+   * and redirects to the chat page if successful.
+   *
+   * @param {Object} e - The event object from the form submission.
+   * @async
+   */
+  async function handleSubmit(e) {
+    e.preventDefault();
+
+    // Validate if both email and password fields are filled
+    if (!formData.email || !formData.password) {
+      setError("Both fields are required!");
+      return;
+    }
+
+    // Clear any previous errors
+    setError("");
+
+    try {
+      // Send the login data to the backend for verification
+      const response = await fetch("http://localhost:3000/api/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      // Handle unsuccessful login attempt
+      if (!response.ok) {
+        setError(data.message || "Login failed.");
+        return;
+      }
+
+      console.log(data);
+
+      // Store token and userId in localStorage
+      localStorage.setItem("authToken", data.token);
+      localStorage.setItem("userId", data.userId);
+
+      // On successful login, redirect to the chat page
+      navigate("/chat");
+    } catch (error) {
+      console.error("Login failed:", error);
+      setError("An error occurred. Please try again.");
+    }
+  }
+
+  return (
+    &lt;div className="flex flex-col max-h-screen items-center justify-center p-10">
+      &lt;div className="bg-white bg-opacity-90 dark:bg-gray-800 p-8 mt-20 rounded-lg shadow-xl w-full max-w-md sm:max-w-lg transition-all transform hover:scale-105">
+        &lt;h2 className="text-3xl font-semibold text-center mb-6 text-backgroundChatDark dark:text-textColorDark">
+          Login
+        &lt;/h2>
+
+        {/* Display error message if any */}
+        {error &amp;&amp; (
+          &lt;p className="text-center mb-4 text-yellow-800 bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
+            &lt;FontAwesomeIcon
+              icon={faInfoCircle}
+              className="text-xl text-yellow-800"
+            />
+            &lt;span>{error}&lt;/span>
+          &lt;/p>
+        )}
+
+        {/* Login form */}
+        &lt;form onSubmit={handleSubmit} className="space-y-8">
+          {/* Email input */}
+          &lt;div>
+            &lt;label className="block text-lg font-medium text-title">
+              Email
+            &lt;/label>
+            &lt;input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+              placeholder="Enter your email"
+            />
+          &lt;/div>
+
+          {/* Password input */}
+          &lt;div>
+            &lt;label className="block text-lg font-medium text-title">
+              Password
+            &lt;/label>
+            &lt;input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+              placeholder="Enter your password"
+            />
+          &lt;/div>
+
+          {/* Submit Button */}
+          &lt;div className="text-center">
+            &lt;button
+              type="submit"
+              className="w-full py-3 bg-button mt-6 text-white font-semibold rounded-lg hover:bg-blueCustom transition duration-300 ease-in-out">
+              Login
+            &lt;/button>
+          &lt;/div>
+        &lt;/form>
+
+        &lt;div className="mt-4 text-center text-black dark:text-white">
+          {/* Link to Forgot Password Page */}
+          &lt;p>
+            &lt;a
+              href="/forgot-password"
+              className="text-blue-600 hover:underline">
+              Forgot Password?
+            &lt;/a>
+          &lt;/p>
+
+          {/* Link to Register Page */}
+          &lt;p>
+            Don't have an account? &lt;span> &lt;/span>
+            &lt;a href="/register" className="text-title hover:underline">
+              Register here
+            &lt;/a>
+          &lt;/p>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 21 2025 13:36:06 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

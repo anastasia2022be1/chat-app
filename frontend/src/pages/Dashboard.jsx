@@ -1,3 +1,15 @@
+/**
+ * `Dashboard` component represents the main chat dashboard, displaying a sidebar, header, body (chat messages), and message input area.
+ * It establishes a connection with the server using Socket.io and manages the state for the selected chat and its messages.
+ * The component also listens for new messages in a chosen chat room and updates the chat view accordingly.
+ *
+ * @component
+ * @example
+ * // Usage:
+ * <Dashboard />
+ *
+ * @returns {JSX.Element} - A JSX element representing the dashboard layout with header, sidebar, chat body, and message input area.
+ */
 import { useEffect, useState } from "react";
 import socketIO from "socket.io-client";
 import Sidebar from "../components/Sidebar.jsx";
@@ -6,15 +18,22 @@ import Body from "../components/Body.jsx";
 import Message from "../components/Message.jsx";
 import "./dashboard.css";
 
+// Establishing the socket connection to the server
 const socket = socketIO.connect("http://localhost:3000");
 
 const Dashboard = () => {
+  // State variables to store the selected chat ID and messages of the chosen chat
   const [chosenChatID, setChosenChatID] = useState(null);
   const [chosenChatMessages, setChosenChatMessages] = useState([]);
 
+  /**
+   * Hook to manage the registration of the chosen chat room and listen for new messages.
+   * The effect runs when the `chosenChatID` or `chosenChatMessages` change.
+   *
+   * @returns {void}
+   */
   useEffect(() => {
-    console.log("current chatmessages in dashboard : " + chosenChatMessages);
-
+    // Registering to the chat room with the chosen chat ID
     if (chosenChatID !== null) {
       socket.emit("register", {
         chatRoomId: chosenChatID,
@@ -22,29 +41,40 @@ const Dashboard = () => {
     }
   }, [chosenChatID, chosenChatMessages]);
 
+  /**
+   * Handles the incoming chat message and updates the chat messages state.
+   *
+   * @param {Array} chatMessage - The new message(s) for the selected chat room.
+   * @returns {void}
+   */
   const handleChosenChatMessage = (chatMessage) => {
-    setChosenChatMessages(chatMessage);
+    setChosenChatMessages(chatMessage); // Update the messages of the chosen chat
   };
 
+  /**
+   * Sets the chosen chat room by updating the `chosenChatID` state.
+   *
+   * @param {string} chatId - The ID of the selected chat room.
+   * @returns {void}
+   */
   const handleSelectChat = (chatId) => {
-    setChosenChatID(chatId);
+    setChosenChatID(chatId); // Update the selected chat room ID
   };
 
   return (
     <div
       id="main-dashboard"
-      className=" flex flex-col  justify-center pt-5  lg:p-auto  lg:my-auto ">
+      className=" flex flex-col justify-center pt-5 lg:p-auto lg:my-auto ">
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-10">
         <Header />
       </header>
 
-      <div className="flex flex-col lg:flex-row flex-grow   ">
+      <div className="flex flex-col lg:flex-row flex-grow">
         {/* Sidebar */}
-        <aside className="bg-gray-200 p-4 border-gray-00  ">
+        <aside className="bg-gray-200 p-4 border-gray-00">
           <Sidebar
             handleSelectChat={handleSelectChat}
-            chosenChatID={chosenChatID}
             handleChosenChatMessage={handleChosenChatMessage}
           />
         </aside>

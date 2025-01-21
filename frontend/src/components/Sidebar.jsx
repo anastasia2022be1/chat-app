@@ -5,12 +5,17 @@ import ContactList from "./Sidebar/ContactList.jsx";
 import ChatList from "./Sidebar/ChatList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Sidebar = ({
-  handleSelectChat,
-  handleChosenChatMessage,
-  chosenChatID,
-}) => {
-  console.log("handleSelectChat in Sidebar:", handleSelectChat);
+/**
+ * Sidebar component that handles displaying contacts and chats.
+ * Allows users to toggle between contact list and chat list,
+ * search for contacts, and initiate new chats.
+ *
+ * @param {Object} props - The component's props.
+ * @param {Function} props.handleSelectChat - Function to handle selecting a chat.
+ * @param {Function} props.handleChosenChatMessage - Function to handle updating chosen chat messages.
+ * @returns {JSX.Element} The Sidebar component.
+ */
+const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
   const [contacts, setContacts] = useState([]);
   const [chats, setChats] = useState([]);
   const [modus, setModus] = useState(false);
@@ -20,6 +25,10 @@ const Sidebar = ({
 
   const navigate = useNavigate();
 
+  /**
+   * Fetches the contact list from the API.
+   * Sets the contacts state with the fetched data.
+   */
   useEffect(() => {
     const fetchContacts = async () => {
       try {
@@ -39,7 +48,6 @@ const Sidebar = ({
         }
 
         setContacts(data);
-        console.log(data);
       } catch (err) {
         setError(err.message);
       }
@@ -65,7 +73,6 @@ const Sidebar = ({
         if (!response.ok) {
           throw new Error(data.error || "Failed to fetch chats");
         }
-        console.log(data);
 
         setChats(data);
       } catch (err) {
@@ -77,15 +84,27 @@ const Sidebar = ({
     fetchChats();
   }, [modus]);
 
+  /**
+   * Navigates to the 'AddContact' page when adding a new contact.
+   */
   const handleAddContact = () => {
     navigate("/AddContact");
   };
 
+  /**
+   * Toggles the view between contacts and chats.
+   */
   const toggleButton = () => {
     setModus(!modus);
   };
 
-  // Creates a new chat by sending a POST request to the server.
+  /**
+   * Handles a click on a contact.
+   * If a chat with the contact exists, it fetches the chat messages.
+   * If no chat exists, it creates a new chat and navigates to it.
+   *
+   * @param {string} contactId - The ID of the selected contact.
+   */
   const handleContactClick = async (contactId) => {
     setModus(!modus);
     const allParticipantIds = chats.flatMap((chat) =>
@@ -119,6 +138,11 @@ const Sidebar = ({
         setError(err.message);
       }
 
+      /**
+       * Handles a click on a chat, fetching the messages for the selected chat.
+       *
+       * @param {Object} chat - The chat object that was clicked.
+       */
       handleSelectChat(chosenChat._id);
     } else {
       try {
@@ -149,8 +173,10 @@ const Sidebar = ({
     }
   };
 
+  /**
+   * Get messages from the selected chat.
+   */
   const handleChatClick = async (chat) => {
-    console.log(chat);
     handleChosenChatMessage([]);
 
     try {
@@ -167,7 +193,6 @@ const Sidebar = ({
         throw new Error(data.error || "Failed to fetch chat messages");
       }
 
-      console.log("Hier die Daten", data); // Update the chat messages state
       handleChosenChatMessage(data);
     } catch (err) {
       setError(err.message);
@@ -176,6 +201,9 @@ const Sidebar = ({
     handleSelectChat(chat._id);
   };
 
+  /**
+   * Handles the search functionality for filtering contacts based on the search query.
+   */
   function handleSearch() {
     const filteredContacts = contacts.filter((contact) => {
       return (
@@ -187,6 +215,11 @@ const Sidebar = ({
     console.log(filteredContacts);
   }
 
+  /**
+   * Handles changes to the search query and triggers search when typing.
+   *
+   * @param {Object} e - The event object for the input change.
+   */
   const handleQueryChange = (e) => {
     setSearchQuery(e.target.value);
     if (e.target.value.trim() === "") {

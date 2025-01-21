@@ -1,30 +1,39 @@
 import { useState } from "react";
 
 // Message Component
-function Message({socket, chosenChatID}) {
-  const [message, setMessage] = useState("")
+function Message({ socket, chosenChatID }) {
+  const [message, setMessage] = useState("");
 
-  const userId = localStorage.getItem("userId")
+  const userId = localStorage.getItem("userId");
 
+  /**
+   * handleSend function is triggered when the user submits the form.
+   * It emits a message to the server through the socket connection.
+   * Clears the input field after sending the message.
+   *
+   * @param {Object} e - The event object triggered by the form submission.
+   */
   const handleSend = (e) => {
     e.preventDefault();
-      socket.emit("message", {
-        chatId: chosenChatID,
-        senderId: userId,
-        content: message,
-      });
-      setMessage(""); // Clear the input field after sending the message
-
+    socket.emit("message", {
+      chatId: chosenChatID,
+      senderId: userId,
+      content: message,
+    });
+    setMessage(""); // Clear the input field after sending the message
   };
   return (
     <form
       onSubmit={handleSend}
-      className="flex flex-col md:flex-row items-center p-4 bg-input dark:bg-inputDark border-t border-blue-800 dark:border-gray-700 gap-3"
-    >
+      className="flex flex-col md:flex-row items-center p-4 bg-input dark:bg-inputDark border-t border-blue-800 dark:border-gray-700 gap-3">
       {/* Input Field */}
       <input
         type="text"
-        placeholder={chosenChatID === null ? "Click on a chat to start messaging" : "Type your message..."}
+        placeholder={
+          chosenChatID === null
+            ? "Click on a chat to start messaging"
+            : "Type your message..."
+        }
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         className="flex-grow w-full md:w-auto p-3 border border-blue-500 dark:border-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
@@ -34,19 +43,15 @@ function Message({socket, chosenChatID}) {
       {/* Send Button */}
       <button
         type="submit"
-
         className={`p-3 w-full md:w-1/6 rounded-lg transition ${
           chosenChatID === null
             ? "bg-gray-400 text-gray-700 cursor-not-allowed"
             : "bg-blue-500 text-white hover:bg-blue-600"
-        }`}
-      >
+        }`}>
         Send
       </button>
     </form>
   );
-
 }
 
 export default Message;
-

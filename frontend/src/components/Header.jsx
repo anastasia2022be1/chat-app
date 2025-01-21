@@ -2,9 +2,24 @@ import { useNavigate } from "react-router-dom";
 import Logout from "./Logout.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+/**
+ * Header component represents the top navigation bar for the app.
+ * It includes:
+ * - The "Talki" logo on the left side (visible on larger screens).
+ * - A button for navigating to the settings page.
+ * - A logout button to log the user out.
+ *
+ * The component uses React Router's `useNavigate` hook for navigation to the settings page.
+ *
+ * @returns {JSX.Element} The rendered header containing the app logo, settings button, and logout button.
+ */
 const Header = () => {
   const navigate = useNavigate();
 
+  /**
+   * handleSettingsClick is triggered when the settings button is clicked.
+   * It navigates to the settings page.
+   */
   const handleSettingsClick = () => {
     navigate("/setting");
   };

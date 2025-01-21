@@ -1,4 +1,3 @@
-
 import { Route, Routes } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext.jsx";
 import Layout from "./layouts/Layout.jsx";
@@ -15,36 +14,44 @@ import ProtectedRoute from "./ProtectedRoute.jsx";
 import AddContact from "./pages/AddContact.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 
+/**
+ * Main application component.
+ * Wraps the routes and manages context providers for authentication and theme.
+ * @returns {JSX.Element} The root component of the app.
+ */
 function App() {
-  
   return (
     <AuthProvider>
-       <ThemeProvider>
-      <Routes>
-        <Route path="/" element={<Layout />}>
-          <Route index element={<Home />} />
-          <Route path="register" element={<Register />} />
-          <Route path="login" element={<Login />} />
-          <Route path="/forgot-password" element={<ForgotPassword />} />
-          <Route path="/validate-reset-password/:token" element={<ValidateResetToken />} />
-          <Route path="/reset-password/:token" element={<ResetPassword />} />
+      <ThemeProvider>
+        {/* Routes definition */}
+        <Routes>
+          <Route path="/" element={<Layout />}>
+            {/* Public routes */}
+            <Route index element={<Home />} />
+            <Route path="register" element={<Register />} />
+            <Route path="login" element={<Login />} />
+            <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route
+              path="/validate-reset-password/:token"
+              element={<ValidateResetToken />}
+            />
+            <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-          <Route element={<ProtectedRoute />}>
-            <Route path="chat" element={<Dashboard />} />
-            <Route path="setting" element={<Setting />} />
-            <Route path="/AddContact" element={<AddContact />} />
-            <Route path="/chat/:contactId" element={<Dashboard />} />
+            {/* Protected routes (requires authentication) */}
+            <Route element={<ProtectedRoute />}>
+              <Route path="chat" element={<Dashboard />} />
+              <Route path="setting" element={<Setting />} />
+              <Route path="/AddContact" element={<AddContact />} />
+              <Route path="/chat/:contactId" element={<Dashboard />} />
+            </Route>
+
+            {/* Catch-all route for 404 page */}
+            {/* <Route path="*" element={<NotFound />} /> */}
           </Route>
-
-         
-
-          {/* <Route path="*" element={<NotFound />} /> */}
-        </Route>
-      </Routes>
+        </Routes>
       </ThemeProvider>
     </AuthProvider>
   );
 }
 
 export default App;
-
