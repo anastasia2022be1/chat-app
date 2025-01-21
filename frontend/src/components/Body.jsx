@@ -130,6 +130,7 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
             className={`flex ${
               msg.senderId._id === userId ? "justify-end" : "justify-start"
             } group`}>
+              
             {/* Profile Picture */}
             <div
               className={`flex-shrink-0 ${
