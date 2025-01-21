@@ -1,6 +1,5 @@
 import Chat from "../models/Chat.js";
-import Message from "../models/Message.js"
-
+import Message from "../models/Message.js";
 // GET show all messages in one chat
 // http://localhost:3000/api/message:chatId
 export const getMessages = async (req, res) => {
@@ -8,11 +7,19 @@ export const getMessages = async (req, res) => {
     const chatId = req.params.chatId;
 
     const messages = await Chat.findById(chatId)
-      //   .populate("participants", "username email")
       .populate({
-        path: "messages",
-      });
+        path: 'messages',
+        populate: {
+          path: 'senderId',
+          select: 'username _id profilePicture'
+        }
+      })
+      
 
+    if (!messages) {
+      return res.status(404).json({ error: "Chat not found" });
+    }
+    console.log("here the message controller: ", messages.messages)
     res.status(200).json(messages.messages);
   } catch (error) {
     console.error(error, "Error");

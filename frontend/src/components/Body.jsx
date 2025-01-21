@@ -91,6 +91,7 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
 
   // Handle message deletion
   const handleDeleteMessage = async (messageId) => {
+    console.log(messageId)
     try {
       const response = await fetch(
         `http://localhost:3000/api/message/${messageId}`,
@@ -127,16 +128,37 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
           <div
             key={msg._id}
             className={`flex ${
-              msg.senderId === userId ? "justify-end" : "justify-start"
+              msg.senderId._id === userId ? "justify-end" : "justify-start"
             } group`}>
-            <div
-              className={`relative px-7 py-3 rounded-lg max-w-md shadow-md ${
-                msg.senderId === userId
+            <div>
+              {
+              msg.senderId.profilePicture !== "" ? <div>
+                <img 
+                  src={`http://localhost:3000${msg.senderId.profilePicture}`}
+                  alt="Profile"
+                  width={20}
+                  className="rounded-full flex"  
+                />
+              </div> : <div>
+                <img 
+                  src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
+                  alt="Profile"
+                  width={20}
+                  className="rounded-full"  
+                />
+              </div>
+            }
+          </div>
+          <div
+            className={`relative px-7 py-3 rounded-lg max-w-md shadow-md ${
+                msg.senderId._id === userId
                   ? "bg-blue-500 text-white"
                   : "bg-gray-200 text-gray-800"
               }`}>
-              {msg.content}
-              {msg.senderId === userId && (
+              <strong>{msg.senderId.username}</strong>
+            <p>{msg.content}</p>
+            <p className="text-xs">{msg.createdAt}</p>
+              {msg.senderId._id === userId && (
                 <button
                   onClick={() => handleDeleteMessage(msg._id)}
                   className="absolute top-3 right-0 w-6 h-6  flex items-center justify-center bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
