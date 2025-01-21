@@ -3,6 +3,7 @@ import { useState } from "react";
 // Message Component
 function Message({socket, chosenChatID}) {
   const [message, setMessage] = useState("")
+
   const userId = localStorage.getItem("userId")
 
   const handleSend = (e) => {
@@ -13,7 +14,7 @@ function Message({socket, chosenChatID}) {
         content: message,
       });
       setMessage(""); // Clear the input field after sending the message
-    
+
   };
   return (
     <form
@@ -29,11 +30,11 @@ function Message({socket, chosenChatID}) {
         className="flex-grow w-full md:w-auto p-3 border border-blue-500 dark:border-blue-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         disabled={chosenChatID === null} // Disable input if no chat is selected
       />
-  
+
       {/* Send Button */}
       <button
         type="submit"
-        
+
         className={`p-3 w-full md:w-1/6 rounded-lg transition ${
           chosenChatID === null
             ? "bg-gray-400 text-gray-700 cursor-not-allowed"
@@ -44,7 +45,7 @@ function Message({socket, chosenChatID}) {
       </button>
     </form>
   );
-  
+
 }
 
 export default Message;

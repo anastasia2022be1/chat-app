@@ -14,13 +14,37 @@ export const getMessages = async (req, res) => {
     const messages = await Chat.findById(chatId)
       //   .populate("participants", "username email")
       .populate({
-        path: "messages"
-      })
+        path: "messages",
+      });
 
     res.status(200).json(messages.messages);
   } catch (error) {
     console.error(error, "Error");
     res.status(500).json({ error: "Failed to retrieve messages" });
+  }
+};
+
+// DELETE a message by ID
+// http://localhost:3000/api/message/:messageId
+export const deleteMessage = async (req, res) => {
+  try {
+    const messageId = req.params.messageId;
+
+    // Remove the message from the Message model
+    const deletedMessage = await Message.findByIdAndDelete(messageId);
+    if (!deletedMessage) {
+      return res.status(404).json({ error: "Message not found" });
+    }
+    // Remove the message reference from the associated Chat
+    await Chat.updateOne(
+      { messages: messageId },
+      { $pull: { messages: messageId } }
+    );
+
+    res.status(200).json({ message: "Message deleted successfully" });
+  } catch (error) {
+    console.error(error, "Error");
+    res.status(500).json({ error: "Failed to delete message" });
   }
 };
 
@@ -74,17 +98,12 @@ export const getMessages = async (req, res) => {
 //   //  // Combine searched messages
 //   //   const messages = [...messagesFromMe, ...messagesToMe];
 
-   
-
 //     res.status(200).json(messages);
 //   } catch (error) {
 //     console.error(error, "Error");
 //     res.status(500).json({ error: "Failed to retrieve messages" });
 //   }
 // };
-
-
-
 
 // export const createMessage = async (req, res) => {
 //     try {
@@ -93,8 +112,6 @@ export const getMessages = async (req, res) => {
 //         const {chatId:receiverId} = req.params
 
 //         const newMessage = await Message.create({ receiverId, content, senderId });
-
-       
 
 //         //socket :
 //         // Get the receiver socket ID
