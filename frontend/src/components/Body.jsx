@@ -91,7 +91,7 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
 
   // Handle message deletion
   const handleDeleteMessage = async (messageId) => {
-    console.log(messageId)
+    console.log(messageId);
     try {
       const response = await fetch(
         `http://localhost:3000/api/message/${messageId}`,
@@ -130,38 +130,42 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
             className={`flex ${
               msg.senderId._id === userId ? "justify-end" : "justify-start"
             } group`}>
-            <div>
-              {
-              msg.senderId.profilePicture !== "" ? <div>
-                <img 
+            {/* Profile Picture */}
+            <div
+              className={`flex-shrink-0 ${
+                msg.senderId._id === userId ? "order-last ml-2" : "mr-2"
+              }`}>
+              {msg.senderId.profilePicture !== "" ? (
+                <img
                   src={`http://localhost:3000${msg.senderId.profilePicture}`}
                   alt="Profile"
-                  width={20}
-                  className="rounded-full flex"  
+                  width={40}
+                  className="rounded-full"
                 />
-              </div> : <div>
-                <img 
+              ) : (
+                <img
                   src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
                   alt="Profile"
-                  width={20}
-                  className="rounded-full"  
+                  width={40}
+                  className="rounded-full"
                 />
-              </div>
-            }
-          </div>
-          <div
-            className={`relative px-7 py-3 rounded-lg max-w-md shadow-md ${
+              )}
+            </div>
+
+            {/* Message */}
+            <div
+              className={`relative px-4 py-2 rounded-lg max-w-md shadow-md ${
                 msg.senderId._id === userId
-                  ? "bg-blue-500 text-white"
+                  ? "bg-blue-500 text-white "
                   : "bg-gray-200 text-gray-800"
               }`}>
-              <strong>{msg.senderId.username}</strong>
-            <p>{msg.content}</p>
-            <p className="text-xs">{msg.createdAt}</p>
+              <strong className="block">{msg.senderId.username}</strong>
+              <p>{msg.content}</p>
+              <p className="text-xs mt-1">{msg.createdAt}</p>
               {msg.senderId._id === userId && (
                 <button
                   onClick={() => handleDeleteMessage(msg._id)}
-                  className="absolute top-3 right-0 w-6 h-6  flex items-center justify-center bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
+                  className="absolute top-0 right-0 w-6 h-6  flex items-center justify-center bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
                   <span className="text-xl font-bold">×</span>
                 </button>
               )}
