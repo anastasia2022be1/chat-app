@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import "./body.css"
+
 
 
 // import PropTypes from 'prop-types';
@@ -44,12 +44,33 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
       {messages.map((msg, index) => (
         <div
           key={index}
-          className={`flex ${msg.senderId === userId ? 'justify-end' : 'justify-start'}`}
+          className={`flex ${msg.senderId._id === userId ? 'justify-end' : 'justify-start'}`}
         >
+          <div>
+            {
+              msg.senderId.profilePicture !== "" ? <div>
+                <img 
+                  src={`http://localhost:3000${msg.senderId.profilePicture}`}
+                  alt="Profile"
+                  width={20}
+                  className="rounded-full flex"  
+                />
+              </div> : <div>
+                <img 
+                  src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
+                  alt="Profile"
+                  width={20}
+                  className="rounded-full"  
+                />
+              </div>
+            }
+          </div>
           <div
-            className={`px-4 py-2 rounded-lg max-w-md shadow-md ${msg.senderId === userId ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
+            className={`px-4 py-2 rounded-lg max-w-md shadow-md ${msg.senderId._id === userId ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}`}
           >
-            {msg.content}
+            <strong>{msg.senderId.username}</strong>
+            <p>{msg.content}</p>
+            <p className="text-xs">{msg.createdAt}</p>
           </div>
         </div>
       ))}

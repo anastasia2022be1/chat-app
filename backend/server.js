@@ -58,14 +58,19 @@ io.on("connection", (socket) => {
 
       if (!existingMessage) {
         const newMessage = await Message.create({ chatId, senderId, content });
-
+        const populatedMessage = await Message.findById(newMessage._id)
+          .populate({
+            path: 'senderId',
+            select: 'username _id profilePicture'
+          });
         // Update the chat with the new message
         const updatedChat = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }, { new: true })
           .populate('participants', 'username')
-          .populate({ path: 'messages', populate: { path: 'senderId', select: 'username email' } });
+          .populate({ path: 'messages', populate: { path: 'senderId', select: 'username email profilePicture' } });
 
         // Emit the new message to all members in the chat room
-        io.to(chatId).emit('message', newMessage); // Ensure `chatId` is used here
+        console.log(populatedMessage)
+        io.to(chatId).emit('message', populatedMessage); // Ensure `chatId` is used here
       }
     } catch (error) {
       console.log("Error: ", error);

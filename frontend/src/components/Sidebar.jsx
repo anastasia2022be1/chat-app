@@ -5,7 +5,7 @@ import ContactList from "./Sidebar/ContactList.jsx";
 import ChatList from "./Sidebar/ChatList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Sidebar = ({ handleSelectChat, handleChosenChatMessage, chosenChatID }) => {
+const Sidebar = ({ handleSelectChat, handleChosenChatMessage}) => {
   console.log('handleSelectChat in Sidebar:', handleSelectChat);
   const [contacts, setContacts] = useState([]);
   const [chats, setChats] = useState([]);
@@ -35,7 +35,8 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage, chosenChatID }) =>
         }
 
         setContacts(data);
-        console.log(data);
+        console.log("Contact data", data);
+        
       } catch (err) {
         setError(err.message);
       }
@@ -62,7 +63,7 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage, chosenChatID }) =>
           throw new Error(data.error || "Failed to fetch chats");
         }
         console.log(data);
-
+        
         setChats(data);
       } catch (err) {
         setError(err.message);

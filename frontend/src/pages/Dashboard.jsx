@@ -114,7 +114,7 @@ const socket = socketIO.connect('http://localhost:3000');
 const Dashboard = () => {
   const [chosenChatID, setChosenChatID] = useState(null);
   const [chosenChatMessages, setChosenChatMessages] = useState([]);
-  const [modus, setModus] = useState(false);
+
   useEffect(() => {
     console.log("current chatmessages in dashboard : " + chosenChatMessages)
   
@@ -133,6 +133,8 @@ const Dashboard = () => {
   const handleSelectChat = (chatId) => {
     setChosenChatID(chatId);
   };
+
+
 
   return (
     <div id='main-dashboard' className=" flex flex-col  justify-center pt-5  lg:p-auto  lg:my-auto ">
