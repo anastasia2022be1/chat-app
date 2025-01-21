@@ -1,0 +1,480 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Setting.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Setting.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useEffect, useRef, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useNavigate } from "react-router-dom";
+
+/**
+ * Settings component for managing user profile settings.
+ * Includes username update, password change, and profile picture update.
+ */
+export default function Setting() {
+  /**
+   * State to store user data.
+   * @type {Object|null}
+   */
+  const [user, setUser] = useState(null);
+
+  /**
+   * State to manage form data for updating settings.
+   * @type {Object}
+   */
+  const [formData, setFormData] = useState({
+    username: "",
+    currentPassword: "",
+    newPassword: "",
+    confirmNewPassword: "",
+    profilePicture: null,
+  });
+
+  /**
+   * State to hold the profile picture preview URL.
+   * @type {string|null}
+   */
+  const [profilePicPreview, setProfilePicPreview] = useState(null);
+
+  /**
+   * State to track if the form has changes.
+   * @type {boolean}
+   */
+  const [hasChanges, setHasChanges] = useState(false);
+
+  /**
+   * State for error messages.
+   * @type {string}
+   */
+  const [error, setError] = useState("");
+
+  /**
+   * State to track if the settings have been updated.
+   * @type {boolean}
+   */
+  const [isUpdated, setIsUpdated] = useState(false);
+
+  /**
+   * Ref to access the file input for profile picture.
+   * @type {React.RefObject&lt;HTMLInputElement>}
+   */
+  const fileInputRef = useRef(null);
+
+  /**
+   * States for toggling password visibility.
+   * @type {boolean}
+   */
+  const [showCurrentPassword, setShowCurrentPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+
+  const navigate = useNavigate();
+
+  /**
+   * Fetches the user's data on component mount.
+   * Sets the profile picture preview if available.
+   */
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const token = localStorage.getItem("authToken");
+        if (!token) {
+          setError("Unauthorized: Please log in first");
+          return;
+        }
+
+        const response = await fetch("http://localhost:3000/api/settings", {
+          method: "GET",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        });
+
+        const data = await response.json();
+
+        if (data.error) {
+          setError(data.error);
+        } else {
+          setUser(data);
+          setFormData({ ...formData, username: data.username });
+
+          if (data.profilePicture) {
+            setProfilePicPreview(data.profilePicture);
+          }
+        }
+      } catch (error) {
+        setError("Failed to load user settings");
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  /**
+   * Clears error message after 4 seconds.
+   */
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => {
+        setError("");
+      }, 4000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  /**
+   * Triggers the file input click to allow users to select a profile picture.
+   */
+  const handleFileClick = () => {
+    fileInputRef.current.click();
+  };
+
+  /**
+   * Navigates to the Chat page.
+   */
+  const handleClick = () => {
+    navigate("/Chat");
+  };
+
+  /**
+   * Handles changes in form fields and updates state accordingly.
+   * @param {React.ChangeEvent&lt;HTMLInputElement>} e - Event object for form input.
+   */
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    const newFormData = { ...formData, [name]: value };
+    setFormData(newFormData);
+    checkForChanges(newFormData);
+  };
+
+  /**
+   * Handles file changes when a new profile picture is selected.
+   * @param {React.ChangeEvent&lt;HTMLInputElement>} e - Event object for file input.
+   */
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const newFormData = { ...formData, profilePicture: file };
+      setFormData(newFormData);
+      setProfilePicPreview(URL.createObjectURL(file)); // Update preview
+      checkForChanges(newFormData);
+    }
+  };
+
+  /**
+   * Checks if there are any changes in the form data.
+   * @param {Object} newFormData - The updated form data.
+   */
+  const checkForChanges = (newFormData) => {
+    const isDifferent =
+      newFormData.username !== user?.username ||
+      newFormData.currentPassword !== "" ||
+      newFormData.newPassword !== "" ||
+      (newFormData.profilePicture &amp;&amp;
+        newFormData.profilePicture !== user?.profilePicture);
+    setHasChanges(isDifferent);
+  };
+
+  /**
+   * Submits the form to update the user's settings.
+   * @param {React.FormEvent&lt;HTMLFormElement>} e - Form submit event.
+   */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const form = new FormData();
+    if (formData.username) form.append("username", formData.username);
+    if (formData.currentPassword &amp;&amp; formData.newPassword) {
+      form.append("password", formData.currentPassword);
+      form.append("newPassword", formData.newPassword);
+    }
+
+    if (formData.newPassword !== formData.confirmNewPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
+    if (formData.profilePicture)
+      form.append("profilePicture", formData.profilePicture);
+
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        setError("Unauthorized: Please log in first");
+        return;
+      }
+
+      const response = await fetch(
+        "http://localhost:3000/api/settings/update",
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          body: form,
+        }
+      );
+
+      const data = await response.json();
+      if (response.ok) {
+        setUser(data.user);
+        setHasChanges(false);
+        setProfilePicPreview(data.user.profilePicture); // Update preview
+        setIsUpdated(true);
+        setTimeout(() => setIsUpdated(false), 3000);
+      } else {
+        setError(data.error);
+      }
+    } catch (error) {
+      setError("Failed to update user settings");
+    }
+  };
+
+  /**
+   * Deletes the user's account.
+   * Prompts for confirmation before deletion.
+   */
+  const handleDeleteAccount = async () => {
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
+    if (!confirmed) return;
+
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        setError("You are not authorized! Please login.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:3000/api/delete-account", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Your account has been successfully deleted.");
+        localStorage.removeItem("authToken");
+        navigate("/login");
+        setError(data.error || "Failed to delete account.");
+      }
+    } catch (err) {
+      setError("An error occurred while deleting your account.");
+    }
+  };
+
+  return (
+    &lt;div className="max-h-screen flex flex-col items-center justify-center">
+      {/* Settings Form */}
+      {user &amp;&amp; (
+        &lt;form
+          onSubmit={handleSubmit}
+          className="space-y-3 md:space-y-5 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-lg md:max-w-xl">
+          {/* Profile Picture */}
+          &lt;div className="flex flex-col items-center">
+            &lt;div className="w-32 h-32 rounded-full border-4 border-blue-500 flex items-center justify-center mb-4 overflow-hidden shadow-lg sm:w-30 sm:h-30">
+              {profilePicPreview ? (
+                &lt;img
+                  src={"http://localhost:3000" + profilePicPreview}
+                  alt="Profile Preview"
+                  className="w-full h-full object-cover rounded-full"
+                />
+              ) : (
+                &lt;span className="text-gray-500">No Picture?&lt;/span>
+              )}
+            &lt;/div>
+            &lt;button
+              type="button"
+              onClick={handleFileClick}
+              className="text-blue-500 font-medium hover:underline">
+              &lt;FontAwesomeIcon icon="fa-solid fa-pen-to-square" /> Change Photo
+            &lt;/button>
+            &lt;input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              style={{ display: "none" }}
+            />
+          &lt;/div>
+
+          {/* Username */}
+          &lt;div className="flex flex-col">
+            &lt;label className="block text-sm font-medium text-title dark:text-titleDark">
+              Username:
+            &lt;/label>
+            &lt;input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+              placeholder="Username"
+            />
+          &lt;/div>
+
+          {/* Current Password */}
+          &lt;div className="flex flex-col">
+            &lt;label className="block text-sm font-medium text-title dark:text-titleDark">
+              Current Password:
+            &lt;/label>
+            &lt;div className="relative">
+              &lt;input
+                type={showCurrentPassword ? "text" : "password"}
+                name="currentPassword"
+                value={formData.currentPassword}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+                placeholder="Current Password"
+              />
+              &lt;button
+                type="button"
+                onClick={() => setShowCurrentPassword((prev) => !prev)}
+                className="absolute right-3 top-2 text-gray-600">
+                {showCurrentPassword ? (
+                  &lt;FontAwesomeIcon
+                    icon="fa-solid fa-eye-slash"
+                    className="mt-4"
+                  />
+                ) : (
+                  &lt;FontAwesomeIcon icon="fa-solid fa-eye" className="mt-4" />
+                )}
+              &lt;/button>
+            &lt;/div>
+          &lt;/div>
+
+          {/* New Password */}
+          &lt;div className="flex flex-col">
+            &lt;label className="block text-sm font-medium text-title dark:text-titleDark">
+              New Password:
+            &lt;/label>
+            &lt;div className="relative">
+              &lt;input
+                type={showNewPassword ? "text" : "password"}
+                name="newPassword"
+                value={formData.newPassword}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+                placeholder="New Password"
+              />
+              &lt;button
+                type="button"
+                onClick={() => setShowNewPassword((prev) => !prev)}
+                className="absolute right-3 top-2 text-gray-600">
+                {showNewPassword ? (
+                  &lt;FontAwesomeIcon
+                    icon="fa-solid fa-eye-slash"
+                    className="mt-4"
+                  />
+                ) : (
+                  &lt;FontAwesomeIcon icon="fa-solid fa-eye" className="mt-4" />
+                )}
+              &lt;/button>
+            &lt;/div>
+          &lt;/div>
+
+          {/* Confirm New Password */}
+          &lt;div className="flex flex-col">
+            &lt;label className="block text-sm font-medium text-title dark:text-titleDark">
+              Confirm New Password:
+            &lt;/label>
+            &lt;div className="relative">
+              &lt;input
+                type={showConfirmNewPassword ? "text" : "password"}
+                name="confirmNewPassword"
+                value={formData.confirmNewPassword}
+                onChange={handleChange}
+                className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+                placeholder="Confirm New Password"
+              />
+              &lt;button
+                type="button"
+                onClick={() => setShowConfirmNewPassword((prev) => !prev)}
+                className="absolute right-3 top-2 text-gray-600">
+                {showConfirmNewPassword ? (
+                  &lt;FontAwesomeIcon
+                    icon="fa-solid fa-eye-slash"
+                    className="mt-4"
+                  />
+                ) : (
+                  &lt;FontAwesomeIcon icon="fa-solid fa-eye" className="mt-4" />
+                )}
+              &lt;/button>
+            &lt;/div>
+          &lt;/div>
+
+          {/* Save Button */}
+          &lt;div className="flex justify-end space-x-4 mt-6">
+            &lt;button
+              type="submit"
+              className={`${
+                hasChanges
+                  ? "bg-blue-500 hover:bg-blue-700"
+                  : "bg-gray-400 cursor-not-allowed"
+              } text-white font-medium py-2 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blueCustom`}
+              disabled={!hasChanges}>
+              Save Changes
+            &lt;/button>
+          &lt;/div>
+
+          {/* Error and Success Message */}
+          {error &amp;&amp; &lt;p className="text-red-500 text-center mt-2">{error}&lt;/p>}
+          {isUpdated &amp;&amp; (
+            &lt;p className="text-green-500 text-center mt-2">
+              Settings updated successfully!
+            &lt;/p>
+          )}
+        &lt;/form>
+      )}
+    &lt;/div>
+  );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 21 2025 13:36:06 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

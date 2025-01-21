@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Dashboard.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Dashboard.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>/**
+ * `Dashboard` component represents the main chat dashboard, displaying a sidebar, header, body (chat messages), and message input area.
+ * It establishes a connection with the server using Socket.io and manages the state for the selected chat and its messages.
+ * The component also listens for new messages in a chosen chat room and updates the chat view accordingly.
+ *
+ * @component
+ * @example
+ * // Usage:
+ * &lt;Dashboard />
+ *
+ * @returns {JSX.Element} - A JSX element representing the dashboard layout with header, sidebar, chat body, and message input area.
+ */
+import { useEffect, useState } from "react";
+import socketIO from "socket.io-client";
+import Sidebar from "../components/Sidebar.jsx";
+import Header from "../components/Header.jsx";
+import Body from "../components/Body.jsx";
+import Message from "../components/Message.jsx";
+import "./dashboard.css";
+
+// Establishing the socket connection to the server
+const socket = socketIO.connect("http://localhost:3000");
+
+const Dashboard = () => {
+  // State variables to store the selected chat ID and messages of the chosen chat
+  const [chosenChatID, setChosenChatID] = useState(null);
+  const [chosenChatMessages, setChosenChatMessages] = useState([]);
+
+  /**
+   * Hook to manage the registration of the chosen chat room and listen for new messages.
+   * The effect runs when the `chosenChatID` or `chosenChatMessages` change.
+   *
+   * @returns {void}
+   */
+  useEffect(() => {
+    // Registering to the chat room with the chosen chat ID
+    if (chosenChatID !== null) {
+      socket.emit("register", {
+        chatRoomId: chosenChatID,
+      });
+    }
+  }, [chosenChatID, chosenChatMessages]);
+
+  /**
+   * Handles the incoming chat message and updates the chat messages state.
+   *
+   * @param {Array} chatMessage - The new message(s) for the selected chat room.
+   * @returns {void}
+   */
+  const handleChosenChatMessage = (chatMessage) => {
+    setChosenChatMessages(chatMessage); // Update the messages of the chosen chat
+  };
+
+  /**
+   * Sets the chosen chat room by updating the `chosenChatID` state.
+   *
+   * @param {string} chatId - The ID of the selected chat room.
+   * @returns {void}
+   */
+  const handleSelectChat = (chatId) => {
+    setChosenChatID(chatId); // Update the selected chat room ID
+  };
+
+  return (
+    &lt;div
+      id="main-dashboard"
+      className=" flex flex-col justify-center pt-5 lg:p-auto lg:my-auto ">
+      {/* Header */}
+      &lt;header className="bg-white shadow-md sticky top-0 z-10">
+        &lt;Header />
+      &lt;/header>
+
+      &lt;div className="flex flex-col lg:flex-row flex-grow">
+        {/* Sidebar */}
+        &lt;aside className="bg-gray-200 p-4 border-gray-00">
+          &lt;Sidebar
+            handleSelectChat={handleSelectChat}
+            handleChosenChatMessage={handleChosenChatMessage}
+          />
+        &lt;/aside>
+
+        {/* Main Content */}
+        &lt;div className="flex flex-col flex-grow">
+          {/* Chat Display Area */}
+          &lt;div className="flex-grow bg-gray-50 overflow-y-auto p-4">
+            &lt;Body
+              socket={socket}
+              chosenChatID={chosenChatID}
+              chosenChatMessages={chosenChatMessages}
+            />
+          &lt;/div>
+
+          {/* Message Input */}
+          &lt;footer className="bg-white border-t border-gray-200 p-4">
+            &lt;Message socket={socket} chosenChatID={chosenChatID} />
+          &lt;/footer>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  );
+};
+
+export default Dashboard;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 21 2025 13:36:06 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

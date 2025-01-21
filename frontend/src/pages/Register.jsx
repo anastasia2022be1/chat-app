@@ -2,6 +2,17 @@ import { useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+/**
+ * Register component provides a user interface for new users to create an account.
+ * It includes form validation, handling file uploads (profile picture), and sending the registration data to the server.
+ * If registration is successful, the user is prompted to verify their email and redirected to the login page.
+ *
+ * @component
+ * @example
+ * return (
+ *   <Register />
+ * )
+ */
 export default function Register() {
   const [formData, setFormData] = useState({
     username: "",
@@ -17,10 +28,19 @@ export default function Register() {
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
+  /**
+   * Opens the file input dialog for selecting a profile picture.
+   */
   const handleFileClick = () => {
     fileInputRef.current.click();
   };
 
+  /**
+   * Handles form input changes and updates the corresponding form data in the state.
+   * If the input type is 'file', it sets the profile picture and generates a preview.
+   *
+   * @param {Object} e - The event object triggered by form input changes.
+   */
   function handleChange(e) {
     const { name, value, type, files } = e.target;
 
@@ -46,7 +66,13 @@ export default function Register() {
     }
   }
 
-  // Handle form submission
+  /**
+   * Handles the form submission for user registration.
+   * It validates the input fields, sends the registration data to the backend, and handles errors or success.
+   *
+   * @param {Object} e - The event object from the form submission.
+   * @async
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -79,14 +105,13 @@ export default function Register() {
         body: form, // Use FormData for file uploads
       });
       console.log(response);
-      
+
       const data = await response.json();
-      console.log(data)
+      console.log(data);
       if (!response.ok) {
         setError(data.error || "Account with this email already exists!");
         return;
       }
-    
 
       // Indicate email verification is required
       setIsVerifying(true);
@@ -110,6 +135,7 @@ export default function Register() {
           Create an Account
         </h2>
 
+        {/* Error message display */}
         {error && (
           <p className="text-center mb-4 text-yellow-800 bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
             <FontAwesomeIcon
@@ -120,6 +146,7 @@ export default function Register() {
           </p>
         )}
 
+        {/* Registration form */}
         <form onSubmit={handleSubmit} className="space-y-2">
           {/* Profile Picture */}
           <div className="flex flex-col items-center">
@@ -214,7 +241,7 @@ export default function Register() {
           <div className="text-center">
             <button
               type="submit"
-              className="w-full py-3 bg-button mt-6  text-white font-semibold rounded-lg hover:bg-blueCustom transition">
+              className="w-full py-3 bg-button mt-6 text-white font-semibold rounded-lg hover:bg-blueCustom transition">
               Register
             </button>
           </div>

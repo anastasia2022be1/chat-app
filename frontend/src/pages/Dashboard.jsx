@@ -1,153 +1,81 @@
-// import Sidebar from "../components/Sidebar.jsx";
-// import Header from "../components/Header.jsx";
-// import { useState } from "react";
-// import ChatRoom from "../components/ChatRoom.jsx";
+/**
+ * `Dashboard` component represents the main chat dashboard, displaying a sidebar, header, body (chat messages), and message input area.
+ * It establishes a connection with the server using Socket.io and manages the state for the selected chat and its messages.
+ * The component also listens for new messages in a chosen chat room and updates the chat view accordingly.
+ *
+ * @component
+ * @example
+ * // Usage:
+ * <Dashboard />
+ *
+ * @returns {JSX.Element} - A JSX element representing the dashboard layout with header, sidebar, chat body, and message input area.
+ */
+import { useEffect, useState } from "react";
+import socketIO from "socket.io-client";
+import Sidebar from "../components/Sidebar.jsx";
+import Header from "../components/Header.jsx";
+import Body from "../components/Body.jsx";
+import Message from "../components/Message.jsx";
+import "./dashboard.css";
 
-// const Dashboard = () => {
-//   const [chats, setChats] = useState([]);
-//   const [chosenChatID, setChosenChatID] = useState(null)
-
-//   const handleSelectChat = (chatId) => {
-//     setChosenChatID(chatId);
-//   };
-//   return (
-    
-//       <div className="h-screen flex flex-col m-3   ">
-//         <div>
-//         {/* Header */}
-//         <header>
-//           <Header />
-//         </header>
-
-//         <div className="flex flex-grow flex-row ">
-//           {/* Sidebar */}
-//           <aside className="bg-gray-200 w-50 p-3 border-gray-300 ">
-//             <Sidebar handleSelectChat={handleSelectChat} />
-//           </aside>
-
-//           {/* ChatRoom */}
-//           <div className="flex flex-grow bg-white">
-//             <ChatRoom />
-//           </div>
-//           </div>
-//         </div>
-//       </div>
-    
-//   );
-// };
-
-// export default Dashboard;
-
-// import { useEffect, useState } from 'react';
-// import socketIO from 'socket.io-client';
-// import Sidebar from '../components/Sidebar.jsx';
-// import Header from '../components/Header.jsx';
-// import Body from '../components/Body.jsx';
-// import Message from '../components/Message.jsx';
-
-// const socket = socketIO.connect('http://localhost:3000');
-
-// const Dashboard = () => {
-//   const [chats, setChats] = useState([]);
-//   const [chosenChatID, setChosenChatID] = useState(null);
- 
-
-
-
-//   useEffect(() => {
-//     if (chosenChatID !== null) {
-//       socket.emit("register", {
-//         chatRoomId: chosenChatID
-//       })
-//     }
-//   }, [chosenChatID])
-  
-//   const handleSelectChat = (chatId) => {
-//     setChosenChatID(chatId);
-//   };
-
-  
-
-//   return (
-//     <div className="p-10 mt-2  flex flex-col h-full ">
-//       {/* Header */}
-//       <header className="bg-white shadow-md sticky top-0 z-10">
-//         <Header />
-//       </header>
-
-//       <div className="flex flex-grow ">
-//         {/* Sidebar */}
-//         <aside className="bg-gray-200 w-50 p-4  border-gray-300 hidden lg:block  ">
-//           <Sidebar chats={chats} handleSelectChat={handleSelectChat} />
-//         </aside>
-
-//         {/* Main Content */}
-//         <div className="flex flex-col flex-grow">
-//           {/* Chat Display Area */}
-//           <div className="flex-grow bg-gray-50 overflow-y-auto p-4">
-//             <Body socket={socket} chosenChatID={chosenChatID} />
-//           </div>
-
-//           {/* Message Input */}
-//           <footer className="bg-white border-t border-gray-200 p-4">
-//             <Message socket={socket} chosenChatID={chosenChatID} />
-//           </footer>
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default Dashboard;
-
-
-import { useEffect, useState } from 'react';
-import socketIO from 'socket.io-client';
-import Sidebar from '../components/Sidebar.jsx';
-import Header from '../components/Header.jsx';
-import Body from '../components/Body.jsx';
-import Message from '../components/Message.jsx';
-import "./dashboard.css"
-
-const socket = socketIO.connect('http://localhost:3000');
+// Establishing the socket connection to the server
+const socket = socketIO.connect("http://localhost:3000");
 
 const Dashboard = () => {
+  // State variables to store the selected chat ID and messages of the chosen chat
   const [chosenChatID, setChosenChatID] = useState(null);
   const [chosenChatMessages, setChosenChatMessages] = useState([]);
-  const [modus, setModus] = useState(false);
+
+  /**
+   * Hook to manage the registration of the chosen chat room and listen for new messages.
+   * The effect runs when the `chosenChatID` or `chosenChatMessages` change.
+   *
+   * @returns {void}
+   */
   useEffect(() => {
-    console.log("current chatmessages in dashboard : " + chosenChatMessages)
-  
+    // Registering to the chat room with the chosen chat ID
     if (chosenChatID !== null) {
       socket.emit("register", {
         chatRoomId: chosenChatID,
       });
     }
+  }, [chosenChatID, chosenChatMessages]);
 
-  }, [chosenChatID, chosenChatMessages])
-
+  /**
+   * Handles the incoming chat message and updates the chat messages state.
+   *
+   * @param {Array} chatMessage - The new message(s) for the selected chat room.
+   * @returns {void}
+   */
   const handleChosenChatMessage = (chatMessage) => {
-    setChosenChatMessages(chatMessage)
-  }
-  
+    setChosenChatMessages(chatMessage); // Update the messages of the chosen chat
+  };
+
+  /**
+   * Sets the chosen chat room by updating the `chosenChatID` state.
+   *
+   * @param {string} chatId - The ID of the selected chat room.
+   * @returns {void}
+   */
   const handleSelectChat = (chatId) => {
-    setChosenChatID(chatId);
+    setChosenChatID(chatId); // Update the selected chat room ID
   };
 
   return (
-    <div id='main-dashboard' className=" flex flex-col  justify-center pt-5  lg:p-auto  lg:my-auto ">
+    <div
+      id="main-dashboard"
+      className=" flex flex-col justify-center pt-5 lg:p-auto lg:my-auto ">
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-10">
         <Header />
       </header>
 
-      <div className="flex flex-col lg:flex-row flex-grow   ">
+      <div className="flex flex-col lg:flex-row flex-grow">
         {/* Sidebar */}
-        <aside className="bg-gray-200 p-4 border-gray-00  ">
-          <Sidebar 
-          handleSelectChat={handleSelectChat} 
-          chosenChatID={chosenChatID}
-          handleChosenChatMessage={handleChosenChatMessage}
+        <aside className="bg-gray-200 p-4 border-gray-00">
+          <Sidebar
+            handleSelectChat={handleSelectChat}
+            handleChosenChatMessage={handleChosenChatMessage}
           />
         </aside>
 
@@ -155,9 +83,10 @@ const Dashboard = () => {
         <div className="flex flex-col flex-grow">
           {/* Chat Display Area */}
           <div className="flex-grow bg-gray-50 overflow-y-auto p-4">
-            <Body socket={socket} 
-            chosenChatID={chosenChatID}
-            chosenChatMessages={chosenChatMessages}
+            <Body
+              socket={socket}
+              chosenChatID={chosenChatID}
+              chosenChatMessages={chosenChatMessages}
             />
           </div>
 
@@ -172,8 +101,3 @@ const Dashboard = () => {
 };
 
 export default Dashboard;
-
-
-
-
-

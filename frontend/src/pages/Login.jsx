@@ -1,10 +1,19 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
-import { text } from "@fortawesome/fontawesome-svg-core";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-
+/**
+ * Login component provides a user interface for users to log into the application.
+ * It includes form validation, error handling, and sending login data to the server.
+ * Upon successful login, it stores the authentication token and user ID in local storage and redirects to the chat page.
+ *
+ * @component
+ * @example
+ * return (
+ *   <Login />
+ * )
+ */
 export default function Login() {
   const [formData, setFormData] = useState({
     email: "",
@@ -14,18 +23,28 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  // Handle form input change
+  /**
+   * Handles input field changes and updates the form data state.
+   *
+   * @param {Object} e - The event object triggered by input field changes.
+   */
   function handleChange(e) {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   }
 
-  // Handle form submission
-
+  /**
+   * Handles the form submission for logging in.
+   * It validates the input fields, sends a POST request to the backend for authentication,
+   * and redirects to the chat page if successful.
+   *
+   * @param {Object} e - The event object from the form submission.
+   * @async
+   */
   async function handleSubmit(e) {
     e.preventDefault();
 
-    // validation to check if both fields are filled
+    // Validate if both email and password fields are filled
     if (!formData.email || !formData.password) {
       setError("Both fields are required!");
       return;
@@ -39,26 +58,25 @@ export default function Login() {
       const response = await fetch("http://localhost:3000/api/login", {
         method: "POST",
         headers: {
-           "Content-Type": "application/json",
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
+      const data = await response.json();
 
-       const data = await response.json();
-
+      // Handle unsuccessful login attempt
       if (!response.ok) {
         setError(data.message || "Login failed.");
         return;
       }
 
       console.log(data);
-      
 
-      // Store token and usetId in localStorage
+      // Store token and userId in localStorage
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("userId", data.userId);
-     
+
       // On successful login, redirect to the chat page
       navigate("/chat");
     } catch (error) {
@@ -66,6 +84,7 @@ export default function Login() {
       setError("An error occurred. Please try again.");
     }
   }
+
   return (
     <div className="flex flex-col max-h-screen items-center justify-center p-10">
       <div className="bg-white bg-opacity-90 dark:bg-gray-800 p-8 mt-20 rounded-lg shadow-xl w-full max-w-md sm:max-w-lg transition-all transform hover:scale-105">
@@ -73,7 +92,7 @@ export default function Login() {
           Login
         </h2>
 
-        {/* Error Message */}
+        {/* Display error message if any */}
         {error && (
           <p className="text-center mb-4 text-yellow-800 bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
             <FontAwesomeIcon
@@ -84,8 +103,9 @@ export default function Login() {
           </p>
         )}
 
+        {/* Login form */}
         <form onSubmit={handleSubmit} className="space-y-8">
-          {/* Email */}
+          {/* Email input */}
           <div>
             <label className="block text-lg font-medium text-title">
               Email
@@ -100,7 +120,7 @@ export default function Login() {
             />
           </div>
 
-          {/* Password */}
+          {/* Password input */}
           <div>
             <label className="block text-lg font-medium text-title">
               Password
@@ -111,7 +131,7 @@ export default function Login() {
               value={formData.password}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
-              placeholder="Enter your password" 
+              placeholder="Enter your password"
             />
           </div>
 
@@ -126,17 +146,18 @@ export default function Login() {
         </form>
 
         <div className="mt-4 text-center text-black dark:text-white">
-          {/* // Link to the ForgotPassword Page */}
+          {/* Link to Forgot Password Page */}
           <p>
-            <a href="/forgot-password" className="text-blue-600 hover:underline">
+            <a
+              href="/forgot-password"
+              className="text-blue-600 hover:underline">
               Forgot Password?
             </a>
           </p>
 
           {/* Link to Register Page */}
           <p>
-            Don't have an account?{" "}
-            <span> </span>
+            Don't have an account? <span> </span>
             <a href="/register" className="text-title hover:underline">
               Register here
             </a>

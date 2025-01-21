@@ -44,3 +44,5 @@ const ChatList = ({ chats, handleChatClick, handleDeleteChat }) => (
 );
 
 export default ChatList;
+
+

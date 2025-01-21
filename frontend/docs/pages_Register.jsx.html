@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: pages/Register.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: pages/Register.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useRef, useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+/**
+ * Register component provides a user interface for new users to create an account.
+ * It includes form validation, handling file uploads (profile picture), and sending the registration data to the server.
+ * If registration is successful, the user is prompted to verify their email and redirected to the login page.
+ *
+ * @component
+ * @example
+ * return (
+ *   &lt;Register />
+ * )
+ */
+export default function Register() {
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+    confirmPassword: "",
+    profilePicture: null,
+  });
+
+  const [error, setError] = useState("");
+  const [isVerifying, setIsVerifying] = useState(false);
+  const [profilePicPreview, setProfilePicPreview] = useState("");
+  const navigate = useNavigate();
+  const fileInputRef = useRef(null);
+
+  /**
+   * Opens the file input dialog for selecting a profile picture.
+   */
+  const handleFileClick = () => {
+    fileInputRef.current.click();
+  };
+
+  /**
+   * Handles form input changes and updates the corresponding form data in the state.
+   * If the input type is 'file', it sets the profile picture and generates a preview.
+   *
+   * @param {Object} e - The event object triggered by form input changes.
+   */
+  function handleChange(e) {
+    const { name, value, type, files } = e.target;
+
+    if (type === "file") {
+      const file = files[0]; // Get the first selected file
+
+      // Set the selected file in the formData
+      setFormData((prevData) => ({
+        ...prevData,
+        profilePicture: file,
+      }));
+
+      // Generate a URL for the file and set the preview image URL
+      if (file) {
+        const fileURL = URL.createObjectURL(file); // Create a URL for the file
+        setProfilePicPreview(fileURL); // Store the file's preview URL
+      }
+    } else {
+      setFormData((prevData) => ({
+        ...prevData,
+        [name]: value,
+      }));
+    }
+  }
+
+  /**
+   * Handles the form submission for user registration.
+   * It validates the input fields, sends the registration data to the backend, and handles errors or success.
+   *
+   * @param {Object} e - The event object from the form submission.
+   * @async
+   */
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validation: Check if passwords match
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
+
+    // Validation: Ensure all fields are filled
+    if (!formData.username || !formData.email || !formData.password) {
+      setError("All fields are required!");
+      return;
+    }
+
+    // Clear error messages if all fields are valid
+    setError("");
+
+    // Prepare data to be sent to the server
+    const form = new FormData();
+    form.append("username", formData.username);
+    form.append("email", formData.email);
+    form.append("password", formData.password);
+    form.append("profilePicture", formData.profilePicture);
+
+    try {
+      // Send the form data to the backend
+      const response = await fetch("http://localhost:3000/api/register", {
+        method: "POST",
+        body: form, // Use FormData for file uploads
+      });
+      console.log(response);
+
+      const data = await response.json();
+      console.log(data);
+      if (!response.ok) {
+        setError(data.error || "Account with this email already exists!");
+        return;
+      }
+
+      // Indicate email verification is required
+      setIsVerifying(true);
+      setError(
+        "Registration successful! Please check your email to verify your account."
+      );
+      // Navigate to login page after registration
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000); // Wait 2 seconds before redirecting
+    } catch (error) {
+      console.error("Registration failed:", error);
+      setError("Registration failed!!!.");
+    }
+  };
+
+  return (
+    &lt;div className="flex flex-col items-center justify-center mt-5 max-h-screen ">
+      &lt;div className="p-6 mt-4 rounded-lg shadow-lg w-full max-w-md sm:max-w-lg bg-white bg-opacity-90 dark:bg-gray-800 transition-all transform hover:scale-105">
+        &lt;h2 className="text-2xl font-semibold text-center mb-6 text-backgroundChatDark dark:text-textColorDark">
+          Create an Account
+        &lt;/h2>
+
+        {/* Error message display */}
+        {error &amp;&amp; (
+          &lt;p className="text-center mb-4 text-yellow-800 bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
+            &lt;FontAwesomeIcon
+              icon="fa-solid fa-info-circle"
+              className="text-xl text-yellow-800"
+            />
+            &lt;span>{error}&lt;/span>
+          &lt;/p>
+        )}
+
+        {/* Registration form */}
+        &lt;form onSubmit={handleSubmit} className="space-y-2">
+          {/* Profile Picture */}
+          &lt;div className="flex flex-col items-center">
+            &lt;button
+              type="button"
+              onClick={handleFileClick}
+              aria-label="Upload Profile Picture"
+              className="w-24 h-24 rounded-full border-4 border-blue-500 flex items-center justify-center mb-4 shadow-lg hover:shadow-xl transition-all focus:outline-none">
+              {profilePicPreview ? (
+                &lt;img
+                  src={profilePicPreview}
+                  alt="Profile Preview"
+                  className="w-full h-full object-cover rounded-full"
+                />
+              ) : (
+                &lt;FontAwesomeIcon
+                  icon="fa-solid fa-camera"
+                  className="text-gray-500 text-2xl"
+                />
+              )}
+            &lt;/button>
+            &lt;input
+              type="file"
+              name="profilePicture"
+              onChange={handleChange}
+              ref={fileInputRef}
+              className="hidden"
+            />
+          &lt;/div>
+
+          {/* Username */}
+          &lt;div>
+            &lt;label className="block text-sm font-medium text-title dark:text-titleDark">
+              Username
+            &lt;/label>
+            &lt;input
+              type="text"
+              name="username"
+              value={formData.username}
+              onChange={handleChange}
+              className="w-full p-3 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              placeholder="Enter your username"
+            />
+          &lt;/div>
+
+          {/* Email */}
+          &lt;div>
+            &lt;label className="block text-lg font-medium text-title">
+              Email
+            &lt;/label>
+            &lt;input
+              type="email"
+              name="email"
+              value={formData.email}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+              placeholder="Enter your email"
+            />
+          &lt;/div>
+
+          {/* Password */}
+          &lt;div>
+            &lt;label className="block text-lg font-medium text-title">
+              Password
+            &lt;/label>
+            &lt;input
+              type="password"
+              name="password"
+              value={formData.password}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+              placeholder="Enter your password"
+            />
+          &lt;/div>
+
+          {/* Confirm Password */}
+          &lt;div>
+            &lt;label className="block text-lg font-medium text-title">
+              Confirm Password
+            &lt;/label>
+            &lt;input
+              type="password"
+              name="confirmPassword"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+              placeholder="Confirm your password"
+            />
+          &lt;/div>
+
+          {/* Submit Button */}
+          &lt;div className="text-center">
+            &lt;button
+              type="submit"
+              className="w-full py-3 bg-button mt-6 text-white font-semibold rounded-lg hover:bg-blueCustom transition">
+              Register
+            &lt;/button>
+          &lt;/div>
+        &lt;/form>
+
+        {/* Link to Login Page */}
+        &lt;div className="mt-4 text-center text-black dark:text-white">
+          &lt;p>
+            Already have an account?{" "}
+            &lt;a href="/login" className="text-title hover:underline">
+              Login here
+            &lt;/a>
+          &lt;/p>
+        &lt;/div>
+      &lt;/div>
+    &lt;/div>
+  );
+}
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 21 2025 13:36:06 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>
