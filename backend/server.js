@@ -9,6 +9,7 @@ import Chat from "./models/Chat.js";
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
 
+
 // Verbindung zur MongoDB
 await connect();
 
@@ -33,6 +34,8 @@ app.use(cors());
 // static routes for uploaded files
 app.use("/uploads", express.static("uploads"));
 
+
+
 app.use("/api", userRoutes);
 app.use("/api", chatRoutes);
 app.use("/api", messageRoutes);
@@ -51,22 +54,37 @@ io.on("connection", (socket) => {
     }
   });
 
-  socket.on("message", async ({ chatId, senderId, content }) => {
+  // socket.on("message", async ({ chatId, senderId, content }) => {
+  //   try {
+  //     // Check if message already exists in the chat
+  //     const existingMessage = await Message.findOne({ chatId, senderId, content });
+
+  //     if (!existingMessage) {
+  //       const newMessage = await Message.create({ chatId, senderId, content });
+
+  //       // Update the chat with the new message
+  //       const updatedChat = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }, { new: true })
+  //         .populate('participants', 'username')
+  //         .populate({ path: 'messages', populate: { path: 'senderId', select: 'username email' } });
+
+  //       // Emit the new message to all members in the chat room
+  //       io.to(chatId).emit('message', newMessage); // Ensure `chatId` is used here
+  //     }
+  //   } catch (error) {
+  //     console.log("Error: ", error);
+  //   }
+  // });
+
+
+  socket.on("message", async ({ chatId, senderId, content, file }) => {
     try {
-      // Check if message already exists in the chat
-      const existingMessage = await Message.findOne({ chatId, senderId, content });
+      const newMessage = await Message.create({ chatId, senderId, content, file });
 
-      if (!existingMessage) {
-        const newMessage = await Message.create({ chatId, senderId, content });
+      const updatedChat = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }, { new: true })
+        .populate('participants', 'username')
+        .populate({ path: 'messages', populate: { path: 'senderId', select: 'username email' } });
 
-        // Update the chat with the new message
-        const updatedChat = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }, { new: true })
-          .populate('participants', 'username')
-          .populate({ path: 'messages', populate: { path: 'senderId', select: 'username email' } });
-
-        // Emit the new message to all members in the chat room
-        io.to(chatId).emit('message', newMessage); // Ensure `chatId` is used here
-      }
+      io.to(chatId).emit('message', newMessage); // Emit message to all members of the chat
     } catch (error) {
       console.log("Error: ", error);
     }
