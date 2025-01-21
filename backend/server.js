@@ -6,9 +6,8 @@ import chatRoutes from "./routes/chatRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import Message from "./models/Message.js";
 import Chat from "./models/Chat.js";
-import http from 'http';
-import { Server as SocketIOServer } from 'socket.io';
-
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
 
 // Verbindung zur MongoDB
 await connect();
@@ -33,8 +32,6 @@ app.use(cors());
 
 // static routes for uploaded files
 app.use("/uploads", express.static("uploads"));
-
-
 
 app.use("/api", userRoutes);
 app.use("/api", chatRoutes);
@@ -75,16 +72,27 @@ io.on("connection", (socket) => {
   //   }
   // });
 
-
   socket.on("message", async ({ chatId, senderId, content, file }) => {
     try {
-      const newMessage = await Message.create({ chatId, senderId, content, file });
+      const newMessage = await Message.create({
+        chatId,
+        senderId,
+        content,
+        file,
+      });
 
-      const updatedChat = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }, { new: true })
-        .populate('participants', 'username')
-        .populate({ path: 'messages', populate: { path: 'senderId', select: 'username email' } });
+      const updatedChat = await Chat.findByIdAndUpdate(
+        chatId,
+        { $push: { messages: newMessage._id } },
+        { new: true }
+      )
+        .populate("participants", "username")
+        .populate({
+          path: "messages",
+          populate: { path: "senderId", select: "username email" },
+        });
 
-      io.to(chatId).emit('message', newMessage); // Emit message to all members of the chat
+      io.to(chatId).emit("message", newMessage); // Emit message to all members of the chat
     } catch (error) {
       console.log("Error: ", error);
     }
@@ -112,7 +120,6 @@ server.listen(port, () =>
 // import http from 'http';
 // import { Server as SocketIOServer } from 'socket.io';
 // import { log } from "console";
-
 
 // // Verbindung zur MongoDB
 // await connect();
@@ -172,7 +179,6 @@ server.listen(port, () =>
 // //     } catch (error) {
 // //       console.log("Error: ", error);
 // //     }
-    
 
 // //   })
 // //   socket.on("disconnect", () => {
@@ -182,7 +188,7 @@ server.listen(port, () =>
 
 // io.on("connection", (socket) => {
 //   console.log(`User ${socket.id} connected`);
-  
+
 //   socket.on("register", async ({ chatRoomId }) => {
 //     try {
 //       console.log("Registered for chat room:", chatRoomId);
@@ -215,7 +221,6 @@ server.listen(port, () =>
 //     console.log(`User ${socket.id} disconnected`);
 //   });
 // });
-
 
 // // io.on('connection', onConnection);
 

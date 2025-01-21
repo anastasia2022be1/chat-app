@@ -1,5 +1,6 @@
 import Chat from "../models/Chat.js";
 import User from "../models/User.js";
+import Message from "../models/Message.js";
 
 // POST
 // http://localhost:3000/api/chat
@@ -53,7 +54,30 @@ export const getChats = async (req, res) => {
   }
 };
 
+// DELETE
+// http://localhost:3000/api/chat/:chatId
 
+export const deleteChat = async (req, res) => {
+  try {
+    const { chatId } = req.params;
 
+    //First, we delete the chat messages
+    await Message.deleteMany({ chatId: chatId });
 
+    // Then we delete the chat
+    const chat = await Chat.findByIdAndDelete(chatId);
+    if (!chat) {
+      return res.status(404).json({ error: "Chat not found" });
+    }
 
+    // Delete chat from related users
+    await User.updateMany({ chats: chatId }, { $pull: { chats: chatId } });
+
+    res
+      .status(200)
+      .json({ message: "Chat and its messages deleted successfully" });
+  } catch (error) {
+    console.error(error, "Error");
+    res.status(500).json({ error: "Internal Server Error" });
+  }
+};

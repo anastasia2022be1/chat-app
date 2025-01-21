@@ -8,7 +8,7 @@ import {
   forgotPassword,
   getResetPasswordPage,
   resetPassword,
-  deleteUserAccount
+  deleteUserAccount,
 } from "../controllers/userController.js";
 import { upload } from "../middleware/upload.js";
 import { authenticate } from "../middleware/authMiddleware.js";
@@ -34,11 +34,11 @@ router.post("/login", loginUser);
 
 //--------------------------------------------------------
 // Forgot password (POST: api/forgot-password)
-router.post("/forgot-password", forgotPassword)
+router.post("/forgot-password", forgotPassword);
 
 //---------------------------------------------------------
 // Get reset password page (GET: api/validate-reset-password/:token)
-router.get('/validate-reset-password/:token', getResetPasswordPage)
+router.get("/validate-reset-password/:token", getResetPasswordPage);
 
 //---------------------------------------------------------
 // Reset password (POST: api/reset-password/:token)
