@@ -74,7 +74,7 @@ export default function Setting() {
   };
 
   const handleClick = () => {
-    navigate("/Chat");
+    navigate("/chat");
   };
 
   const handleChange = (e) => {
@@ -106,6 +106,11 @@ export default function Setting() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.newPassword && !formData.currentPassword) {
+      setError("Please enter your current password to change the password.");
+      return;
+    }
 
     const form = new FormData();
     if (formData.username) form.append("username", formData.username);
@@ -151,7 +156,7 @@ export default function Setting() {
         setIsUpdated(true);
 
         // Reset the update feedback after 2 seconds
-        setTimeout(() => setIsUpdated(false), 3000);
+        setTimeout(() => setIsUpdated(false), 2000);
       } else {
         setError(data.error);
       }
@@ -286,7 +291,11 @@ export default function Setting() {
                 name="currentPassword"
                 value={formData.currentPassword}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+                className={`w-full border rounded-lg mt-2 p-3 ${
+                  !formData.currentPassword && error
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200`}
                 placeholder="Current Password"
               />
               <button
