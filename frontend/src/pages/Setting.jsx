@@ -74,7 +74,7 @@ export default function Setting() {
   };
 
   const handleClick = () => {
-    navigate("/Chat");
+    navigate("/chat");
   };
 
   const handleChange = (e) => {
@@ -107,6 +107,11 @@ export default function Setting() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (formData.newPassword && !formData.currentPassword) {
+      setError("Please enter your current password to change the password.");
+      return;
+    }
 
     const form = new FormData();
     if (formData.username) form.append("username", formData.username);
@@ -152,7 +157,7 @@ export default function Setting() {
         setIsUpdated(true);
 
         // Reset the update feedback after 2 seconds
-        setTimeout(() => setIsUpdated(false), 3000);
+        setTimeout(() => setIsUpdated(false), 2000);
       } else {
         setError(data.error);
       }
@@ -162,38 +167,37 @@ export default function Setting() {
   };
 
   const handleDeleteAccount = async () => {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete your account? This action cannot be undone."
-  );
-  if (!confirmed) return;
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
+    if (!confirmed) return;
 
-  try {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      setError("You are not authorized! Please login.");
-      return;
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        setError("You are not authorized! Please login.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:3000/api/delete-account", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Your account has been successfully deleted.");
+        localStorage.removeItem("authToken"); // Delete token
+        navigate("/login"); //
+        setError(data.error || "Failed to delete account.");
+      }
+    } catch (err) {
+      setError("An error occurred while deleting your account.");
     }
-
-    const response = await fetch("http://localhost:3000/api/delete-account", {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      alert("Your account has been successfully deleted.");
-      localStorage.removeItem("authToken"); // Delete token
-      navigate("/login"); // 
-      setError(data.error || "Failed to delete account.");
-    }
-  } catch (err) {
-    setError("An error occurred while deleting your account.");
-  }
-};
-
+  };
 
   return (
     <div className="max-h-screen flex flex-col items-center justify-center  ">
@@ -284,7 +288,11 @@ export default function Setting() {
                 name="currentPassword"
                 value={formData.currentPassword}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+                className={`w-full border rounded-lg mt-2 p-3 ${
+                  !formData.currentPassword && error
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200`}
                 placeholder="Current Password"
               />
               <button
