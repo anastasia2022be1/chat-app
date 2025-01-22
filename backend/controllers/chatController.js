@@ -45,28 +45,32 @@ export const getChats = async (req, res) => {
   }
 };
 
-// DELETE
-// http://localhost:3000/api/chat/:chatId
+// // DELETE
+// // http://localhost:3000/api/chat/:chatId
+
 
 export const deleteChat = async (req, res) => {
   try {
     const { chatId } = req.params;
+    const  { userId} = req.body;
 
-    //First, we delete the chat messages
-    await Message.deleteMany({ chatId: chatId });
 
     // Then we delete the chat
-    const chat = await Chat.findByIdAndDelete(chatId);
-    if (!chat) {
-      return res.status(404).json({ error: "Chat not found" });
-    }
-
+    const updatedChat = await Chat.findByIdAndUpdate(
+      chatId,
+      { $pull: { participants: userId } },
+      { new: true }
+    );
     // Delete chat from related users
-    await User.updateMany({ chats: chatId }, { $pull: { chats: chatId } });
+    await User.findByIdAndUpdate(
+      userId,
+      { $pull: { chats: chatId } },
+      { new: true }
+    );
 
     res
       .status(200)
-      .json({ message: "Chat and its messages deleted successfully" });
+      .json({ message: "Succesfully removed chat" });
   } catch (error) {
     console.error(error, "Error");
     res.status(500).json({ error: "Internal Server Error" });

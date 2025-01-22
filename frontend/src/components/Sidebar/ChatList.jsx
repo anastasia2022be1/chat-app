@@ -29,7 +29,7 @@ const ChatList = ({ chats, handleChatClick, handleDeleteChat }) => (
         className="flex items-center justify-between py-2 px-4 bg-gray-200 rounded-lg mx-2">
         {/* Display chat information */}
         <div onClick={() => handleChatClick(chat)}>
-          <h4 className="cursor-pointer">{chat._id}</h4>
+          <h4 className="cursor-pointer">{chat.participants.map(participant => participant.username + " ")}</h4>
         </div>
 
         {/* delete button */}
