@@ -5,8 +5,12 @@ import ContactList from "./Sidebar/ContactList.jsx";
 import ChatList from "./Sidebar/ChatList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-const Sidebar = ({ handleSelectChat, handleChosenChatMessage , chosenChatID}) => {
-  console.log('handleSelectChat in Sidebar:', handleSelectChat);
+const Sidebar = ({
+  handleSelectChat,
+  handleChosenChatMessage,
+  chosenChatID,
+}) => {
+  console.log("handleSelectChat in Sidebar:", handleSelectChat);
   const [contacts, setContacts] = useState([]);
   const [chats, setChats] = useState([]);
   const [modus, setModus] = useState(false);
@@ -36,7 +40,6 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage , chosenChatID}) =>
 
         setContacts(data);
         console.log("Contact data", data);
-        
       } catch (err) {
         setError(err.message);
       }
@@ -63,7 +66,7 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage , chosenChatID}) =>
           throw new Error(data.error || "Failed to fetch chats");
         }
         console.log(data);
-        
+
         setChats(data);
       } catch (err) {
         setError(err.message);
@@ -187,6 +190,7 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage , chosenChatID}) =>
       });
 
       const data = await response.json();
+      console.log(data);
 
       if (!response.ok) {
         throw new Error(data.error || "Failed to delete chat");

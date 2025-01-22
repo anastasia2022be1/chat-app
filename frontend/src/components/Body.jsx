@@ -128,15 +128,18 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
           <div
             key={msg._id}
             className={`flex ${
-              msg.senderId._id === userId ? "justify-end" : "justify-start"
+              msg.senderId && msg.senderId._id === userId
+                ? "justify-end"
+                : "justify-start"
             } group`}>
-              
             {/* Profile Picture */}
             <div
               className={`flex-shrink-0 ${
-                msg.senderId._id === userId ? "order-last ml-2" : "mr-2"
+                msg.senderId && msg.senderId._id === userId
+                  ? "order-last ml-2"
+                  : "mr-2"
               }`}>
-              {msg.senderId.profilePicture !== "" ? (
+              {msg.senderId && msg.senderId.profilePicture !== "" ? (
                 <img
                   src={`http://localhost:3000${msg.senderId.profilePicture}`}
                   alt="Profile"
@@ -156,14 +159,16 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
             {/* Message */}
             <div
               className={`relative px-4 py-2 rounded-lg max-w-md shadow-md ${
-                msg.senderId._id === userId
+                msg.senderId && msg.senderId._id === userId
                   ? "bg-blue-500 text-white "
                   : "bg-gray-200 text-gray-800"
               }`}>
-              <strong className="block">{msg.senderId.username}</strong>
+              <strong className="block">
+                {msg.senderId ? msg.senderId.username : "Deleted Account"}
+              </strong>
               <p>{msg.content}</p>
               <p className="text-xs mt-1">{msg.createdAt}</p>
-              {msg.senderId._id === userId && (
+              {msg.senderId && msg.senderId._id === userId && (
                 <button
                   onClick={() => handleDeleteMessage(msg._id)}
                   className="absolute top-0 right-0 w-6 h-6  flex items-center justify-center bg-red-500 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out">
