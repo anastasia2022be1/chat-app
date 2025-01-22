@@ -57,7 +57,7 @@ const ContactList = ({ contacts, handleContactClick }) => {
                   />
                 ) : (
                   <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs">{letter}</span>
+                    <span className="text-white text-xs"> {contact.username.slice(0, 2).toUpperCase()}</span>
                   </div>
                 )}
               </div>

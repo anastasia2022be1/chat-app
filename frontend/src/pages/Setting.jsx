@@ -244,11 +244,7 @@ export default function Setting() {
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
-                <img
-                  src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
-                  alt="No Profile Picture"
-                  className="w-full h-full object-cover rounded-full"
-                />
+                <div className="w-full h-full bg-gray-200 rounded-full"></div>
               )}
             </div>
             <button

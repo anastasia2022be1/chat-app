@@ -220,26 +220,26 @@ const Sidebar = ({
     }
   };
 
-  function handleSearch() {
-    const filteredContacts = contacts.filter((contact) => {
-      return (
-        contact.username.slice(0, searchQuery.length).toLowerCase() ===
-        searchQuery.toLowerCase()
-      );
-    });
-    setSearchResults(filteredContacts);
-    console.log(filteredContacts);
-  }
-
-  const handleQueryChange = (e) => {
-    setSearchQuery(e.target.value);
-    if (e.target.value.trim() === "") {
-      setSearchResults([]); // Clear results when the input is empty
+ 
+  const handleSearch = (query) => {
+    if (query.trim() === "") {
+      setSearchResults([]); // Clear results if search query is empty
     } else {
-      handleSearch(); // Perform search when typing
+      // Filter contacts based on the start of their username 
+      const filteredContacts = contacts.filter((contact) =>
+        contact.username.toLowerCase().startsWith(query.toLowerCase())
+      );
+      setSearchResults(filteredContacts);
     }
   };
+  
+  const handleQueryChange = (e) => {
+    setSearchQuery(e.target.value);
+    handleSearch(e.target.value);
+  };
 
+
+  
   return (
     <aside className="w-full bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md h-3/4 lg:h-full">
       {/* Search Bar */}
@@ -268,7 +268,9 @@ const Sidebar = ({
                     />
                   ) : (
                     <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                      <span className="text-white text-xs">No Image</span>
+                         <span className="text-white text-xs">
+                  {contact.username.slice(0, 2).toUpperCase()}
+                </span>
                     </div>
                   )}
                 </div>
