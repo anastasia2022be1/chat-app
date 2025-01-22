@@ -82,7 +82,6 @@ export default function Setting() {
     const newFormData = { ...formData, [name]: value };
     setFormData(newFormData);
     checkForChanges(newFormData);
-    console.log("Form data after change 62:", newFormData);
   };
 
   const handleFileChange = (e) => {
@@ -90,7 +89,7 @@ export default function Setting() {
     if (file) {
       const newFormData = { ...formData, profilePicture: file };
       setFormData(newFormData);
-      setProfilePicPreview(URL.createObjectURL(file)); // Update preview
+
       checkForChanges(newFormData);
     }
   };
@@ -162,38 +161,37 @@ export default function Setting() {
   };
 
   const handleDeleteAccount = async () => {
-  const confirmed = window.confirm(
-    "Are you sure you want to delete your account? This action cannot be undone."
-  );
-  if (!confirmed) return;
+    const confirmed = window.confirm(
+      "Are you sure you want to delete your account? This action cannot be undone."
+    );
+    if (!confirmed) return;
 
-  try {
-    const token = localStorage.getItem("authToken");
-    if (!token) {
-      setError("You are not authorized! Please login.");
-      return;
+    try {
+      const token = localStorage.getItem("authToken");
+      if (!token) {
+        setError("You are not authorized! Please login.");
+        return;
+      }
+
+      const response = await fetch("http://localhost:3000/api/delete-account", {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        alert("Your account has been successfully deleted.");
+        localStorage.removeItem("authToken"); // Delete token
+        navigate("/login"); //
+        setError(data.error || "Failed to delete account.");
+      }
+    } catch (err) {
+      setError("An error occurred while deleting your account.");
     }
-
-    const response = await fetch("http://localhost:3000/api/delete-account", {
-      method: "DELETE",
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    const data = await response.json();
-
-    if (response.ok) {
-      alert("Your account has been successfully deleted.");
-      localStorage.removeItem("authToken"); // Delete token
-      navigate("/login"); // 
-      setError(data.error || "Failed to delete account.");
-    }
-  } catch (err) {
-    setError("An error occurred while deleting your account.");
-  }
-};
-
+  };
 
   return (
     <div className="max-h-screen flex flex-col items-center justify-center  ">
@@ -241,7 +239,11 @@ export default function Setting() {
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
-                <span className="text-gray-500">No Picture?</span>
+                <img
+                  src="https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
+                  alt="No Profile Picture"
+                  className="w-full h-full object-cover rounded-full"
+                />
               )}
             </div>
             <button

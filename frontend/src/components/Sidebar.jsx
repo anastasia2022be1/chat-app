@@ -16,6 +16,10 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage , chosenChatID}) =>
 
   const navigate = useNavigate();
 
+
+
+
+
   useEffect(() => {
     const fetchContacts = async () => {
       try {
@@ -192,6 +196,8 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage , chosenChatID}) =>
         throw new Error(data.error || "Failed to delete chat");
       }
 
+      
+
       // Delete a chat from the chat list
       setChats((prevChats) => {
         const updatedChats = prevChats.filter((chat) => chat._id !== chatId);
@@ -204,8 +210,9 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage , chosenChatID}) =>
 
         return updatedChats;
       });
+     
     } catch (err) {
-      console.error(err.message);
+      console.error("Error deleting chat:", err.message);
     }
   };
 

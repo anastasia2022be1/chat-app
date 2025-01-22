@@ -15,6 +15,7 @@ function Message({ socket, chosenChatID }) {
    */
   const handleSend = (e) => {
     e.preventDefault();
+    
     socket.emit("message", {
       chatId: chosenChatID,
       senderId: userId,

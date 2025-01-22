@@ -51,6 +51,7 @@ export const getChats = async (req, res) => {
 export const deleteChat = async (req, res) => {
   try {
     const { chatId } = req.params;
+    
 
     //First, we delete the chat messages
     await Message.deleteMany({ chatId: chatId });
