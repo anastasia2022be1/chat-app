@@ -36,6 +36,15 @@ export default function ResetPassword() {
       return;
     }
 
+    // Validate password format
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8}$/;
+    if (!passwordRegex.test(newPassword)) {
+      setError(
+        "Password must be at least 8 characters long, include uppercase, lowercase letters, and numbers."
+      );
+      return;
+    }
+
     setLoading(true);
     try {
       // Sending POST request to reset the password

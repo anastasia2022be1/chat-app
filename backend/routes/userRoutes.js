@@ -18,12 +18,13 @@ import {
   contactsList,
   searchContact,
 } from "../controllers/addcontactController.js";
+import { validatePassword } from "../middleware/validatePasswordMiddleware.js";
 
 const router = express.Router();
 
 //-------------------------------------------------------
 // Register new user (POST: api/register)
-router.post("/register", upload.single("profilePicture"), registerUser);
+router.post("/register", upload.single("profilePicture"), validatePassword, registerUser);
 
 //--------------------------------------------------------
 // Verify user email by token (GET: api/verify/:token)
@@ -43,7 +44,7 @@ router.post("/forgot-password", forgotPassword);
 
 //---------------------------------------------------------
 // Get reset password page (GET: api/validate-reset-password/:token)
-router.get("/validate-reset-password/:token", getResetPasswordPage);
+router.get("/validate-reset-password/:token", validatePassword, getResetPasswordPage);
 
 //---------------------------------------------------------
 // Reset password (POST: api/reset-password/:token)
@@ -57,7 +58,7 @@ router.get("/settings", authenticate, getUserSettings);
 // Update user settings (PUT: api/settings/update)
 router.put(
   "/settings/update",
-  authenticate,
+  authenticate, validatePassword,
   upload.single("profilePicture"),
   updateUserSettings
 );
