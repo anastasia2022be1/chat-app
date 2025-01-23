@@ -31,7 +31,7 @@ export const registerUser = async (req, res) => {
 
     // Generate a unique verification token for email confirmation
     const verificationToken = crypto.randomBytes(32).toString("hex");
-    const tokenExpiresAt = Date.now() + 1000 * 60 * 60; // 1 hour expiry
+    const tokenExpiresAt = Date.now() + 1000 * 60 * 60 *24; // 1 hour expiry
 
     // Process the profile picture, if provided
     const profilePicture = req.file ? `/uploads/${req.file.filename}` : ""; // URL of the uploaded file

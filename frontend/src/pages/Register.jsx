@@ -137,7 +137,7 @@ export default function Register() {
 
         {/* Error message display */}
         {error && (
-          <p className="text-center mb-4 text-yellow-800 bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
+          <p className="text-center mb-4 text-error bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
             <FontAwesomeIcon
               icon="fa-solid fa-info-circle"
               className="text-xl text-yellow-800"
