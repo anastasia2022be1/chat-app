@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
@@ -6,12 +6,6 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
  * Register component provides a user interface for new users to create an account.
  * It includes form validation, handling file uploads (profile picture), and sending the registration data to the server.
  * If registration is successful, the user is prompted to verify their email and redirected to the login page.
- *
- * @component
- * @example
- * return (
- *   <Register />
- * )
  */
 export default function Register() {
   const [formData, setFormData] = useState({
@@ -25,38 +19,29 @@ export default function Register() {
   const [error, setError] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [profilePicPreview, setProfilePicPreview] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
 
-  /**
-   * Opens the file input dialog for selecting a profile picture.
-   */
+  // Open file input dialog
   const handleFileClick = () => {
     fileInputRef.current.click();
   };
 
-  /**
-   * Handles form input changes and updates the corresponding form data in the state.
-   * If the input type is 'file', it sets the profile picture and generates a preview.
-   *
-   * @param {Object} e - The event object triggered by form input changes.
-   */
+  // Handle input changes
   function handleChange(e) {
     const { name, value, type, files } = e.target;
 
     if (type === "file") {
-      const file = files[0]; // Get the first selected file
-
-      // Set the selected file in the formData
+      const file = files[0];
       setFormData((prevData) => ({
         ...prevData,
         profilePicture: file,
       }));
 
-      // Generate a URL for the file and set the preview image URL
       if (file) {
-        const fileURL = URL.createObjectURL(file); // Create a URL for the file
-        setProfilePicPreview(fileURL); // Store the file's preview URL
+        const fileURL = URL.createObjectURL(file);
+        setProfilePicPreview(fileURL);
       }
     } else {
       setFormData((prevData) => ({
@@ -66,32 +51,32 @@ export default function Register() {
     }
   }
 
-  /**
-   * Handles the form submission for user registration.
-   * It validates the input fields, sends the registration data to the backend, and handles errors or success.
-   *
-   * @param {Object} e - The event object from the form submission.
-   * @async
-   */
+  // Handle form submission
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validation: Check if passwords match
+    // Validate if passwords match
     if (formData.password !== formData.confirmPassword) {
       setError("Passwords do not match!");
       return;
     }
 
-    // Validation: Ensure all fields are filled
+    // Validate if all fields are filled
     if (!formData.username || !formData.email || !formData.password) {
       setError("All fields are required!");
       return;
     }
 
-    // Clear error messages if all fields are valid
-    setError("");
+    // Validate email format
+    const emailRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailRegex.test(formData.email)) {
+      setError("Please enter a valid email address!");
+      return;
+    }
 
-    // Prepare data to be sent to the server
+    setError("");
+    setLoading(true); // Set loading to true when submitting the form
+
     const form = new FormData();
     form.append("username", formData.username);
     form.append("email", formData.email);
@@ -99,39 +84,38 @@ export default function Register() {
     form.append("profilePicture", formData.profilePicture);
 
     try {
-      // Send the form data to the backend
       const response = await fetch("http://localhost:3000/api/register", {
         method: "POST",
-        body: form, // Use FormData for file uploads
+        body: form,
       });
-      console.log(response);
 
       const data = await response.json();
-      console.log(data);
       if (!response.ok) {
         setError(data.error || "Account with this email already exists!");
         return;
       }
 
-      // Indicate email verification is required
       setIsVerifying(true);
       setError(
         "Registration successful! Please check your email to verify your account."
       );
-      // Navigate to login page after registration
+
+      // Redirect to login page after 2 seconds
       setTimeout(() => {
         navigate("/login");
-      }, 2000); // Wait 2 seconds before redirecting
+      }, 2000);
     } catch (error) {
+      setError("Registration failed!!!");
       console.error("Registration failed:", error);
-      setError("Registration failed!!!.");
+    } finally {
+      setLoading(false); // Set loading to false after the request is completed
     }
   };
 
   return (
-    <div className="flex flex-col items-center justify-center mt-5 max-h-screen ">
+    <div className="flex flex-col items-center justify-center mt-5 max-h-screen">
       <div className="p-6 mt-4 rounded-lg shadow-lg w-full max-w-md sm:max-w-lg bg-white bg-opacity-90 dark:bg-gray-800 transition-all transform hover:scale-105">
-        <h2 className="text-2xl font-semibold text-center mb-6 text-backgroundChatDark dark:text-textColorDark">
+        <h2 className="text-2xl font-semibold text-center mb-6">
           Create an Account
         </h2>
 
@@ -145,6 +129,9 @@ export default function Register() {
             <span>{error}</span>
           </p>
         )}
+
+        {/* Loading indicator */}
+        {loading && <p>Loading...</p>}
 
         {/* Registration form */}
         <form onSubmit={handleSubmit} className="space-y-2">
@@ -238,24 +225,14 @@ export default function Register() {
           </div>
 
           {/* Submit Button */}
-          <div className="text-center">
+          <div className="w-full mt-5">
             <button
               type="submit"
-              className="w-full py-3 bg-button mt-6 text-white font-semibold rounded-lg hover:bg-blueCustom transition">
+              className="w-full py-3 bg-blue-500 text-white font-semibold rounded-lg hover:bg-blue-600">
               Register
             </button>
           </div>
         </form>
-
-        {/* Link to Login Page */}
-        <div className="mt-4 text-center text-black dark:text-white">
-          <p>
-            Already have an account?{" "}
-            <a href="/login" className="text-title hover:underline">
-              Login here
-            </a>
-          </p>
-        </div>
       </div>
     </div>
   );

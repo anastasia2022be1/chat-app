@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 // Create a new instance of Resend for sending emails
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// -------------------------------------------------
 // Register a new user
 // POST: api/register
 export const registerUser = async (req, res) => {
@@ -46,6 +47,9 @@ export const registerUser = async (req, res) => {
       tokenExpiresAt,
     });
 
+    // Generate varification link
+    const varificationLink = `http://localhost:5173/verify/${verificationToken}`;
+
     // Send a verification email to the user with the verification token link
     const emailResponse = await resend.emails.send({
       from: "talki@resend.dev",
@@ -56,7 +60,7 @@ export const registerUser = async (req, res) => {
           <h1 style="color:#049FFF; text-align: center;">Willkommen bei Talki.dev!</h1>
           <p style="color: #333; line-height: 1.6;">Danke, dass Sie sich bei Talki.dev registriert haben. Bitte bestätigen Sie Ihre E-Mail-Adresse, um Ihr Konto zu aktivieren.</p>
           <div style="text-align: center; margin: 20px 0;">
-            <a href="http://localhost:3000/api/verify/${verificationToken}" style="background-color: #4B89FF; color: white; padding: 12px 24px; text-decoration: none; font-size: 16px; border-radius: 4px; display: inline-block;">E-Mail bestätigen</a>
+            <a href="${varificationLink}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; font-size: 16px; border-radius: 4px; display: inline-block;">E-Mail bestätigen</a>
           </div>
           <p style="color: #555; line-height: 1.4;">Wenn Sie sich nicht registriert haben, können Sie diese Nachricht ignorieren.</p>
           <footer style="text-align: center; font-size: 12px; color: #999; margin-top: 20px;">
@@ -99,8 +103,11 @@ export const verifyUser = async (req, res) => {
 
     // Check if the token has expired
     if (Date.now() > user.tokenExpiresAt) {
-      return res.status(400).json({ error: "Token has expired" });
+      await User.findByIdAndDelete(user._id)
+      return res.status(400).json({ error: "Token has expired. Register again" });
     }
+
+
 
     // Check if the user is already verified
     if (user.isVerified) {
@@ -121,6 +128,68 @@ export const verifyUser = async (req, res) => {
   }
 };
 //--------------------------------------------------------------
+
+// Resend E-Mail with verification token
+// POST: api/resend 
+export const resendVerifyToken = async (req, res) => {
+  const { email, password } = req.body;
+  // Check if email and password are provided
+  if (!email) {
+    return res.status(400).json({ error: 'Please fill all required fields' });
+  }
+
+  try {
+    // Convert email to lowercase to handle case-insensitive login
+    const user = await User.findOne({ email: email });
+
+    // Check if the user exists
+    if (!user) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+
+    const verificationToken = user.verificationToken;
+
+    // Generate varification link
+    const varificationLink = `http://localhost:5173/verify/${verificationToken}`;
+
+    // Send a verification email to the user with the verification token link
+    const emailResponse = await resend.emails.send({
+      from: "talki@resend.dev",
+      to: process.env.EMAIL_ADDRESS, // Send to the user's email
+      subject: "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
+      html: `
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
+          <h1 style="color: #4CAF50; text-align: center;">Willkommen bei Talki.dev!</h1>
+          <p style="color: #333; line-height: 1.6;">Danke, dass Sie sich bei Talki.dev registriert haben. Bitte bestätigen Sie Ihre E-Mail-Adresse, um Ihr Konto zu aktivieren.</p>
+          <div style="text-align: center; margin: 20px 0;">
+            <a href="${varificationLink}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; font-size: 16px; border-radius: 4px; display: inline-block;">E-Mail bestätigen</a>
+          </div>
+          <p style="color: #555; line-height: 1.4;">Wenn Sie sich nicht registriert haben, können Sie diese Nachricht ignorieren.</p>
+          <footer style="text-align: center; font-size: 12px; color: #999; margin-top: 20px;">
+            © 2024 Talki.dev. Alle Rechte vorbehalten.
+          </footer>
+        </div>
+      `,
+    });
+
+
+    // Check if email was sent successfully, otherwise respond with an error
+    if (emailResponse.error) {
+      return res.status(500).json({
+        error: "Failed to send verification email",
+        details: emailResponse.error.message
+      });
+    }
+
+    // Respond with the created user object
+    res.status(201).json(user);
+  } catch (error) {
+    console.error("Error during registration:", error.message);
+    res.status(500).json({ error: error.message });
+  }
+}
+
+// ------------------------------------------------------------------
 
 // Login user
 // POST: api/login

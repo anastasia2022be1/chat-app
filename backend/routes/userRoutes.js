@@ -2,6 +2,7 @@ import express from "express";
 import {
   getUserSettings,
   loginUser,
+  resendVerifyToken,
   registerUser,
   updateUserSettings,
   verifyUser,
@@ -29,6 +30,10 @@ router.post("/register", upload.single("profilePicture"), registerUser);
 router.get("/verify/:token", verifyUser);
 
 //--------------------------------------------------------
+
+// POST: api/resend
+router.post("/resend", resendVerifyToken)
+
 // Login user (POST: api/login)
 router.post("/login", loginUser);
 
