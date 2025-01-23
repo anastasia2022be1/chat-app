@@ -67,7 +67,7 @@ export default function Login() {
 
       // Handle unsuccessful login attempt
       if (!response.ok) {
-        setError(data.message || "Login failed.");
+        setError(data.error);
         return;
       }
 
@@ -85,6 +85,30 @@ export default function Login() {
     }
   }
 
+  async function handleResendVerify() {
+    const { email, password } = formData;
+
+    try {
+      const response = await fetch("http://localhost:3000/api/resend", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setError("A confirmation email has been sent to your email.");
+      } else {
+        setError(data.error);
+      }
+    } catch (error) {
+      console.error("Error when resending email:", error);
+      setError("An error has occurred. Please try again.");
+    }
+  }
+
   return (
     <div className="flex flex-col max-h-screen items-center justify-center p-10">
       <div className="bg-white bg-opacity-90 dark:bg-gray-800 p-8 mt-20 rounded-lg shadow-xl w-full max-w-md sm:max-w-lg transition-all transform hover:scale-105">
@@ -94,13 +118,21 @@ export default function Login() {
 
         {/* Display error message if any */}
         {error && (
-          <p className="text-center mb-4 text-yellow-800 bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
+          <div className="text-center mb-4 text-yellow-800 bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
             <FontAwesomeIcon
               icon={faInfoCircle}
               className="text-xl text-yellow-800"
             />
+
             <span>{error}</span>
-          </p>
+            {error === "Account not verified" ? (
+              <button onClick={handleResendVerify}>
+                Resend verification E-Mail
+              </button>
+            ) : (
+              <p></p>
+            )}
+          </div>
         )}
 
         {/* Login form */}

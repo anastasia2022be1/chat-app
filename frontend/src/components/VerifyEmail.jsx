@@ -38,7 +38,10 @@ export default function VerifyEmail() {
       ) : (
         <div>
           {error ? (
-            <p>{error}</p>
+            <div>
+              <h2>{error}</h2>
+              <button onClick={() => navigate("/register")}>Register</button>
+            </div>
           ) : (
             <p>Your account has been successfully verified.</p>
           )}
