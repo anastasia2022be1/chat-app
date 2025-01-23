@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 
+
 const AttachmentSchema = new mongoose.Schema({
   type: {
     type: String,

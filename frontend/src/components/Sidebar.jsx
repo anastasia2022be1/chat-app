@@ -184,37 +184,40 @@ const Sidebar = ({
   const handleDeleteChat = async (chatId) => {
     try {
       const token = localStorage.getItem("authToken");
-
+      const userId = localStorage.getItem("userId");
+      console.log(userId)
       // First, we delete the chat from the server.
       const response = await fetch(`http://localhost:3000/api/chat/${chatId}`, {
         method: "DELETE",
         headers: {
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
+        body: JSON.stringify({ userId })
       });
 
       const data = await response.json();
       console.log(data);
-
+      
       if (!response.ok) {
         throw new Error(data.error || "Failed to delete chat");
       }
-
-      
-
-      // Delete a chat from the chat list
+      handleSelectChat(null)
+      handleChosenChatMessage([])
+      //Delete a chat from the chat list
       setChats((prevChats) => {
         const updatedChats = prevChats.filter((chat) => chat._id !== chatId);
+        return updatedChats
+      })
 
-        // If the deleted chat is the same as the selected chat
-        if (chatId === chosenChatID) {
-          handleSelectChat(null); //Reset selected chat
-          handleChosenChatMessage([]); // Delete messages
-        }
+      //   // If the deleted chat is the same as the selected chat
+      //   if (chatId === chosenChatID) {
+      //     handleSelectChat(null); //Reset selected chat
+      //     handleChosenChatMessage([]); // Delete messages
+      //   }
 
-        return updatedChats;
-      });
-     
+      //   return updatedChats;
+      //});
     } catch (err) {
       console.error("Error deleting chat:", err.message);
     }
