@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * ResetPassword component allows users to reset their password by entering a new one.
@@ -69,17 +71,17 @@ export default function ResetPassword() {
   // If the password was reset successfully, show the success message
   if (success) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-        <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md text-center">
-          <h2 className="text-green-500 text-xl">
+      <div className="flex flex-col items-center justify-center max-screen p-10">
+        <div className="bg-white bg-opacity-90 dark:bg-gray-800 p-8 mt-20 rounded-lg shadow-xl w-full max-w-md sm:max-w-lg transition-transform transform hover:scale-105">
+          <h2 className="text-3xl font-semibold text-center mb-6 text-backgroundChatDark dark:text-textColorDark">
             Password reset successfully!
           </h2>
-          <p className="text-gray-800 dark:text-gray-200">
+          <p className="text-gray-800 dark:text-gray-200 text-center mb-6">
             You can now log in with your new password.
           </p>
           <button
             onClick={() => navigate("/login")}
-            className="bg-green-500 text-white p-2 rounded mt-4">
+            className="w-full py-3 bg-button text-white font-semibold rounded-lg hover:bg-blueCustom transition duration-300 ease-in-out">
             Go to Login
           </button>
         </div>
@@ -89,56 +91,64 @@ export default function ResetPassword() {
 
   // If not successful, render the reset password form
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
-      <div className="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-md w-full max-w-sm">
-        <h2 className="text-2xl mb-4 text-center text-gray-800 dark:text-white">
+    <div className="flex flex-col items-center justify-center max-h-screen p-10">
+      <div className="bg-white bg-opacity-90 dark:bg-gray-800 p-8 mt-20 rounded-lg shadow-xl w-full max-w-md sm:max-w-lg transition-transform transform hover:scale-105">
+        <h2 className="text-3xl font-semibold text-center mb-6 text-backgroundChatDark dark:text-textColorDark">
           Reset Password
         </h2>
 
-        {error && <p className="text-red-500 mb-4">{error}</p>}
+        {error && (
+          <p className="flex items-center justify-center space-x-2 text-center text-error bg-red-100 p-4 rounded-lg shadow-md ring-2 ring-red-300 font-medium text-lg dark:bg-errorDark dark:text-red-100 mb-4">
+            <FontAwesomeIcon
+              icon={faInfoCircle}
+              className="text-xl text-error dark:text-red-100"
+            />
+            <span>{error}</span>
+          </p>
+        )}
 
-        <form onSubmit={handleSubmit}>
-          <div className="mb-4">
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
             <label
               htmlFor="newPassword"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              New password
+              className="block text-lg font-medium text-title dark:text-gray-200">
+              New Password
             </label>
             <input
               id="newPassword"
               type="password"
               placeholder="Enter new password"
               value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)} // Update newPassword state on input change
-              className="mt-1 p-2 w-full border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              onChange={(e) => setNewPassword(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
               required
             />
           </div>
 
-          <div className="mb-4">
+          <div>
             <label
               htmlFor="confirmPassword"
-              className="block text-sm font-medium text-gray-700 dark:text-gray-300">
-              Confirm new password
+              className="block text-lg font-medium text-title dark:text-gray-200">
+              Confirm New Password
             </label>
             <input
               id="confirmPassword"
               type="password"
               placeholder="Confirm new password"
               value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)} // Update confirmPassword state on input change
-              className="mt-1 p-2 w-full border border-gray-300 rounded-lg dark:bg-gray-700 dark:border-gray-600 dark:text-white"
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
               required
             />
           </div>
 
           <button
             type="submit"
-            className={`w-full p-2 rounded-lg ${
-              loading ? "bg-gray-400" : "bg-green-500"
-            } text-white`}
+            className={`w-full py-3 mt-3 text-white font-semibold rounded-lg transition duration-300 ease-in-out ${
+              loading ? "bg-gray-400" : "bg-button "
+            }`}
             disabled={loading}>
-            {loading ? "Loading..." : "Reset password"}
+            {loading ? "Loading..." : "Reset Password"}
           </button>
         </form>
       </div>
