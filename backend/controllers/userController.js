@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 // Create a new instance of Resend for sending emails
 const resend = new Resend(process.env.RESEND_API_KEY);
 
+// -------------------------------------------------
 // Register a new user
 // POST: api/register
 export const registerUser = async (req, res) => {
@@ -31,7 +32,7 @@ export const registerUser = async (req, res) => {
 
     // Generate a unique verification token for email confirmation
     const verificationToken = crypto.randomBytes(32).toString("hex");
-    const tokenExpiresAt = Date.now() + 1000 * 60 * 60; // 1 hour expiry
+    const tokenExpiresAt = Date.now() + 1000 * 60 * 60 * 24; // 1 day 
 
     // Process the profile picture, if provided
     const profilePicture = req.file ? `/uploads/${req.file.filename}` : ""; // URL of the uploaded file
@@ -46,6 +47,9 @@ export const registerUser = async (req, res) => {
       tokenExpiresAt,
     });
 
+    // Generate varification link
+    const varificationLink = `http://localhost:5173/verify/${verificationToken}`;
+
     // Send a verification email to the user with the verification token link
     const emailResponse = await resend.emails.send({
       from: "talki@resend.dev",
@@ -56,7 +60,7 @@ export const registerUser = async (req, res) => {
           <h1 style="color: #4CAF50; text-align: center;">Willkommen bei Talki.dev!</h1>
           <p style="color: #333; line-height: 1.6;">Danke, dass Sie sich bei Talki.dev registriert haben. Bitte bestätigen Sie Ihre E-Mail-Adresse, um Ihr Konto zu aktivieren.</p>
           <div style="text-align: center; margin: 20px 0;">
-            <a href="http://localhost:3000/api/verify/${verificationToken}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; font-size: 16px; border-radius: 4px; display: inline-block;">E-Mail bestätigen</a>
+            <a href="${varificationLink}" style="background-color: #4CAF50; color: white; padding: 12px 24px; text-decoration: none; font-size: 16px; border-radius: 4px; display: inline-block;">E-Mail bestätigen</a>
           </div>
           <p style="color: #555; line-height: 1.4;">Wenn Sie sich nicht registriert haben, können Sie diese Nachricht ignorieren.</p>
           <footer style="text-align: center; font-size: 12px; color: #999; margin-top: 20px;">
@@ -66,13 +70,13 @@ export const registerUser = async (req, res) => {
       `,
     });
 
-    // Check if email was sent successfully, otherwise respond with an error
-    if (emailResponse.error) {
-      return res.status(500).json({
-        error: "Failed to send verification email",
-        details: emailResponse.error.message
-      });
-    }
+    // // Check if email was sent successfully, otherwise respond with an error
+    // if (emailResponse.error) {
+    //   return res.status(500).json({
+    //     error: "Failed to send verification email",
+    //     details: emailResponse.error.message
+    //   });
+    // }
 
     // Respond with the created user object
     res.status(201).json(user);
@@ -113,6 +117,7 @@ export const verifyUser = async (req, res) => {
     user.tokenExpiresAt = null;
 
     await user.save();
+    // res.redirect('http://localhost:5173/api/login');
 
     return res.status(200).json({ message: "Account successfully verified" });
   } catch (error) {

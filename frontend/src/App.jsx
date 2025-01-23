@@ -4,6 +4,7 @@ import Layout from "./layouts/Layout.jsx";
 import "./App.css";
 import Home from "./components/Home.jsx";
 import Register from "./pages/Register.jsx";
+import VerifyEmail from "./components/VerifyEmail.jsx";
 import Login from "./pages/Login.jsx";
 import ForgotPassword from "./pages/ForgotPassword";
 import ValidateResetToken from "./components/ValidateResetToken.jsx";
@@ -29,6 +30,7 @@ function App() {
             {/* Public routes */}
             <Route index element={<Home />} />
             <Route path="register" element={<Register />} />
+            <Route path="/verify/:token" element={<VerifyEmail />} />
             <Route path="login" element={<Login />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
             <Route
