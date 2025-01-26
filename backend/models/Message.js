@@ -37,8 +37,4 @@ const messageSchema = new mongoose.Schema({
 
 const Message = mongoose.model("Message", messageSchema);
 
-export default Message;    const messages = await Chat.findById(chatId)
-//   .populate("participants", "username email")
-.populate({
-  path: "messages"
-})
+export default Message;

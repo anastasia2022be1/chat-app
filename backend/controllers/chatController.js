@@ -67,12 +67,19 @@ export const deleteChat = async (req, res) => {
       { $pull: { chats: chatId } },
       { new: true }
     );
+    console.log("delete chat function test, this is uodated chat in chatController ", updatedChat);
+    if (updatedChat.participants.length === 0) {
+      console.log("empty participants chat ")
+      const deletedChat = await Chat.findByIdAndDelete(chatId);
+      const deleteMessages = await Message.deleteMany({chatId: chatId})
+      console.log("entire chat and all messages associated with it deleted, first the deleted Chat, second the deleted Messages", deletedChat, deleteMessages)
+    }
 
     res
       .status(200)
       .json({ message: "Succesfully removed chat" });
   } catch (error) {
     console.error(error, "Error");
-    res.status(500).json({ error: "Internal Server Error" });
+    res.status(500).json({ error: "Internal Serve r Error" });
   }
 };
