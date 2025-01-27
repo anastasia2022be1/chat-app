@@ -126,8 +126,8 @@ export default function Setting() {
     }
 
     // Validate password length (exactly 8 characters)
-    if (formData.newPassword.length !== 8) {
-      setError("Password must be exactly 8 characters long.");
+    if (formData.newPassword.length < 8) {
+      setError("Password must be at least 8 characters long.");
       return;
     }
 

@@ -39,8 +39,8 @@ export default function ResetPassword() {
     }
 
     // Validate password length (exactly 8 characters)
-    if (newPassword.length !== 8) {
-      setError("Password must be exactly 8 characters long.");
+    if (newPassword.length < 8) {
+      setError("Password must be at least 8 characters long.");
       return;
     }
 
