@@ -103,7 +103,7 @@ export default function Register() {
       // Redirect to login page after 2 seconds
       setTimeout(() => {
         navigate("/login");
-      }, 2000);
+      }, 3000);
     } catch (error) {
       setError("Registration failed!!!");
       console.error("Registration failed:", error);
