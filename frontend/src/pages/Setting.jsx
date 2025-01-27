@@ -97,8 +97,8 @@ export default function Setting() {
   const checkForChanges = (newFormData) => {
     const isDifferent =
       newFormData.username !== user?.username ||
-      newFormData.currentPassword !== "" ||
-      newFormData.newPassword !== "" ||
+      // newFormData.currentPassword !== "" ||
+      // newFormData.newPassword !== "" ||
       (newFormData.profilePicture &&
         newFormData.profilePicture !== user?.profilePicture);
     setHasChanges(isDifferent);
@@ -107,32 +107,33 @@ export default function Setting() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (formData.newPassword && !formData.currentPassword) {
-      setError("Please enter your current password to change the password.");
-      return;
-    }
-
     const form = new FormData();
+
     if (formData.username) form.append("username", formData.username);
-    if (formData.currentPassword && formData.newPassword) {
+    if (formData.profilePicture)
+      form.append("profilePicture", formData.profilePicture);
+
+    // If the password is changed
+    if (formData.newPassword) {
+      if (!formData.currentPassword) {
+        setError("Please enter your current password to change the password.");
+      }
+
+      // Check password matches
+      if (formData.newPassword !== formData.confirmNewPassword) {
+        setError("Passwords do not match!");
+        return;
+      }
+
+      // Check the length of the new password
+      if (formData.newPassword.length < 8) {
+        setError("Password must be at least 8 characters long.");
+        return;
+      }
+
       form.append("password", formData.currentPassword);
       form.append("newPassword", formData.newPassword);
     }
-
-    // Validation: Check if passwords match
-    if (formData.newPassword !== formData.confirmNewPassword) {
-      setError("Passwords do not match!");
-      return;
-    }
-
-    // Validate password length (exactly 8 characters)
-    if (formData.newPassword.length < 8) {
-      setError("Password must be at least 8 characters long.");
-      return;
-    }
-
-    if (formData.profilePicture)
-      form.append("profilePicture", formData.profilePicture);
 
     try {
       const token = localStorage.getItem("authToken");
