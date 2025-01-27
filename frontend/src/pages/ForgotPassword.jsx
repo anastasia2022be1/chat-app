@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
  * ForgotPassword component allows users to request a password reset by entering their email.
@@ -63,48 +64,72 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-blue-50 p-6">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
-        <h2 className="text-3xl font-semibold text-center mb-6">
+    <div className="flex flex-col items-center justify-center max-h-screen p-10 ">
+      <div className="bg-white bg-opacity-90 dark:bg-gray-800 p-8 mt-20 rounded-lg shadow-xl w-full max-w-md sm:max-w-lg transition-transform transform hover:scale-105">
+        <h2 className="text-3xl font-semibold text-center mb-6 text-backgroundChatDark dark:text-textColorDark">
           Forgot Password
         </h2>
-
+  
         {/* Display error message if any */}
-        {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+        {error && (
+          <p className="flex items-center justify-center space-x-2 text-center text-error bg-red-100 p-4 rounded-lg shadow-md ring-2 ring-red-300 font-medium text-lg dark:bg-errorDark dark:text-red-100 mb-4">
+            <FontAwesomeIcon
+              icon={faInfoCircle}
+              className="text-xl text-error dark:text-red-100"
+            />
+            <span>{error}</span>
+          </p>
+        )}
+  
         {/* Display success message if any */}
         {message && (
-          <p className="text-green-500 text-center mb-4">{message}</p>
+          <p className="text-green-500 text-center mb-4">
+            {message}
+          </p>
         )}
-
+  
         {/* Password reset form */}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-lg font-medium">Email</label>
+            <label
+              htmlFor="email"
+              className="block text-lg font-medium text-title dark:text-gray-200"
+            >
+              Email
+            </label>
             <input
+              id="email"
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)} // Update email state on input change
-              className="w-full p-3 border border-gray-300 rounded-lg mt-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
               placeholder="Enter your email"
+              aria-label="Email input"
             />
           </div>
-
+  
           <div className="text-center">
             <button
               type="submit"
-              className="w-full py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-500 transition">
+              aria-label="Send Reset Link"
+              className="w-full py-3 bg-button mt-3 text-white font-semibold rounded-lg hover:bg-blueCustom transition duration-300 ease-in-out"
+            >
               Send Reset Link
             </button>
           </div>
         </form>
-
+  
         <div className="mt-4 text-center">
           {/* Link to the login page */}
-          <a href="/login" className="text-blue-600 hover:underline">
+          <a
+            href="/login"
+            className="text-blue-600 hover:underline dark:text-blue-400"
+          >
             Back to Login
           </a>
         </div>
       </div>
     </div>
   );
+  
 }

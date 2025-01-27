@@ -7,6 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
  * It includes form validation, handling file uploads (profile picture), and sending the registration data to the server.
  * If registration is successful, the user is prompted to verify their email and redirected to the login page.
  */
+
 export default function Register() {
   const [formData, setFormData] = useState({
     username: "",
@@ -22,6 +23,10 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const fileInputRef = useRef(null);
+
+  // States for toggling password visibility
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   // Open file input dialog
   const handleFileClick = () => {
@@ -109,7 +114,7 @@ export default function Register() {
       // Redirect to login page after 2 seconds
       setTimeout(() => {
         navigate("/login");
-      }, 2000);
+      }, 3000);
     } catch (error) {
       setError("Registration failed!!!");
       console.error("Registration failed:", error);
@@ -127,7 +132,7 @@ export default function Register() {
 
         {/* Error message display */}
         {error && (
-          <p className="text-center mb-4 text-yellow-800 bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
+          <p className="text-center mb-4 text-error bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
             <FontAwesomeIcon
               icon="fa-solid fa-info-circle"
               className="text-xl text-yellow-800"
@@ -206,13 +211,26 @@ export default function Register() {
               Password
             </label>
             <input
-              type="password"
+              type={showPassword ? "text" : "password"}
               name="password"
               value={formData.password}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
               placeholder="Enter your password"
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute right-10  text-gray-600">
+              {showPassword ? (
+                <FontAwesomeIcon
+                  icon="fa-solid fa-eye-slash"
+                  className="mt-6"
+                />
+              ) : (
+                <FontAwesomeIcon icon="fa-solid fa-eye" className="mt-6" />
+              )}
+            </button>
           </div>
 
           {/* Confirm Password */}
@@ -221,13 +239,26 @@ export default function Register() {
               Confirm Password
             </label>
             <input
-              type="password"
+              type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
               value={formData.confirmPassword}
               onChange={handleChange}
               className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
               placeholder="Confirm your password"
             />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword((prev) => !prev)}
+              className="absolute right-10  text-gray-600">
+              {showConfirmPassword ? (
+                <FontAwesomeIcon
+                  icon="fa-solid fa-eye-slash"
+                  className="mt-6"
+                />
+              ) : (
+                <FontAwesomeIcon icon="fa-solid fa-eye" className="mt-6" />
+              )}
+            </button>
           </div>
 
           {/* Submit Button */}

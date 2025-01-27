@@ -304,7 +304,7 @@ const Sidebar = ({
           error ? (
             <p className="text-red-500 text-center">{error}</p>
           ) : (
-            <div className="max-h-[400px] overflow-y-auto ">
+            <div className="max-h-[400px] overflow-y-auto cursor-pointer ">
               <ContactList
                 contacts={contacts}
                 handleContactClick={handleContactClick}

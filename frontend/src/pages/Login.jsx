@@ -50,6 +50,7 @@ export default function Login() {
       return;
     }
 
+
     // Clear any previous errors
     setError("");
 
@@ -118,19 +119,20 @@ export default function Login() {
 
         {/* Display error message if any */}
         {error && (
-          <div className="text-center mb-4 text-yellow-800 bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
+          <div className="flex flex-col items-center justify-center space-x-2 text-center text-error bg-red-100 p-1 rounded-lg shadow-md ring-2 ring-red-300 font-medium text-lg dark:bg-errorDark dark:text-red-100 mb-4">
             <FontAwesomeIcon
               icon={faInfoCircle}
-              className="text-xl text-yellow-800"
+              className="text-xl text-error dark:text-red-100"
             />
 
             <span>{error}</span>
-            {error === "Account not verified" ? (
-              <button onClick={handleResendVerify}>
+
+            {error === "Account not verified" && (
+              <button
+                onClick={handleResendVerify}
+                className="ml-2 text-md text-blueCustom  hover:underline">
                 Resend verification E-Mail
               </button>
-            ) : (
-              <p></p>
             )}
           </div>
         )}

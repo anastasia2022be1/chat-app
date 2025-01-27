@@ -6,20 +6,18 @@ export const getMessages = async (req, res) => {
   try {
     const chatId = req.params.chatId;
 
-    const messages = await Chat.findById(chatId)
-      .populate({
-        path: 'messages',
-        populate: {
-          path: 'senderId',
-          select: 'username _id profilePicture'
-        }
-      })
-      
+    const messages = await Chat.findById(chatId).populate({
+      path: "messages",
+      populate: {
+        path: "senderId",
+        select: "username _id profilePicture",
+      },
+    });
 
     if (!messages) {
       return res.status(404).json({ error: "Chat not found" });
     }
-    console.log("here the message controller: ", messages.messages)
+    console.log("here the message controller: ", messages.messages);
     res.status(200).json(messages.messages);
   } catch (error) {
     console.error(error, "Error");
@@ -50,4 +48,3 @@ export const deleteMessage = async (req, res) => {
     res.status(500).json({ error: "Failed to delete message" });
   }
 };
-

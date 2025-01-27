@@ -26,7 +26,7 @@ const ChatList = ({ chats, handleChatClick, handleDeleteChat }) => (
     {chats.map((chat) => (
       <li
         key={chat._id}
-        className="flex items-center justify-between py-2 px-4 bg-gray-200 rounded-lg mx-2">
+        className="flex items-center justify-between py-2 px-4 bg-gray-200 rounded-lg mx-2  ">
         {/* Display chat information */}
         <div onClick={() => handleChatClick(chat)}>
           <h4 className="cursor-pointer">{chat.participants.map(participant => participant.username + " ")}</h4>
@@ -34,7 +34,7 @@ const ChatList = ({ chats, handleChatClick, handleDeleteChat }) => (
 
         {/* delete button */}
         <button
-          className="text-red-500 text-xl font-bold hover:text-red-700 focus:outline-none"
+          className="text-red-500 text-xl font-bold hover:text-red-700 focus:outline-none cursor-pointer"
           onClick={() => handleDeleteChat(chat._id)}>
           <FontAwesomeIcon icon="fa-solid fa-trash" />
         </button>
