@@ -44,11 +44,11 @@ router.post("/forgot-password", forgotPassword);
 
 //---------------------------------------------------------
 // Get reset password page (GET: api/validate-reset-password/:token)
-router.get("/validate-reset-password/:token", validatePassword, getResetPasswordPage);
+router.get("/validate-reset-password/:token", getResetPasswordPage);
 
 //---------------------------------------------------------
 // Reset password (POST: api/reset-password/:token)
-router.post("/reset-password/:token", resetPassword);
+router.post("/reset-password/:token", validatePassword, resetPassword);
 
 //--------------------------------------------------------
 // Get user settings (GET: api/settings)

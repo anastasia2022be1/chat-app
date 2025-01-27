@@ -21,6 +21,8 @@ export default function ResetPassword() {
   const [error, setError] = useState(""); // Holds any error message
   const [success, setSuccess] = useState(false); // Indicates if the password reset was successful
 
+  console.log(token);
+
   /**
    * Handles the form submission for resetting the password.
    * It checks if the new password and confirmation match, and sends a POST request to the server.
@@ -36,12 +38,9 @@ export default function ResetPassword() {
       return;
     }
 
-    // Validate password format
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8}$/;
-    if (!passwordRegex.test(newPassword)) {
-      setError(
-        "Password must be at least 8 characters long, include uppercase, lowercase letters, and numbers."
-      );
+    // Validate password length (exactly 8 characters)
+    if (newPassword.length !== 8) {
+      setError("Password must be exactly 8 characters long.");
       return;
     }
 
@@ -61,8 +60,13 @@ export default function ResetPassword() {
 
       const data = await response.json();
 
+      console.log(data);
+
       if (!response.ok) {
-        setError(data.error || "Failed to reset password. Try again.");
+        setError(
+          data.error || "An unexpected error occurred. Please try again."
+        );
+
         setLoading(false);
         return;
       }

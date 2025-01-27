@@ -125,6 +125,12 @@ export default function Setting() {
       return;
     }
 
+    // Validate password length (exactly 8 characters)
+    if (formData.newPassword.length !== 8) {
+      setError("Password must be exactly 8 characters long.");
+      return;
+    }
+
     if (formData.profilePicture)
       form.append("profilePicture", formData.profilePicture);
 

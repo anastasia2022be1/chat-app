@@ -1,12 +1,19 @@
 export function validatePassword(req, res, next) {
-    const { password } = req.body;
+    const { password, newPassword } = req.body;
 
-    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8}$/;
+    // Regex to check for exactly 8 characters
+    const passwordRegex = /^.{8}$/;
 
-    if (!passwordRegex.test(password)) {
+    if (password && !passwordRegex.test(password)) {
         return res.status(400).json({
             message:
-                "Password is invalid. It must be exactly 8 characters long, include uppercase, lowercase letters, and numbers.",
+                "Password is invalid. It must be exactly 8 characters long.",
+        });
+    }
+
+    if (newPassword && !passwordRegex.test(newPassword)) {
+        return res.status(400).json({
+            message: "New password is invalid. It must be at least 8 characters long.",
         });
     }
 
