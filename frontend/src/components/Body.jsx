@@ -252,7 +252,12 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
                 {msg.senderId ? msg.senderId.username : "Deleted Account"}
               </strong>
               <p>{msg.content}</p>
-              <p className="text-xs mt-1">{msg.createdAt}</p>
+              <p className="text-xs mt-1">
+                {new Date(msg.createdAt).toLocaleString("de-DE", {
+                  dateStyle: "short",
+                  timeStyle: "short",
+                })}
+              </p>
               {msg.senderId && msg.senderId._id === userId && (
                 <button
                   onClick={() => handleDeleteMessage(msg._id)}
