@@ -112,7 +112,7 @@ function Message({ socket, chosenChatID }) {
       {/* Emoji Button */}
       <button
         type="button"
-        className="p-3  w-full md:w-1/6 rounded-lg bg-button transition "
+        className="p-3  w-full md:w-1/6 rounded-lg bg-button transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 "
         onClick={() => setShowEmojiPicker(!showEmojiPicker)} // Toggle emoji picker visibility
       >
         😊
@@ -137,7 +137,7 @@ function Message({ socket, chosenChatID }) {
       {/* Send Button */}
       <button
         type="submit"
-        className={`p-3 w-full md:w-1/6 rounded-lg transition ${
+        className={`p-3 w-full md:w-1/6 rounded-lg transition transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
           chosenChatID === null
             ? "bg-gray-400 text-gray-700 cursor-not-allowed"
             : "bg-button text-white "
