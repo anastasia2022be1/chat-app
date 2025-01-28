@@ -107,30 +107,41 @@ export default function Setting() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Only require currentPassword if newPassword is provided
     if (formData.newPassword && !formData.currentPassword) {
       setError("Please enter your current password to change the password.");
       return;
     }
 
     const form = new FormData();
+
+    // Add username to the form if it's changed
     if (formData.username) form.append("username", formData.username);
-    if (formData.currentPassword && formData.newPassword) {
+
+    // Add the current and new passwords only if newPassword is set
+    if (formData.newPassword) {
+      if (!formData.currentPassword) {
+        setError("Please enter your current password to change the password.");
+        return;
+      }
+
+      // Validation: Check if passwords match
+      if (formData.newPassword !== formData.confirmNewPassword) {
+        setError("Passwords do not match!");
+        return;
+      }
+
+      // Check the length of the new password
+      if (formData.newPassword.length < 8) {
+        setError("Password must be at least 8 characters long.");
+        return;
+      }
+
       form.append("password", formData.currentPassword);
       form.append("newPassword", formData.newPassword);
     }
 
-    // Validation: Check if passwords match
-    if (formData.newPassword !== formData.confirmNewPassword) {
-      setError("Passwords do not match!");
-      return;
-    }
-
-    // Validate password length (exactly 8 characters)
-    if (formData.newPassword.length < 8) {
-      setError("Password must be at least 8 characters long.");
-      return;
-    }
-
+    // Add profile picture to the form if changed
     if (formData.profilePicture)
       form.append("profilePicture", formData.profilePicture);
 
@@ -160,6 +171,12 @@ export default function Setting() {
         setHasChanges(false);
         setProfilePicPreview(data.user.profilePicture); // Update preview with server response
         setIsUpdated(true);
+        setFormData((prev) => ({
+          ...prev,
+          currentPassword: "",
+          newPassword: "",
+          confirmNewPassword: "",
+        }));
 
         // Reset the update feedback after 2 seconds
         setTimeout(() => setIsUpdated(false), 2000);
@@ -246,13 +263,13 @@ export default function Setting() {
               {profilePicPreview ? (
                 <img
                   src={"http://localhost:3000" + profilePicPreview}
-                  alt="Profile Preview"
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
                 <div className="w-full h-full bg-gray-200 rounded-full"></div>
               )}
             </div>
+
             <button
               type="button"
               onClick={handleFileClick}

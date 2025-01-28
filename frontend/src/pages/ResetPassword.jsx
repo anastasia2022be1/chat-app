@@ -23,6 +23,9 @@ export default function ResetPassword() {
   const [error, setError] = useState(""); // Holds any error message
   const [success, setSuccess] = useState(false); // Indicates if the password reset was successful
 
+   // States for toggling password visibility
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
   console.log(token);
 
   /**
@@ -129,13 +132,26 @@ export default function ResetPassword() {
             </label>
             <input
               id="newPassword"
-              type="password"
+              type={showNewPassword ? "text" : "password"}
               placeholder="Enter new password"
               value={newPassword}
               onChange={(e) => setNewPassword(e.target.value)}
               className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
               required
             />
+            <button
+                type="button"
+                onClick={() => setShowNewPassword((prev) => !prev)}
+                className="absolute right-12  text-gray-600">
+                {showNewPassword ? (
+                  <FontAwesomeIcon
+                    icon="fa-solid fa-eye-slash"
+                    className="mt-6"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon="fa-solid fa-eye" className="mt-6" />
+                )}
+              </button>
           </div>
 
           <div>
@@ -146,13 +162,26 @@ export default function ResetPassword() {
             </label>
             <input
               id="confirmPassword"
-              type="password"
+              type={showConfirmNewPassword ? "text" : "password"}
               placeholder="Confirm new password"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
               required
             />
+            <button
+                type="button"
+                onClick={() => setShowConfirmNewPassword((prev) => !prev)}
+                className="absolute right-12  text-gray-600">
+                {showConfirmNewPassword ? (
+                  <FontAwesomeIcon
+                    icon="fa-solid fa-eye-slash"
+                    className="mt-6"
+                  />
+                ) : (
+                  <FontAwesomeIcon icon="fa-solid fa-eye" className="mt-6" />
+                )}
+              </button>
           </div>
 
           <button
