@@ -2,6 +2,18 @@ import { Link } from "react-router-dom";
 import DarkModeSwitcher from "./DarkModeSwitcher";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+/**
+ * Navbar component renders a navigation bar with links and a dark mode switcher.
+ * - Displays the logo and links to different parts of the application.
+ * - Provides a button for toggling dark mode.
+ *
+ * @component
+ * @example
+ * return (
+ *   <Navbar />
+ * )
+ * @returns {JSX.Element} The rendered Navbar component with logo, navigation links, and dark mode switcher.
+ */
 export default function Navbar() {
   return (
     <nav className="bg-backgroundChat dark:bg-backgroundChatDark py-2 shadow-custom-strong border-b border-gray-300 dark:border-gray-700">

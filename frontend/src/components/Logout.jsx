@@ -9,23 +9,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
  * - Removes the stored `userId` and `authToken` from localStorage.
  * - Redirects the user to the login page after successful logout.
  *
- * @returns {JSX.Element} The rendered Logout button component.
+ * @component
+ * @example
+ * return (
+ *   <Logout />
+ * )
+ * @returns {JSX.Element} The rendered Logout button component with an icon.
  */
 const Logout = () => {
-  const navigate = useNavigate();
-  const { logout } = useContext(AuthContext);
+  const navigate = useNavigate(); // Hook to navigate to different routes programmatically
+  const { logout } = useContext(AuthContext); // Accessing the logout function from AuthContext
 
   /**
    * handleLogout function is triggered when the user clicks the logout button.
    * - Calls `logout()` to update the authentication state in the context.
    * - Removes the user credentials from localStorage.
    * - Redirects the user to the login page.
+   *
+   * @function
+   * @returns {void}
    */
   const handleLogout = () => {
-    logout();
-    localStorage.removeItem("userId");
-    localStorage.removeItem("authToken");
-    navigate("/login");
+    logout(); // Clear user authentication state from the context
+    localStorage.removeItem("userId"); // Remove user ID from localStorage
+    localStorage.removeItem("authToken"); // Remove auth token from localStorage
+    navigate("/login"); // Redirect user to login page
   };
 
   return (

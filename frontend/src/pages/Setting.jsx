@@ -2,8 +2,33 @@ import { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 
+/**
+ * Settings component allows users to update their profile information,
+ * including username, password, and profile picture. It also provides
+ * an option to delete the account.
+ *
+ * @component
+ * @example
+ * return (
+ *   <Setting />
+ * )
+ */
 export default function Setting() {
+  /**
+   * Holds the user's data fetched from the server.
+   * @type {Object|null}
+   */
   const [user, setUser] = useState(null);
+
+  /**
+   * Holds the form data for updating user settings.
+   * @type {Object}
+   * @property {string} username - The user's username.
+   * @property {string} currentPassword - The user's current password.
+   * @property {string} newPassword - The new password to set.
+   * @property {string} confirmNewPassword - Confirmation of the new password.
+   * @property {File|null} profilePicture - The user's profile picture file.
+   */
   const [formData, setFormData] = useState({
     username: "",
     currentPassword: "",
@@ -11,10 +36,35 @@ export default function Setting() {
     confirmNewPassword: "",
     profilePicture: null,
   });
-  const [profilePicPreview, setProfilePicPreview] = useState(null); 
+
+  /**
+   * Holds the URL of the profile picture preview.
+   * @type {string|null}
+   */
+  const [profilePicPreview, setProfilePicPreview] = useState(null);
+
+  /**
+   * Indicates whether there are unsaved changes in the form.
+   * @type {boolean}
+   */
   const [hasChanges, setHasChanges] = useState(false);
+
+  /**
+   * Holds any error message to be displayed to the user.
+   * @type {string}
+   */
   const [error, setError] = useState("");
+
+  /**
+   * Indicates whether the settings were successfully updated.
+   * @type {boolean}
+   */
   const [isUpdated, setIsUpdated] = useState(false);
+
+  /**
+   * Ref for the file input element to trigger file selection programmatically.
+   * @type {React.RefObject<HTMLInputElement>}
+   */
   const fileInputRef = useRef(null);
 
   // States for toggling password visibility
@@ -24,6 +74,9 @@ export default function Setting() {
 
   const navigate = useNavigate();
 
+  /**
+   * Fetches the user's data from the server when the component mounts.
+   */
   useEffect(() => {
     const fetchUserData = async () => {
       try {
@@ -60,6 +113,9 @@ export default function Setting() {
     fetchUserData();
   }, []);
 
+  /**
+   * Clears the error message after 4 seconds if an error is present.
+   */
   useEffect(() => {
     if (error) {
       const timer = setTimeout(() => {
@@ -69,14 +125,26 @@ export default function Setting() {
     }
   }, [error]);
 
+  /**
+   * Triggers the file input click event to allow the user to select a file.
+   */
   const handleFileClick = () => {
     fileInputRef.current.click();
   };
 
+  /**
+   * Navigates the user to the chat page.
+   */
   const handleClick = () => {
     navigate("/chat");
   };
 
+  /**
+   * Handles changes to the form inputs and updates the form data state.
+   *
+   * @param {Object} e - The event object from the input change.
+   * @param {EventTarget} e.target - The input element that triggered the event.
+   */
   const handleChange = (e) => {
     const { name, value } = e.target;
     const newFormData = { ...formData, [name]: value };
@@ -84,16 +152,34 @@ export default function Setting() {
     checkForChanges(newFormData);
   };
 
+  /**
+   * Handles changes to the file input and updates the form data state.
+   *
+   * @param {Object} e - The event object from the file input change.
+   * @param {FileList} e.target.files - The list of files selected by the user.
+   */
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const newFormData = { ...formData, profilePicture: file };
       setFormData(newFormData);
 
+      // Create a preview URL for the selected file
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePicPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+
       checkForChanges(newFormData);
     }
   };
 
+  /**
+   * Checks if there are any changes in the form data compared to the user's current data.
+   *
+   * @param {Object} newFormData - The updated form data to compare.
+   */
   const checkForChanges = (newFormData) => {
     const isDifferent =
       newFormData.username !== user?.username ||
@@ -104,6 +190,13 @@ export default function Setting() {
     setHasChanges(isDifferent);
   };
 
+  /**
+   * Handles the form submission for updating user settings.
+   *
+   * @param {Object} e - The event object from the form submission.
+   * @param {EventTarget} e.target - The form element that triggered the event.
+   * @async
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -178,13 +271,6 @@ export default function Setting() {
           confirmNewPassword: "",
         }));
 
-        setFormData((prev) => ({
-          ...prev,
-          currentPassword: "",
-          newPassword: "",
-          confirmNewPassword: "",
-        }));
-
         // Reset the update feedback after 2 seconds
         setTimeout(() => setIsUpdated(false), 2000);
       } else {
@@ -195,6 +281,11 @@ export default function Setting() {
     }
   };
 
+  /**
+   * Handles the deletion of the user's account after confirmation.
+   *
+   * @async
+   */
   const handleDeleteAccount = async () => {
     const confirmed = window.confirm(
       "Are you sure you want to delete your account? This action cannot be undone."
@@ -220,7 +311,8 @@ export default function Setting() {
       if (response.ok) {
         alert("Your account has been successfully deleted.");
         localStorage.removeItem("authToken"); // Delete token
-        navigate("/login"); //
+        navigate("/login"); // Redirect to login page
+      } else {
         setError(data.error || "Failed to delete account.");
       }
     } catch (err) {
@@ -229,15 +321,15 @@ export default function Setting() {
   };
 
   return (
-    <div className="max-h-screen flex flex-col items-center justify-center  ">
+    <div className="max-h-screen flex flex-col items-center justify-center">
       {/* Go to Chat Button */}
-      <div className="fixed bottom-12 right-5 md:bottom-18 md:right-10  z-50 flex flex-col items-center">
+      <div className="fixed bottom-12 right-5 md:bottom-18 md:right-10 z-50 flex flex-col items-center">
         <div
           onClick={handleClick}
           className="bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600 dark:from-blue-700 dark:to-blue-800 rounded-full p-4 shadow-lg flex items-center justify-center text-white dark:text-gray-200 hover:scale-105 transition-transform duration-300">
           <FontAwesomeIcon
             icon="fa-solid fa-comments"
-            className="text-md  md:text-2xl "
+            className="text-md md:text-2xl"
           />
         </div>
       </div>

@@ -5,18 +5,30 @@ import "../Home.css";
 
 /**
  * Home component represents the homepage of the application.
- * - Displays a welcome message to new users and logged-in users.
- * - Simulates a chat experience with predefined messages that appear sequentially.
- * - Provides login and registration options if the user is not authenticated.
- * - Displays a button to navigate to the chat page if the user is authenticated.
  *
- * @returns {JSX.Element} The rendered Home component with the welcome section and chat simulation.
+ * Features:
+ * - Displays a welcome message to new users and authenticated users.
+ * - Simulates a chat experience with predefined messages appearing sequentially.
+ * - Provides login and registration options for unauthenticated users.
+ * - Displays a button to navigate to the chat page for authenticated users.
+ *
+ * This component uses the `AuthContext` to check if the user is logged in
+ * and `useEffect` to simulate chat messages.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Home component with a welcome section and chat simulation.
  */
 export default function Home() {
-  const { authState } = useContext(AuthContext); // Using AuthContext to check user authentication state
-  const [messages, setMessages] = useState([]); // State to hold chat messages
+  // Using AuthContext to check user authentication state
+  const { authState } = useContext(AuthContext);
 
-  // Simulating chat messages with a delay using useEffect
+  // State to hold chat messages for the simulation
+  const [messages, setMessages] = useState([]);
+
+  /**
+   * Simulates a chat experience by sequentially adding messages to the chat state.
+   * Uses `useEffect` to set up timers for message addition with delays.
+   */
   useEffect(() => {
     // Initial message
     setMessages([{ text: "Hey there! Welcome to Talki! 🎉", fromRight: true }]);
@@ -25,10 +37,7 @@ export default function Home() {
     const timer1 = setTimeout(() => {
       setMessages((prev) => [
         ...prev,
-        {
-          text: "Hi! Thank you! It looks really cool. 😊",
-          fromRight: false,
-        },
+        { text: "Hi! Thank you! It looks really cool. 😊", fromRight: false },
       ]);
     }, 1000);
 
@@ -63,7 +72,7 @@ export default function Home() {
   }, []);
 
   return (
-    <div className="max-h-screen flex flex-col items-center justify-center overflow-hidden bg-backgroundChat dark:bg-backgroundChatDark px-4 sm:px-6 lg:px-8 ">
+    <div className="max-h-screen flex flex-col items-center justify-center overflow-hidden bg-backgroundChat dark:bg-backgroundChatDark px-4 sm:px-6 lg:px-8">
       {/* Welcome Section */}
       <div className="text-center bg-backgroundBox dark:bg-gray-800 text-white p-6 mt-6 sm:p-8 lg:p-12 rounded-xl w-full max-w-3xl">
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-title dark:text-titleDark">
@@ -74,7 +83,7 @@ export default function Home() {
         </p>
 
         <div className="mt-6 flex flex-col sm:flex-row justify-center gap-4">
-          {/* Conditionally render login, register or chat buttons based on authState */}
+          {/* Conditionally render login, register, or chat buttons based on authState */}
           {!authState ? (
             <>
               <Link to="/login">
@@ -89,7 +98,7 @@ export default function Home() {
               </Link>
             </>
           ) : (
-            <div className=" sm:flex-row justify-center gap-4">
+            <div className="sm:flex-row justify-center gap-4">
               <p className="text-base sm:text-lg lg:text-xl text-dark-text dark:text-dark-text">
                 Welcome back! Ready to chat?
               </p>
@@ -129,7 +138,7 @@ export default function Home() {
               </div>
               {/* Display avatar for messages from the right */}
               {message.fromRight && (
-                <div className="w-10 h-10 rounded-full bg-blue-300 flex items-center justify-center ">
+                <div className="w-10 h-10 rounded-full bg-blue-300 flex items-center justify-center">
                   CD
                 </div>
               )}

@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/DarkModeSwitcher.jsx</title>
+    <title>JSDoc: Source: layouts/Layout.jsx</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/DarkModeSwitcher.jsx</h1>
+    <h1 class="page-title">Source: layouts/Layout.jsx</h1>
 
     
 
@@ -26,36 +26,43 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { useContext } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ThemeContext } from "../context/ThemeContext";
+            <pre class="prettyprint source linenums"><code>import { Outlet } from "react-router-dom";
+import Navbar from "../components/Navbar.jsx";
 
 /**
- * DarkModeSwitcher component allows the user to toggle between light and dark themes.
- * Depending on the current theme, it displays either a sun icon (for dark theme) or a moon icon (for light theme).
+ * Layout component that provides a consistent structure for all pages.
+ * It includes a header with a navigation bar, a main content section where child routes are rendered,
+ * and a footer with copyright information.
  *
- * It uses the `ThemeContext` to access the current theme and the function to toggle between themes.
+ * @component
+ * @example
+ * // Example usage:
+ * &lt;Layout>
+ *   &lt;YourPageComponent />
+ * &lt;/Layout>
  *
- * @returns {JSX.Element} A button for toggling between themes.
+ * @returns {JSX.Element} - A JSX element that contains the header, main content area, and footer.
  */
-export default function DarkModeSwitcher() {
-  const { theme, toggleTheme } = useContext(ThemeContext);
-
+export default function Layout() {
   return (
-    &lt;button onClick={toggleTheme}>
-      {/* Show sun icon for dark mode and moon icon for light mode */}
-      {theme === "light" ? (
-        &lt;FontAwesomeIcon
-          icon="fa-solid fa-sun"
-          className="text-xl text-white"
-        />
-      ) : (
-        &lt;FontAwesomeIcon
-          icon="fa-solid fa-moon"
-          className="text-xl text-white"
-        />
-      )}
-    &lt;/button>
+    &lt;div className="min-h-screen flex flex-col bg-backgroundChat dark:bg-backgroundChatDark">
+      {/* Header Section */}
+      &lt;header className="shadow-lg">
+        &lt;Navbar />
+      &lt;/header>
+
+      {/* Main Content Section */}
+      &lt;main className="flex-grow container mx-auto px-3">
+        &lt;Outlet /> {/* Renders the nested routes */}
+      &lt;/main>
+
+      {/* Footer Section */}
+      &lt;footer className="bg-gray-100 dark:bg-gray-800 text-center py-3 mt-6 border-t border-gray-300 dark:border-gray-700">
+        &lt;p className="text-sm text-gray-600 dark:text-gray-400">
+          © 2024 My App. All rights reserved.
+        &lt;/p>
+      &lt;/footer>
+    &lt;/div>
   );
 }
 </code></pre>

@@ -3,14 +3,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 /**
- * ForgotPassword component allows users to request a password reset by entering their email.
- * The component sends a POST request to the server with the provided email, and displays success or error messages.
+ * `ForgotPassword` component allows users to request a password reset by entering their email.
+ * It sends a POST request to the server with the provided email, and displays success or error messages based on the response.
  *
  * @component
  * @example
  * return (
  *   <ForgotPassword />
  * )
+ *
+ * @returns {JSX.Element} - A JSX element representing the forgot password form, including an email input, error or success messages, and a submit button.
  */
 export default function ForgotPassword() {
   const [email, setEmail] = useState(""); // Holds the email entered by the user
@@ -65,7 +67,7 @@ export default function ForgotPassword() {
   }
 
   return (
-    <div className="flex flex-col items-center justify-center max-h-screen p-10 ">
+    <div className="flex flex-col items-center justify-center max-h-screen p-10">
       <div className="bg-white bg-opacity-90 dark:bg-gray-800 p-8 mt-20 rounded-lg shadow-xl w-full max-w-md sm:max-w-lg transition-transform transform hover:scale-105">
         <h2 className="text-3xl font-semibold text-center mb-6 text-backgroundChatDark dark:text-textColorDark">
           Forgot Password

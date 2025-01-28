@@ -4,10 +4,15 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
  * Register component provides a user interface for new users to create an account.
- * It includes form validation, handling file uploads (profile picture), and sending the registration data to the server.
- * If registration is successful, the user is prompted to verify their email and redirected to the login page.
+ * It includes form validation, handling file uploads (profile picture),
+ * and sending the registration data to the server.
+ * If registration is successful, the user is prompted to verify their email
+ * and redirected to the login page.
+ *
+ * @component
+ * @example
+ * return <Register />
  */
-
 export default function Register() {
   const [formData, setFormData] = useState({
     username: "",
@@ -28,12 +33,19 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  // Open file input dialog
+  /**
+   * Opens the file input dialog for the user to select a profile picture.
+   */
   const handleFileClick = () => {
     fileInputRef.current.click();
   };
 
-  // Handle input changes
+  /**
+   * Handles input changes in the form and updates the state accordingly.
+   * If the input type is a file (i.e., profile picture), it handles file selection.
+   *
+   * @param {Object} e - The event object triggered by an input field change.
+   */
   function handleChange(e) {
     const { name, value, type, files } = e.target;
 
@@ -56,7 +68,15 @@ export default function Register() {
     }
   }
 
-  // Handle form submission
+  /**
+   * Handles the form submission for user registration.
+   * It validates the form inputs, constructs a FormData object,
+   * and sends the registration request to the backend.
+   * On successful registration, it prompts the user to verify their email.
+   *
+   * @param {Object} e - The event object triggered by the form submission.
+   * @async
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 

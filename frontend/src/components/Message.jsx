@@ -1,25 +1,41 @@
-
 import { useState } from "react";
 import EmojiPicker from "emoji-picker-react";
 
+/**
+ * Message component allows users to send messages in a chat.
+ * - Provides an input field for typing a message.
+ * - Displays an emoji picker to add emojis to the message.
+ * - Sends the message via the socket connection to the server.
+ *
+ * @param {Object} props - The component props.
+ * @param {Object} props.socket - The socket instance used to send messages.
+ * @param {string|null} props.chosenChatID - The ID of the currently selected chat.
+ * @returns {JSX.Element} The rendered message input and send button components.
+ */
 function Message({ socket, chosenChatID }) {
   const [message, setMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
 
   const userId = localStorage.getItem("userId");
 
-  // Handle emoji selection
+  /**
+   * handleEmojiSelect function is triggered when a user selects an emoji from the emoji picker.
+   * It appends the selected emoji to the message input and hides the emoji picker.
+   *
+   * @param {Object} emoji - The emoji object selected by the user.
+   * @param {string} emoji.emoji - The emoji character selected.
+   */
   const handleEmojiSelect = (emoji) => {
     setMessage(message + emoji.emoji);
     setShowEmojiPicker(false); // Hide the picker after selecting emoji
   };
 
   /**
-   * handleSend function is triggered when the user submits the form.
-   * It emits a message to the server through the socket connection.
-   * Clears the input field after sending the message.
+   * handleSend function is triggered when the user submits the message form.
+   * It emits the message to the server through the socket connection and clears the input field.
    *
    * @param {Object} e - The event object triggered by the form submission.
+   * @returns {void}
    */
   const handleSend = (e) => {
     e.preventDefault();

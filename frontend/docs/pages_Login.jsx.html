@@ -32,15 +32,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 /**
- * Login component provides a user interface for users to log into the application.
- * It includes form validation, error handling, and sending login data to the server.
- * Upon successful login, it stores the authentication token and user ID in local storage and redirects to the chat page.
+ * `Login` component provides a user interface for users to log into the application.
+ * It includes form validation, error handling, and sends login data to the server.
+ * Upon successful login, it stores the authentication token and user ID in local storage
+ * and redirects to the chat page.
  *
  * @component
  * @example
  * return (
  *   &lt;Login />
  * )
+ *
+ * @returns {JSX.Element} - A JSX element representing the login form with email, password input, and error handling.
  */
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -95,11 +98,9 @@ export default function Login() {
 
       // Handle unsuccessful login attempt
       if (!response.ok) {
-        setError(data.message || "Login failed.");
+        setError(data.error);
         return;
       }
-
-      console.log(data);
 
       // Store token and userId in localStorage
       localStorage.setItem("authToken", data.token);
@@ -113,6 +114,36 @@ export default function Login() {
     }
   }
 
+  /**
+   * Handles resending the verification email.
+   * Sends a POST request to the server to resend the verification email if the account is not verified.
+   *
+   * @async
+   */
+  async function handleResendVerify() {
+    const { email, password } = formData;
+
+    try {
+      const response = await fetch("http://localhost:3000/api/resend", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const data = await response.json();
+      if (response.ok) {
+        setError("A confirmation email has been sent to your email.");
+      } else {
+        setError(data.error);
+      }
+    } catch (error) {
+      console.error("Error when resending email:", error);
+      setError("An error has occurred. Please try again.");
+    }
+  }
+
   return (
     &lt;div className="flex flex-col max-h-screen items-center justify-center p-10">
       &lt;div className="bg-white bg-opacity-90 dark:bg-gray-800 p-8 mt-20 rounded-lg shadow-xl w-full max-w-md sm:max-w-lg transition-all transform hover:scale-105">
@@ -122,13 +153,22 @@ export default function Login() {
 
         {/* Display error message if any */}
         {error &amp;&amp; (
-          &lt;p className="text-center mb-4 text-yellow-800 bg-yellow-100 p-4 rounded-lg shadow-md ring-2 ring-yellow-300 font-medium text-lg flex items-center justify-center space-x-2">
+          &lt;div className="flex flex-col items-center justify-center space-x-2 text-center text-error bg-red-100 p-1 rounded-lg shadow-md ring-2 ring-red-300 font-medium text-lg dark:bg-errorDark dark:text-red-100 mb-4">
             &lt;FontAwesomeIcon
               icon={faInfoCircle}
-              className="text-xl text-yellow-800"
+              className="text-xl text-error dark:text-red-100"
             />
+
             &lt;span>{error}&lt;/span>
-          &lt;/p>
+
+            {error === "Account not verified" &amp;&amp; (
+              &lt;button
+                onClick={handleResendVerify}
+                className="ml-2 text-md text-blueCustom hover:underline">
+                Resend verification E-Mail
+              &lt;/button>
+            )}
+          &lt;/div>
         )}
 
         {/* Login form */}
@@ -205,13 +245,13 @@ export default function Login() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Body">Body</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#Message">Message</a></li><li><a href="global.html#MessageItem">MessageItem</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#ThemeContext">ThemeContext</a></li><li><a href="global.html#ThemeProvider">ThemeProvider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 21 2025 13:36:06 GMT+0100 (Mitteleuropäische Normalzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 28 2025 11:42:47 GMT+0100 (Mitteleuropäische Normalzeit)
 </footer>
 
 <script> prettyPrint(); </script>

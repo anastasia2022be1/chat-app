@@ -1,17 +1,28 @@
 /**
  * ContactList component displays a grouped list of contacts.
- * Contacts are grouped by the first letter of their username.
+ * Contacts are grouped alphabetically by the first letter of their username.
  *
- * @param {Array} contacts - A list of contacts to display.
- * @param {Function} handleContactClick - A function to call when a contact is clicked.
- * @returns {JSX.Element} A grouped list of contacts.
+ * @component
+ * @param {Object} props - Component props.
+ * @param {Array} props.contacts - A list of contact objects to display.
+ * Each contact object should have the following structure:
+ * {
+ *   _id: string,            // Unique identifier for the contact
+ *   username: string,       // Username of the contact
+ *   profilePicture: string, // URL of the contact's profile picture (optional)
+ * }
+ * @param {Function} props.handleContactClick - Callback function triggered when a contact is clicked.
+ * Receives the contact's ID as a parameter.
+ *
+ * @returns {JSX.Element} A list of grouped contacts with sticky headers.
  */
 const ContactList = ({ contacts, handleContactClick }) => {
   /**
-   * Group contacts by the first letter of their username
+   * Groups contacts by the first letter of their username.
+   *
    * @constructor
-   * @param {Array} contacts - List of contacts.
-   * @returns {Object} Grouped contacts by the first letter.
+   * @param {Array} contacts - List of contact objects.
+   * @returns {Object} An object with keys as the first letters and values as arrays of contacts.
    */
   const groupedContacts = contacts.reduce((acc, contact) => {
     const firstLetter = contact.username[0].toUpperCase();
@@ -22,12 +33,16 @@ const ContactList = ({ contacts, handleContactClick }) => {
     return acc;
   }, {});
 
-  // Get the sorted letters to display in alphabetical order
+  /**
+   * A sorted array of the first letters used as group headers.
+   *
+   * @type {Array<string>}
+   */
   const sortedLetters = Object.keys(groupedContacts).sort();
 
   /**
-   * Defines the base URL for fetching images or other API data.
-   * This uses the environment variable or defaults to 'http://localhost:3000'.
+   * The base URL for fetching profile pictures or other resources.
+   * Uses an environment variable or defaults to 'http://localhost:3000'.
    *
    * @type {string}
    */
@@ -38,7 +53,7 @@ const ContactList = ({ contacts, handleContactClick }) => {
       {sortedLetters.map((letter) => (
         <div key={letter}>
           {/* Sticky Header */}
-          <div className="sticky top-0 bg-input mx-2 py-1 px-4 mb-5  font-bold rounded-full">
+          <div className="sticky top-0 bg-input mx-2 py-1 px-4 mb-5 font-bold rounded-full">
             {letter}
           </div>
           {/* Contacts under the letter */}
@@ -57,7 +72,9 @@ const ContactList = ({ contacts, handleContactClick }) => {
                   />
                 ) : (
                   <div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                    <span className="text-white text-xs"> {contact.username.slice(0, 2).toUpperCase()}</span>
+                    <span className="text-white text-xs">
+                      {contact.username.slice(0, 2).toUpperCase()}
+                    </span>
                   </div>
                 )}
               </div>

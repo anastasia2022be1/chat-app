@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>JSDoc: Source: components/DarkModeSwitcher.jsx</title>
+    <title>JSDoc: Source: ProtectedRoute.jsx</title>
 
     <script src="scripts/prettify/prettify.js"> </script>
     <script src="scripts/prettify/lang-css.js"> </script>
@@ -17,7 +17,7 @@
 
 <div id="main">
 
-    <h1 class="page-title">Source: components/DarkModeSwitcher.jsx</h1>
+    <h1 class="page-title">Source: ProtectedRoute.jsx</h1>
 
     
 
@@ -26,37 +26,31 @@
     
     <section>
         <article>
-            <pre class="prettyprint source linenums"><code>import { useContext } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { ThemeContext } from "../context/ThemeContext";
+            <pre class="prettyprint source linenums"><code>import { Navigate, Outlet } from "react-router-dom";
+import { useContext } from "react";
+import { AuthContext } from "./context/AuthContext.jsx";
 
 /**
- * DarkModeSwitcher component allows the user to toggle between light and dark themes.
- * Depending on the current theme, it displays either a sun icon (for dark theme) or a moon icon (for light theme).
+ * A component that wraps protected routes and checks for authentication.
+ * If the user is not authenticated (i.e., no auth state or token),
+ * they are redirected to the login page.
  *
- * It uses the `ThemeContext` to access the current theme and the function to toggle between themes.
- *
- * @returns {JSX.Element} A button for toggling between themes.
+ * @returns {JSX.Element} The route outlet for authenticated users, or a redirect to the login page for unauthenticated users.
  */
-export default function DarkModeSwitcher() {
-  const { theme, toggleTheme } = useContext(ThemeContext);
+export default function ProtectedRoute() {
+  // Extract authState from context (to check if the user is logged in)
+  const { authState } = useContext(AuthContext);
 
-  return (
-    &lt;button onClick={toggleTheme}>
-      {/* Show sun icon for dark mode and moon icon for light mode */}
-      {theme === "light" ? (
-        &lt;FontAwesomeIcon
-          icon="fa-solid fa-sun"
-          className="text-xl text-white"
-        />
-      ) : (
-        &lt;FontAwesomeIcon
-          icon="fa-solid fa-moon"
-          className="text-xl text-white"
-        />
-      )}
-    &lt;/button>
-  );
+  // Check for a token in local storage (as an additional check)
+  const authToken = localStorage.getItem("authToken");
+
+  // If the user is not authenticated (no authState and no authToken), redirect to login
+  if (!authState &amp;&amp; !authToken) {
+    return &lt;Navigate to="/login" replace />;
+  }
+
+  // If authenticated, render the child routes (Outlet)
+  return &lt;Outlet />;
 }
 </code></pre>
         </article>

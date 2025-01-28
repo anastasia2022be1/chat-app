@@ -1,3 +1,7 @@
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 /**
  * `AddContact` component allows the user to add a new contact by entering the contact's email.
  * It handles the validation of the input, sending the request to the server to add the contact,
@@ -11,10 +15,6 @@
  *
  * @returns {JSX.Element} - A JSX element representing the contact addition form with input for email, error/success messages, and a submit button.
  */
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-
 export default function AddContact() {
   const [contactEmail, setContactEmail] = useState(""); // State to store the entered contact email
   const [error, setError] = useState(""); // State to store error messages
@@ -42,6 +42,7 @@ export default function AddContact() {
   const handleSubmit = async (e) => {
     e.preventDefault(); // Prevent the default form submission behavior
 
+    // Validate input
     if (!contactEmail) {
       setError("Contact email is required!"); // Display error if email is not entered
       return;

@@ -34,14 +34,12 @@ import ChatList from "./Sidebar/ChatList.jsx";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
- * Sidebar component that handles displaying contacts and chats.
- * Allows users to toggle between contact list and chat list,
- * search for contacts, and initiate new chats.
+ * Sidebar component for displaying and interacting with contacts and chats.
+ * Allows users to search, add contacts, view contacts or chats, and handle messages.
  *
- * @param {Object} props - The component's props.
- * @param {Function} props.handleSelectChat - Function to handle selecting a chat.
- * @param {Function} props.handleChosenChatMessage - Function to handle updating chosen chat messages.
- * @returns {JSX.Element} The Sidebar component.
+ * @param {Object} props
+ * @param {Function} props.handleSelectChat - Function to handle the selection of a chat.
+ * @param {Function} props.handleChosenChatMessage - Function to handle the chosen chat messages.
  */
 const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
   const [contacts, setContacts] = useState([]);
@@ -54,8 +52,7 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
   const navigate = useNavigate();
 
   /**
-   * Fetches the contact list from the API.
-   * Sets the contacts state with the fetched data.
+   * Fetches contacts and updates the state with the retrieved data.
    */
   useEffect(() => {
     const fetchContacts = async () => {
@@ -81,6 +78,9 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
       }
     };
 
+    /**
+     * Fetches the list of chats and updates the state with the retrieved data.
+     */
     const fetchChats = async () => {
       try {
         const token = localStorage.getItem("authToken");
@@ -113,25 +113,25 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
   }, [modus]);
 
   /**
-   * Navigates to the 'AddContact' page when adding a new contact.
+   * Handles adding a new contact by navigating to the AddContact page.
    */
   const handleAddContact = () => {
     navigate("/AddContact");
   };
 
   /**
-   * Toggles the view between contacts and chats.
+   * Toggles between viewing contacts or chats.
    */
   const toggleButton = () => {
     setModus(!modus);
   };
 
   /**
-   * Handles a click on a contact.
-   * If a chat with the contact exists, it fetches the chat messages.
-   * If no chat exists, it creates a new chat and navigates to it.
+   * Handles the click event on a contact.
+   * If the contact already exists in a chat, it fetches and displays the messages.
+   * Otherwise, it creates a new chat with the selected contact.
    *
-   * @param {string} contactId - The ID of the selected contact.
+   * @param {string} contactId - The ID of the clicked contact.
    */
   const handleContactClick = async (contactId) => {
     setModus(!modus);
@@ -140,11 +140,9 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
     ); // Array of chat participants
 
     if (allParticipantIds.includes(contactId)) {
-      console.log(chats);
       const chosenChat = chats.find((chat) =>
         chat.participants.some((participant) => participant._id === contactId)
       );
-      console.log(chosenChat);
       handleChosenChatMessage([]);
       try {
         const response = await fetch(
@@ -160,17 +158,11 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
           throw new Error(data.error || "Failed to fetch chat messages");
         }
 
-        console.log("Hier die Daten", data); // Update the chat messages state
         handleChosenChatMessage(data);
       } catch (err) {
         setError(err.message);
       }
 
-      /**
-       * Handles a click on a chat, fetching the messages for the selected chat.
-       *
-       * @param {Object} chat - The chat object that was clicked.
-       */
       handleSelectChat(chosenChat._id);
     } else {
       try {
@@ -202,7 +194,9 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
   };
 
   /**
-   * Get messages from the selected chat.
+   * Handles the click event on a chat to view its messages.
+   *
+   * @param {Object} chat - The clicked chat object.
    */
   const handleChatClick = async (chat) => {
     handleChosenChatMessage([]);
@@ -230,43 +224,72 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
   };
 
   /**
-   * Handles the search functionality for filtering contacts based on the search query.
+   * Deletes a chat by sending a DELETE request to the server.
+   *
+   * @param {string} chatId - The ID of the chat to be deleted.
    */
-  function handleSearch() {
-    const filteredContacts = contacts.filter((contact) => {
-      return (
-        contact.username.slice(0, searchQuery.length).toLowerCase() ===
-        searchQuery.toLowerCase()
-      );
-    });
-    setSearchResults(filteredContacts);
-    console.log(filteredContacts);
-  }
+  const handleDeleteChat = async (chatId) => {
+    try {
+      const token = localStorage.getItem("authToken");
+      const userId = localStorage.getItem("userId");
+
+      const response = await fetch(`http://localhost:3000/api/chat/${chatId}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ userId }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to delete chat");
+      }
+
+      handleSelectChat(null);
+      handleChosenChatMessage([]);
+      setChats((prevChats) => prevChats.filter((chat) => chat._id !== chatId));
+    } catch (err) {
+      console.error("Error deleting chat:", err.message);
+    }
+  };
 
   /**
-   * Handles changes to the search query and triggers search when typing.
+   * Handles search query input and filters the contacts based on the search query.
    *
-   * @param {Object} e - The event object for the input change.
+   * @param {string} query - The search query input.
+   */
+  const handleSearch = (query) => {
+    if (query.trim() === "") {
+      setSearchResults([]); // Clear results if search query is empty
+    } else {
+      const filteredContacts = contacts.filter((contact) =>
+        contact.username.toLowerCase().startsWith(query.toLowerCase())
+      );
+      setSearchResults(filteredContacts);
+    }
+  };
+
+  /**
+   * Handles the change in search query input.
+   *
+   * @param {Object} e - The event object from the input change.
    */
   const handleQueryChange = (e) => {
     setSearchQuery(e.target.value);
-    if (e.target.value.trim() === "") {
-      setSearchResults([]); // Clear results when the input is empty
-    } else {
-      handleSearch(); // Perform search when typing
-    }
+    handleSearch(e.target.value);
   };
 
   return (
     &lt;aside className="w-full bg-gray-100 dark:bg-sky-950 flex flex-col p-3 border-r border-gray-300 dark:border-gray-700 rounded-xl shadow-md h-3/4 lg:h-full">
-      {/* Search Bar */}
       &lt;SearchBar
         searchQuery={searchQuery}
         handleQueryChange={handleQueryChange}
         handleSearch={handleSearch}
       />
 
-      {/* Show search results */}
       &lt;div className="search-results">
         {searchResults.length > 0 &amp;&amp; (
           &lt;ul className="space-y-2">
@@ -285,7 +308,9 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
                     />
                   ) : (
                     &lt;div className="w-10 h-10 bg-gray-300 rounded-full flex items-center justify-center">
-                      &lt;span className="text-white text-xs">No Image&lt;/span>
+                      &lt;span className="text-white text-xs">
+                        {contact.username.slice(0, 2).toUpperCase()}
+                      &lt;/span>
                     &lt;/div>
                   )}
                 &lt;/div>
@@ -296,7 +321,6 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
         )}
       &lt;/div>
 
-      {/* Toggle Button */}
       &lt;button
         onClick={toggleButton}
         className="w-full bg-blue-500 text-white py-2 px-4 rounded-xl hover:bg-blue-600 transition mb-4 flex items-center justify-center ">
@@ -310,13 +334,12 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
         &lt;/span>
       &lt;/button>
 
-      {/* Scrollable Content Area */}
       &lt;div className="flex-grow overflow-y-auto h-20  lg:h-fit">
         {modus ? (
           error ? (
             &lt;p className="text-red-500 text-center">{error}&lt;/p>
           ) : (
-            &lt;div className="max-h-[400px] overflow-y-auto ">
+            &lt;div className="max-h-[400px] overflow-y-auto cursor-pointer ">
               &lt;ContactList
                 contacts={contacts}
                 handleContactClick={handleContactClick}
@@ -327,12 +350,15 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
           &lt;p className="text-error dark:text-errorDark text-center">{error}&lt;/p>
         ) : (
           &lt;div className="max-h-[400px] overflow-y-auto">
-            &lt;ChatList chats={chats} handleChatClick={handleChatClick} />
+            &lt;ChatList
+              chats={chats}
+              handleChatClick={handleChatClick}
+              handleDeleteChat={handleDeleteChat}
+            />
           &lt;/div>
         )}
       &lt;/div>
 
-      {/* Add Contact Button */}
       &lt;button
         onClick={handleAddContact}
         className="mt-6 w-full bg-green-500 text-white py-2 px-4 rounded-xl hover:bg-green-600 transition">
@@ -354,13 +380,13 @@ export default Sidebar;
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Body">Body</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#Message">Message</a></li><li><a href="global.html#MessageItem">MessageItem</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#ThemeContext">ThemeContext</a></li><li><a href="global.html#ThemeProvider">ThemeProvider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 21 2025 13:36:06 GMT+0100 (Mitteleuropäische Normalzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 28 2025 11:42:47 GMT+0100 (Mitteleuropäische Normalzeit)
 </footer>
 
 <script> prettyPrint(); </script>

@@ -1,4 +1,32 @@
-import { useState, useEffect, useRef } from "react";
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: components/Body.jsx</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: components/Body.jsx</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>import { useState, useEffect, useRef } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
 
@@ -76,13 +104,13 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
   };
 
   return (
-    <section className="flex flex-col flex-grow h-48 lg:min-h-[57vh] bg-blue-50 dark:bg-sky-950 p-4 sm:px-6 lg:px-8 overflow-y-auto">
-      <header className="font-bold text-xl text-center mb-4 text-sky-800 dark:text-sky-300">
-      
-      </header>
-      <div className="space-y-6">
+    &lt;section className="flex flex-col flex-grow h-48 lg:min-h-[57vh] bg-blue-50 dark:bg-sky-950 p-4 sm:px-6 lg:px-8 overflow-y-auto">
+      &lt;header className="font-bold text-xl text-center mb-4 text-sky-800 dark:text-sky-300">
+        {chosenChatID}
+      &lt;/header>
+      &lt;div className="space-y-6">
         {messages.map((msg) => (
-          <MessageItem
+          &lt;MessageItem
             key={msg._id}
             message={msg}
             userId={userId}
@@ -92,9 +120,9 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
             baseUrl={baseUrl}
           />
         ))}
-        <div ref={messagesEndRef} />
-      </div>
-    </section>
+        &lt;div ref={messagesEndRef} />
+      &lt;/div>
+    &lt;/section>
   );
 };
 
@@ -109,20 +137,20 @@ const MessageItem = ({
   handleDeleteMessage,
   baseUrl,
 }) => {
-  const isUserMessage = message.senderId && message.senderId._id === userId;
+  const isUserMessage = message.senderId &amp;&amp; message.senderId._id === userId;
 
   return (
-    <div
+    &lt;div
       className={`relative flex ${
         isUserMessage ? "justify-end" : "justify-start"
       }`}>
-      <div
+      &lt;div
         className={`flex-shrink-0 ${
           isUserMessage ? "order-last ml-4" : "mr-4"
         }`}>
-        <img
+        &lt;img
           src={
-            message.senderId && message.senderId.profilePicture
+            message.senderId &amp;&amp; message.senderId.profilePicture
               ? `${baseUrl}${message.senderId.profilePicture}`
               : "https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_640.png"
           }
@@ -130,44 +158,67 @@ const MessageItem = ({
           width={40}
           className="rounded-full"
         />
-      </div>
-      <div
+      &lt;/div>
+      &lt;div
         className={`px-6 py-3 rounded-lg max-w-md shadow-lg ${
           isUserMessage ? "bg-blue-500 text-white" : "bg-gray-200 text-gray-800"
         }`}>
-        <div className="flex justify-between items-center">
-          <strong className="block font-semibold text-sm">
+        &lt;div className="flex justify-between items-center">
+          &lt;strong className="block font-semibold text-sm">
             {message.senderId ? message.senderId.username : "Deleted Account"}
-          </strong>
-          {isUserMessage && (
-            <div className="flex space-x-3">
-              <button
+          &lt;/strong>
+          {isUserMessage &amp;&amp; (
+            &lt;div className="flex space-x-3">
+              &lt;button
                 onClick={() => toggleDeleteButton(message._id)}
                 className={`w-6 h-6 flex items-center justify-center rounded-full ${
                   activeDelete === message._id ? "bg-red-300" : "bg-red-500"
                 } text-white`}>
-                <FontAwesomeIcon icon={faTimes} />
-              </button>
-              {activeDelete === message._id && (
-                <button
+                &lt;FontAwesomeIcon icon={faTimes} />
+              &lt;/button>
+              {activeDelete === message._id &amp;&amp; (
+                &lt;button
                   onClick={() => handleDeleteMessage(message._id)}
                   className="w-6 h-6 flex items-center justify-center rounded-full bg-green-500 text-white">
-                  <FontAwesomeIcon icon={faCheck} />
-                </button>
+                  &lt;FontAwesomeIcon icon={faCheck} />
+                &lt;/button>
               )}
-            </div>
+            &lt;/div>
           )}
-        </div>
-        <p className="mt-2">{message.content}</p>
-        <p className="text-xs mt-2">
+        &lt;/div>
+        &lt;p className="mt-2">{message.content}&lt;/p>
+        &lt;p className="text-xs mt-2">
           {new Date(message.createdAt).toLocaleString("de-DE", {
             dateStyle: "short",
             timeStyle: "short",
           })}
-        </p>
-      </div>
-    </div>
+        &lt;/p>
+      &lt;/div>
+    &lt;/div>
   );
 };
 
 export default Body;
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Body">Body</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#Message">Message</a></li><li><a href="global.html#MessageItem">MessageItem</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#ThemeContext">ThemeContext</a></li><li><a href="global.html#ThemeProvider">ThemeProvider</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 28 2025 11:42:47 GMT+0100 (Mitteleuropäische Normalzeit)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

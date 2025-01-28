@@ -31,19 +31,31 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { useNavigate } from "react-router-dom";
 
 /**
- * Settings component for managing user profile settings.
- * Includes username update, password change, and profile picture update.
+ * Settings component allows users to update their profile information,
+ * including username, password, and profile picture. It also provides
+ * an option to delete the account.
+ *
+ * @component
+ * @example
+ * return (
+ *   &lt;Setting />
+ * )
  */
 export default function Setting() {
   /**
-   * State to store user data.
+   * Holds the user's data fetched from the server.
    * @type {Object|null}
    */
   const [user, setUser] = useState(null);
 
   /**
-   * State to manage form data for updating settings.
+   * Holds the form data for updating user settings.
    * @type {Object}
+   * @property {string} username - The user's username.
+   * @property {string} currentPassword - The user's current password.
+   * @property {string} newPassword - The new password to set.
+   * @property {string} confirmNewPassword - Confirmation of the new password.
+   * @property {File|null} profilePicture - The user's profile picture file.
    */
   const [formData, setFormData] = useState({
     username: "",
@@ -54,39 +66,36 @@ export default function Setting() {
   });
 
   /**
-   * State to hold the profile picture preview URL.
+   * Holds the URL of the profile picture preview.
    * @type {string|null}
    */
   const [profilePicPreview, setProfilePicPreview] = useState(null);
 
   /**
-   * State to track if the form has changes.
+   * Indicates whether there are unsaved changes in the form.
    * @type {boolean}
    */
   const [hasChanges, setHasChanges] = useState(false);
 
   /**
-   * State for error messages.
+   * Holds any error message to be displayed to the user.
    * @type {string}
    */
   const [error, setError] = useState("");
 
   /**
-   * State to track if the settings have been updated.
+   * Indicates whether the settings were successfully updated.
    * @type {boolean}
    */
   const [isUpdated, setIsUpdated] = useState(false);
 
   /**
-   * Ref to access the file input for profile picture.
+   * Ref for the file input element to trigger file selection programmatically.
    * @type {React.RefObject&lt;HTMLInputElement>}
    */
   const fileInputRef = useRef(null);
 
-  /**
-   * States for toggling password visibility.
-   * @type {boolean}
-   */
+  // States for toggling password visibility
   const [showCurrentPassword, setShowCurrentPassword] = useState(false);
   const [showNewPassword, setShowNewPassword] = useState(false);
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
@@ -94,8 +103,7 @@ export default function Setting() {
   const navigate = useNavigate();
 
   /**
-   * Fetches the user's data on component mount.
-   * Sets the profile picture preview if available.
+   * Fetches the user's data from the server when the component mounts.
    */
   useEffect(() => {
     const fetchUserData = async () => {
@@ -122,7 +130,7 @@ export default function Setting() {
           setFormData({ ...formData, username: data.username });
 
           if (data.profilePicture) {
-            setProfilePicPreview(data.profilePicture);
+            setProfilePicPreview(data.profilePicture); // Set existing profile picture
           }
         }
       } catch (error) {
@@ -134,7 +142,7 @@ export default function Setting() {
   }, []);
 
   /**
-   * Clears error message after 4 seconds.
+   * Clears the error message after 4 seconds if an error is present.
    */
   useEffect(() => {
     if (error) {
@@ -146,22 +154,24 @@ export default function Setting() {
   }, [error]);
 
   /**
-   * Triggers the file input click to allow users to select a profile picture.
+   * Triggers the file input click event to allow the user to select a file.
    */
   const handleFileClick = () => {
     fileInputRef.current.click();
   };
 
   /**
-   * Navigates to the Chat page.
+   * Navigates the user to the chat page.
    */
   const handleClick = () => {
-    navigate("/Chat");
+    navigate("/chat");
   };
 
   /**
-   * Handles changes in form fields and updates state accordingly.
-   * @param {React.ChangeEvent&lt;HTMLInputElement>} e - Event object for form input.
+   * Handles changes to the form inputs and updates the form data state.
+   *
+   * @param {Object} e - The event object from the input change.
+   * @param {EventTarget} e.target - The input element that triggered the event.
    */
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -171,22 +181,32 @@ export default function Setting() {
   };
 
   /**
-   * Handles file changes when a new profile picture is selected.
-   * @param {React.ChangeEvent&lt;HTMLInputElement>} e - Event object for file input.
+   * Handles changes to the file input and updates the form data state.
+   *
+   * @param {Object} e - The event object from the file input change.
+   * @param {FileList} e.target.files - The list of files selected by the user.
    */
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
       const newFormData = { ...formData, profilePicture: file };
       setFormData(newFormData);
-      setProfilePicPreview(URL.createObjectURL(file)); // Update preview
+
+      // Create a preview URL for the selected file
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfilePicPreview(reader.result);
+      };
+      reader.readAsDataURL(file);
+
       checkForChanges(newFormData);
     }
   };
 
   /**
-   * Checks if there are any changes in the form data.
-   * @param {Object} newFormData - The updated form data.
+   * Checks if there are any changes in the form data compared to the user's current data.
+   *
+   * @param {Object} newFormData - The updated form data to compare.
    */
   const checkForChanges = (newFormData) => {
     const isDifferent =
@@ -199,24 +219,50 @@ export default function Setting() {
   };
 
   /**
-   * Submits the form to update the user's settings.
-   * @param {React.FormEvent&lt;HTMLFormElement>} e - Form submit event.
+   * Handles the form submission for updating user settings.
+   *
+   * @param {Object} e - The event object from the form submission.
+   * @param {EventTarget} e.target - The form element that triggered the event.
+   * @async
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Only require currentPassword if newPassword is provided
+    if (formData.newPassword &amp;&amp; !formData.currentPassword) {
+      setError("Please enter your current password to change the password.");
+      return;
+    }
+
     const form = new FormData();
+
+    // Add username to the form if it's changed
     if (formData.username) form.append("username", formData.username);
-    if (formData.currentPassword &amp;&amp; formData.newPassword) {
+
+    // Add the current and new passwords only if newPassword is set
+    if (formData.newPassword) {
+      if (!formData.currentPassword) {
+        setError("Please enter your current password to change the password.");
+        return;
+      }
+
+      // Validation: Check if passwords match
+      if (formData.newPassword !== formData.confirmNewPassword) {
+        setError("Passwords do not match!");
+        return;
+      }
+
+      // Check the length of the new password
+      if (formData.newPassword.length &lt; 8) {
+        setError("Password must be at least 8 characters long.");
+        return;
+      }
+
       form.append("password", formData.currentPassword);
       form.append("newPassword", formData.newPassword);
     }
 
-    if (formData.newPassword !== formData.confirmNewPassword) {
-      setError("Passwords do not match!");
-      return;
-    }
-
+    // Add profile picture to the form if changed
     if (formData.profilePicture)
       form.append("profilePicture", formData.profilePicture);
 
@@ -240,11 +286,21 @@ export default function Setting() {
 
       const data = await response.json();
       if (response.ok) {
+        console.log(data);
+
         setUser(data.user);
         setHasChanges(false);
-        setProfilePicPreview(data.user.profilePicture); // Update preview
+        setProfilePicPreview(data.user.profilePicture); // Update preview with server response
         setIsUpdated(true);
-        setTimeout(() => setIsUpdated(false), 3000);
+        setFormData((prev) => ({
+          ...prev,
+          currentPassword: "",
+          newPassword: "",
+          confirmNewPassword: "",
+        }));
+
+        // Reset the update feedback after 2 seconds
+        setTimeout(() => setIsUpdated(false), 2000);
       } else {
         setError(data.error);
       }
@@ -254,8 +310,9 @@ export default function Setting() {
   };
 
   /**
-   * Deletes the user's account.
-   * Prompts for confirmation before deletion.
+   * Handles the deletion of the user's account after confirmation.
+   *
+   * @async
    */
   const handleDeleteAccount = async () => {
     const confirmed = window.confirm(
@@ -281,8 +338,9 @@ export default function Setting() {
 
       if (response.ok) {
         alert("Your account has been successfully deleted.");
-        localStorage.removeItem("authToken");
-        navigate("/login");
+        localStorage.removeItem("authToken"); // Delete token
+        navigate("/login"); // Redirect to login page
+      } else {
         setError(data.error || "Failed to delete account.");
       }
     } catch (err) {
@@ -292,6 +350,35 @@ export default function Setting() {
 
   return (
     &lt;div className="max-h-screen flex flex-col items-center justify-center">
+      {/* Go to Chat Button */}
+      &lt;div className="fixed bottom-12 right-5 md:bottom-18 md:right-10 z-50 flex flex-col items-center">
+        &lt;div
+          onClick={handleClick}
+          className="bg-gradient-to-r from-blue-500 via-blue-400 to-blue-600 dark:from-blue-700 dark:to-blue-800 rounded-full p-4 shadow-lg flex items-center justify-center text-white dark:text-gray-200 hover:scale-105 transition-transform duration-300">
+          &lt;FontAwesomeIcon
+            icon="fa-solid fa-comments"
+            className="text-md md:text-2xl"
+          />
+        &lt;/div>
+      &lt;/div>
+
+      {/* Settings Header */}
+      &lt;h2 className="text-2xl font-semibold text-center mb-5 mt-5 text-backgroundChatDark dark:text-textColorDark">
+        &lt;FontAwesomeIcon icon="fa-solid fa-gear" className="mr-2" />
+        &lt;span className="hidden md:inline">Settings&lt;/span>
+      &lt;/h2>
+
+      {/* Error Message */}
+      {error &amp;&amp; (
+        &lt;p className="text-center mb-4 text-error dark:text-textColorDark bg-red-100 dark:bg-errorDark rounded-lg shadow-lg px-4 py-3 flex items-center space-x-2">
+          &lt;FontAwesomeIcon
+            icon="fa-solid fa-exclamation"
+            className="text-xl text-error dark:text-textColorDark"
+          />
+          &lt;span>{error}&lt;/span>
+        &lt;/p>
+      )}
+
       {/* Settings Form */}
       {user &amp;&amp; (
         &lt;form
@@ -303,13 +390,13 @@ export default function Setting() {
               {profilePicPreview ? (
                 &lt;img
                   src={"http://localhost:3000" + profilePicPreview}
-                  alt="Profile Preview"
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
-                &lt;span className="text-gray-500">No Picture?&lt;/span>
+                &lt;div className="w-full h-full bg-gray-200 rounded-full">&lt;/div>
               )}
             &lt;/div>
+
             &lt;button
               type="button"
               onClick={handleFileClick}
@@ -350,7 +437,11 @@ export default function Setting() {
                 name="currentPassword"
                 value={formData.currentPassword}
                 onChange={handleChange}
-                className="w-full border border-gray-300 rounded-lg mt-2 p-3 focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200"
+                className={`w-full border rounded-lg mt-2 p-3 ${
+                  !formData.currentPassword &amp;&amp; error
+                    ? "border-red-500"
+                    : "border-gray-300"
+                } focus:outline-none focus:ring-2 focus:ring-blueCustom dark:bg-gray-700 dark:text-gray-200`}
                 placeholder="Current Password"
               />
               &lt;button
@@ -399,10 +490,10 @@ export default function Setting() {
             &lt;/div>
           &lt;/div>
 
-          {/* Confirm New Password */}
-          &lt;div className="flex flex-col">
+          {/* Confirm Password */}
+          &lt;div>
             &lt;label className="block text-sm font-medium text-title dark:text-titleDark">
-              Confirm New Password:
+              Confirm Password
             &lt;/label>
             &lt;div className="relative">
               &lt;input
@@ -429,27 +520,35 @@ export default function Setting() {
             &lt;/div>
           &lt;/div>
 
-          {/* Save Button */}
-          &lt;div className="flex justify-end space-x-4 mt-6">
+          {/* Submit Button */}
+          &lt;div className="text-center">
+            {isUpdated &amp;&amp; (
+              &lt;p className="text-green-500 mb-4">
+                Settings updated successfully!
+              &lt;/p>
+            )}
             &lt;button
               type="submit"
-              className={`${
+              disabled={!hasChanges}
+              className={`w-full text-black font-medium py-3 rounded-md transition duration-200 ${
                 hasChanges
-                  ? "bg-blue-500 hover:bg-blue-700"
-                  : "bg-gray-400 cursor-not-allowed"
-              } text-white font-medium py-2 px-6 rounded-lg focus:outline-none focus:ring-2 focus:ring-blueCustom`}
-              disabled={!hasChanges}>
-              Save Changes
+                  ? "bg-button hover:bg-button-600 hover:scale-105"
+                  : isUpdated
+                  ? "bg-green-500"
+                  : "bg-gray-300 cursor-not-allowed"
+              }`}>
+              {isUpdated ? "Updated!" : "Update"}
             &lt;/button>
           &lt;/div>
 
-          {/* Error and Success Message */}
-          {error &amp;&amp; &lt;p className="text-red-500 text-center mt-2">{error}&lt;/p>}
-          {isUpdated &amp;&amp; (
-            &lt;p className="text-green-500 text-center mt-2">
-              Settings updated successfully!
-            &lt;/p>
-          )}
+          &lt;div className="text-center mt-6">
+            &lt;button
+              type="button"
+              onClick={handleDeleteAccount}
+              className="w-full text-white bg-red-500 font-medium py-3 rounded-md hover:bg-red-600 transition duration-200">
+              Delete account
+            &lt;/button>
+          &lt;/div>
         &lt;/form>
       )}
     &lt;/div>
@@ -465,13 +564,13 @@ export default function Setting() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Body">Body</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#Message">Message</a></li><li><a href="global.html#MessageItem">MessageItem</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#ThemeContext">ThemeContext</a></li><li><a href="global.html#ThemeProvider">ThemeProvider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 21 2025 13:36:06 GMT+0100 (Mitteleuropäische Normalzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 28 2025 11:42:47 GMT+0100 (Mitteleuropäische Normalzeit)
 </footer>
 
 <script> prettyPrint(); </script>
