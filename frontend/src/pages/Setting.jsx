@@ -97,8 +97,8 @@ export default function Setting() {
   const checkForChanges = (newFormData) => {
     const isDifferent =
       newFormData.username !== user?.username ||
-      // newFormData.currentPassword !== "" ||
-      // newFormData.newPassword !== "" ||
+      newFormData.currentPassword !== "" ||
+      newFormData.newPassword !== "" ||
       (newFormData.profilePicture &&
         newFormData.profilePicture !== user?.profilePicture);
     setHasChanges(isDifferent);
@@ -107,19 +107,25 @@ export default function Setting() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // Only require currentPassword if newPassword is provided
+    if (formData.newPassword && !formData.currentPassword) {
+      setError("Please enter your current password to change the password.");
+      return;
+    }
+
     const form = new FormData();
 
+    // Add username to the form if it's changed
     if (formData.username) form.append("username", formData.username);
-    if (formData.profilePicture)
-      form.append("profilePicture", formData.profilePicture);
 
-    // If the password is changed
+    // Add the current and new passwords only if newPassword is set
     if (formData.newPassword) {
       if (!formData.currentPassword) {
         setError("Please enter your current password to change the password.");
+        return;
       }
 
-      // Check password matches
+      // Validation: Check if passwords match
       if (formData.newPassword !== formData.confirmNewPassword) {
         setError("Passwords do not match!");
         return;
@@ -134,6 +140,10 @@ export default function Setting() {
       form.append("password", formData.currentPassword);
       form.append("newPassword", formData.newPassword);
     }
+
+    // Add profile picture to the form if changed
+    if (formData.profilePicture)
+      form.append("profilePicture", formData.profilePicture);
 
     try {
       const token = localStorage.getItem("authToken");
@@ -161,6 +171,13 @@ export default function Setting() {
         setHasChanges(false);
         setProfilePicPreview(data.user.profilePicture); // Update preview with server response
         setIsUpdated(true);
+
+        setFormData((prev) => ({
+          ...prev,
+          currentPassword: "",
+          newPassword: "",
+          confirmNewPassword: "",
+        }));
 
         // Reset the update feedback after 2 seconds
         setTimeout(() => setIsUpdated(false), 2000);
