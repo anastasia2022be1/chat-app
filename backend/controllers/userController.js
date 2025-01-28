@@ -444,6 +444,37 @@ export const deleteUserAccount = async (req, res) => {
       return res.status(404).json({ error: "User not found" });
     }
 
+    const userChats = user.chats;
+    console.log(userChats)
+    // Update all chats to remove user from participants
+    const updatedChats = await Chat.updateMany(
+      { _id: { $in: userChats } },
+      { $pull: { participants: userId } }
+    );
+
+    console.log("Updated Chats", updatedChats)
+
+    // Find all chats with empty participants
+    const emptyChats = await Chat.find({
+      _id: { $in: userChats },
+      participants: { $size: 0 }
+    });
+
+    console.log("epmtyChats", emptyChats)
+
+    // Extract chat IDs
+    const emptyChatIds = emptyChats.map(chat => chat._id);
+
+    // Delete chats one by one
+    for (const chatId of emptyChatIds) {
+      try {
+        const deletedChat = await Chat.findByIdAndDelete(chatId);
+        console.log(`Deleted chat: ${chatId}`, deletedChat);
+      } catch (err) {
+        console.error(`Error deleting chat ${chatId}:`, err);
+      }
+    }
+
     // Delete user
     await User.findByIdAndDelete(userId);
 
