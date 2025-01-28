@@ -78,7 +78,7 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
   return (
     <section className="flex flex-col flex-grow h-48 lg:min-h-[57vh] bg-blue-50 dark:bg-sky-950 p-4 sm:px-6 lg:px-8 overflow-y-auto">
       <header className="font-bold text-xl text-center mb-4 text-sky-800 dark:text-sky-300">
-      
+        {chosenChatID}
       </header>
       <div className="space-y-6">
         {messages.map((msg) => (

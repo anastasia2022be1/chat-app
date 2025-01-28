@@ -3,6 +3,8 @@ import crypto from "node:crypto";
 import { Resend } from "resend";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
+import Chat from "../models/Chat.js";
+import Message from "../models/Message.js";
 
 // Create a new instance of Resend for sending emails
 const resend = new Resend(process.env.RESEND_API_KEY);
@@ -469,6 +471,8 @@ export const deleteUserAccount = async (req, res) => {
     for (const chatId of emptyChatIds) {
       try {
         const deletedChat = await Chat.findByIdAndDelete(chatId);
+        const deletedMessages = await Message.deleteMany({chatId: chatId})
+        console.log(`Deleted messages: ${chatId}`, deletedMessages);
         console.log(`Deleted chat: ${chatId}`, deletedChat);
       } catch (err) {
         console.error(`Error deleting chat ${chatId}:`, err);
