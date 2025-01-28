@@ -11,7 +11,7 @@ export default function Setting() {
     confirmNewPassword: "",
     profilePicture: null,
   });
-  const [profilePicPreview, setProfilePicPreview] = useState(null); // New state for preview
+  const [profilePicPreview, setProfilePicPreview] = useState(null); 
   const [hasChanges, setHasChanges] = useState(false);
   const [error, setError] = useState("");
   const [isUpdated, setIsUpdated] = useState(false);
@@ -165,12 +165,19 @@ export default function Setting() {
 
       const data = await response.json();
       if (response.ok) {
-        console.log(data);
+       
 
         setUser(data.user);
         setHasChanges(false);
         setProfilePicPreview(data.user.profilePicture); // Update preview with server response
         setIsUpdated(true);
+        setFormData((prev) => ({
+          ...prev,
+          currentPassword: "",
+          newPassword: "",
+          confirmNewPassword: "",
+        }));
+
         setFormData((prev) => ({
           ...prev,
           currentPassword: "",

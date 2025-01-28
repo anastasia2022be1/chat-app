@@ -46,9 +46,6 @@ function App() {
               <Route path="/AddContact" element={<AddContact />} />
               <Route path="/chat/:contactId" element={<Dashboard />} />
             </Route>
-
-            {/* Catch-all route for 404 page */}
-            {/* <Route path="*" element={<NotFound />} /> */}
           </Route>
         </Routes>
       </ThemeProvider>

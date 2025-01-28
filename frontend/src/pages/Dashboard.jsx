@@ -16,7 +16,7 @@ import Sidebar from "../components/Sidebar.jsx";
 import Header from "../components/Header.jsx";
 import Body from "../components/Body.jsx";
 import Message from "../components/Message.jsx";
-import "./dashboard.css";
+
 
 // Establishing the socket connection to the server
 const socket = socketIO.connect("http://localhost:3000");
@@ -61,12 +61,8 @@ const Dashboard = () => {
     setChosenChatID(chatId); // Update the selected chat room ID
   };
 
-
-
   return (
-    <div
-      id="main-dashboard"
-      className=" flex flex-col justify-center pt-5 lg:p-auto lg:my-auto ">
+    <div className=" flex flex-col justify-center pt-5 lg:p-auto lg:my-auto min-h-[80vh]  ">
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-10">
         <Header />

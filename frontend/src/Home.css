@@ -1,4 +1,4 @@
-/* پیش‌فرض انیمیشن‌ها */
+/* Default animations */
 @keyframes slideInRight {
   0% {
     transform: translateX(150%);
@@ -29,7 +29,7 @@
   animation: slideInLeft 1s ease-out forwards;
 }
 
-/* پنهان کردن شبیه‌سازی چت در موبایل */
+
 @media (max-width: 768px) {
   .chat-simulation {
     display: none;
