@@ -171,6 +171,12 @@ export default function Setting() {
         setHasChanges(false);
         setProfilePicPreview(data.user.profilePicture); // Update preview with server response
         setIsUpdated(true);
+        setFormData((prev) => ({
+          ...prev,
+          currentPassword: "",
+          newPassword: "",
+          confirmNewPassword: "",
+        }));
 
         setFormData((prev) => ({
           ...prev,
@@ -264,13 +270,13 @@ export default function Setting() {
               {profilePicPreview ? (
                 <img
                   src={"http://localhost:3000" + profilePicPreview}
-                  alt="Profile Preview"
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
                 <div className="w-full h-full bg-gray-200 rounded-full"></div>
               )}
             </div>
+
             <button
               type="button"
               onClick={handleFileClick}
