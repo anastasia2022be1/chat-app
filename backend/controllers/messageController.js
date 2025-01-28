@@ -17,7 +17,7 @@ export const getMessages = async (req, res) => {
     if (!messages) {
       return res.status(404).json({ error: "Chat not found" });
     }
-    console.log("here the message controller: ", messages.messages);
+
     res.status(200).json(messages.messages);
   } catch (error) {
     console.error(error, "Error");

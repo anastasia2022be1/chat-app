@@ -16,7 +16,6 @@ export const registerUser = async (req, res) => {
   const { username, email, password } = req.body;
   const emailAddress = process.env.EMAIL_ADDRESS;
 
-
   // Check if all required fields are provided
   if (!username || !email || !password) {
     return res.status(400).json({ error: "All fields are required" });
@@ -26,7 +25,9 @@ export const registerUser = async (req, res) => {
     // Check if the email is already registered
     const existingUser = await User.findOne({ email });
     if (existingUser) {
-      return res.status(400).json({ error: "User with this email already exists" });
+      return res
+        .status(400)
+        .json({ error: "User with this email already exists" });
     }
 
     // Hash the password before saving to the database
@@ -56,7 +57,8 @@ export const registerUser = async (req, res) => {
     const emailResponse = await resend.emails.send({
       from: "talki@resend.dev",
       to: emailAddress, // Send to the user's email
-      subject: "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
+      subject:
+        "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
           <h1 style="color:#4B89FF; text-align: center;">Willkommen bei Talki.dev!</h1>
@@ -76,7 +78,7 @@ export const registerUser = async (req, res) => {
     if (emailResponse.error) {
       return res.status(500).json({
         error: "Failed to send verification email",
-        details: emailResponse.error.message
+        details: emailResponse.error.message,
       });
     }
 
@@ -105,11 +107,11 @@ export const verifyUser = async (req, res) => {
 
     // Check if the token has expired
     if (Date.now() > user.tokenExpiresAt) {
-      await User.findByIdAndDelete(user._id)
-      return res.status(400).json({ error: "Token has expired. Register again" });
+      await User.findByIdAndDelete(user._id);
+      return res
+        .status(400)
+        .json({ error: "Token has expired. Register again" });
     }
-
-
 
     // Check if the user is already verified
     if (user.isVerified) {
@@ -132,12 +134,12 @@ export const verifyUser = async (req, res) => {
 //--------------------------------------------------------------
 
 // Resend E-Mail with verification token
-// POST: api/resend 
+// POST: api/resend
 export const resendVerifyToken = async (req, res) => {
   const { email, password } = req.body;
   // Check if email and password are provided
   if (!email) {
-    return res.status(400).json({ error: 'Please fill all required fields' });
+    return res.status(400).json({ error: "Please fill all required fields" });
   }
 
   try {
@@ -146,7 +148,7 @@ export const resendVerifyToken = async (req, res) => {
 
     // Check if the user exists
     if (!user) {
-      return res.status(401).json({ error: 'Invalid token' });
+      return res.status(401).json({ error: "Invalid token" });
     }
 
     const verificationToken = user.verificationToken;
@@ -158,7 +160,8 @@ export const resendVerifyToken = async (req, res) => {
     const emailResponse = await resend.emails.send({
       from: "talki@resend.dev",
       to: process.env.EMAIL_ADDRESS, // Send to the user's email
-      subject: "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
+      subject:
+        "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
           <h1 style="color: #4B89FF; text-align: center;">Willkommen bei Talki.dev!</h1>
@@ -174,12 +177,11 @@ export const resendVerifyToken = async (req, res) => {
       `,
     });
 
-
     // Check if email was sent successfully, otherwise respond with an error
     if (emailResponse.error) {
       return res.status(500).json({
         error: "Failed to send verification email",
-        details: emailResponse.error.message
+        details: emailResponse.error.message,
       });
     }
 
@@ -189,7 +191,7 @@ export const resendVerifyToken = async (req, res) => {
     console.error("Error during registration:", error.message);
     res.status(500).json({ error: error.message });
   }
-}
+};
 
 // ------------------------------------------------------------------
 
@@ -200,7 +202,7 @@ export const loginUser = async (req, res) => {
 
   // Check if email and password are provided
   if (!email || !password) {
-    return res.status(400).json({ error: 'Please fill all required fields' });
+    return res.status(400).json({ error: "Please fill all required fields" });
   }
 
   try {
@@ -210,7 +212,7 @@ export const loginUser = async (req, res) => {
 
     // Check if the user exists
     if (!user) {
-      return res.status(401).json({ error: 'Invalid login' });
+      return res.status(401).json({ error: "Invalid login" });
     }
 
     // Check if the user's account is verified
@@ -221,12 +223,14 @@ export const loginUser = async (req, res) => {
     // Check if the password matches
     const passwordCorrect = await bcrypt.compare(password, user.password);
     if (!passwordCorrect) {
-      return res.status(401).json({ error: 'Wrong password' });
+      return res.status(401).json({ error: "Wrong password" });
     }
 
     // Create a JWT token for authentication
     const payload = { userId: user._id };
-    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, { expiresIn: '1h' }); // 1-hour token expiry
+    const token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {
+      expiresIn: "1h",
+    }); // 1-hour token expiry
 
     res.json({ user, token, userId: user._id });
   } catch (error) {
@@ -250,7 +254,9 @@ export const forgotPassword = async (req, res) => {
 
     // Check if user exists
     if (!user) {
-      return res.status(404).json({ error: "User with this email does not exist" });
+      return res
+        .status(404)
+        .json({ error: "User with this email does not exist" });
     }
 
     // Generate a reset token
@@ -447,33 +453,27 @@ export const deleteUserAccount = async (req, res) => {
     }
 
     const userChats = user.chats;
-    console.log(userChats)
+
     // Update all chats to remove user from participants
     const updatedChats = await Chat.updateMany(
       { _id: { $in: userChats } },
       { $pull: { participants: userId } }
     );
 
-    console.log("Updated Chats", updatedChats)
-
     // Find all chats with empty participants
     const emptyChats = await Chat.find({
       _id: { $in: userChats },
-      participants: { $size: 0 }
+      participants: { $size: 0 },
     });
 
-    console.log("epmtyChats", emptyChats)
-
     // Extract chat IDs
-    const emptyChatIds = emptyChats.map(chat => chat._id);
+    const emptyChatIds = emptyChats.map((chat) => chat._id);
 
     // Delete chats one by one
     for (const chatId of emptyChatIds) {
       try {
         const deletedChat = await Chat.findByIdAndDelete(chatId);
-        const deletedMessages = await Message.deleteMany({chatId: chatId})
-        console.log(`Deleted messages: ${chatId}`, deletedMessages);
-        console.log(`Deleted chat: ${chatId}`, deletedChat);
+        const deletedMessages = await Message.deleteMany({ chatId: chatId });
       } catch (err) {
         console.error(`Error deleting chat ${chatId}:`, err);
       }
@@ -482,18 +482,12 @@ export const deleteUserAccount = async (req, res) => {
     // Delete user
     await User.findByIdAndDelete(userId);
 
-
     // Send a response about successful deletion
     res.status(200).json({
-      message: "Account deleted successfully"
+      message: "Account deleted successfully",
     });
   } catch (error) {
     console.error("Error deleting account:", error.message);
     res.status(500).json({ error: "Internal Server Error" });
   }
 };
-
-
-
-
-

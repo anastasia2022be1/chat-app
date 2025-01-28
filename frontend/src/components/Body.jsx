@@ -7,11 +7,10 @@ import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
  *
  * @param {Object} props - Component props.
  * @param {Object} props.socket - The WebSocket connection instance.
- * @param {string} props.chosenChatID - The ID of the selected chat.
  * @param {Array} props.chosenChatMessages - List of messages for the chosen chat.
  * @returns {JSX.Element} Rendered chat messages.
  */
-const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
+const Body = ({ socket, chosenChatMessages }) => {
   const [messages, setMessages] = useState([]);
   const [activeDelete, setActiveDelete] = useState(null);
   const userId = localStorage.getItem("userId");
@@ -77,9 +76,7 @@ const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
 
   return (
     <section className="flex flex-col flex-grow h-48 lg:min-h-[57vh] bg-blue-50 dark:bg-sky-950 p-4 sm:px-6 lg:px-8 overflow-y-auto">
-      <header className="font-bold text-xl text-center mb-4 text-sky-800 dark:text-sky-300">
-        {chosenChatID}
-      </header>
+      <header className="font-bold text-xl text-center mb-4 text-sky-800 dark:text-sky-300"></header>
       <div className="space-y-6">
         {messages.map((msg) => (
           <MessageItem

@@ -6,8 +6,8 @@ import chatRoutes from "./routes/chatRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import Message from "./models/Message.js";
 import Chat from "./models/Chat.js";
-import http from 'http';
-import { Server as SocketIOServer } from 'socket.io';
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
 
 // Verbindung zur MongoDB
 await connect();
@@ -42,8 +42,6 @@ io.on("connection", (socket) => {
 
   socket.on("register", async ({ chatRoomId }) => {
     try {
-      console.log("Registered for chat room:", chatRoomId);
-
       // Join the socket to the chat room
       socket.join(chatRoomId);
     } catch (error) {
@@ -54,23 +52,38 @@ io.on("connection", (socket) => {
   socket.on("message", async ({ chatId, senderId, content }) => {
     try {
       // Check if message already exists in the chat
-      const existingMessage = await Message.findOne({ chatId, senderId, content });
+      const existingMessage = await Message.findOne({
+        chatId,
+        senderId,
+        content,
+      });
 
       if (!existingMessage) {
         const newMessage = await Message.create({ chatId, senderId, content });
-        const populatedMessage = await Message.findById(newMessage._id)
-          .populate({
-            path: 'senderId',
-            select: 'username _id profilePicture'
-          });
+        const populatedMessage = await Message.findById(
+          newMessage._id
+        ).populate({
+          path: "senderId",
+          select: "username _id profilePicture",
+        });
         // Update the chat with the new message
-        const updatedChat = await Chat.findByIdAndUpdate(chatId, { $push: { messages: newMessage._id } }, { new: true })
-          .populate('participants', 'username')
-          .populate({ path: 'messages', populate: { path: 'senderId', select: 'username email profilePicture' } });
+        const updatedChat = await Chat.findByIdAndUpdate(
+          chatId,
+          { $push: { messages: newMessage._id } },
+          { new: true }
+        )
+          .populate("participants", "username")
+          .populate({
+            path: "messages",
+            populate: {
+              path: "senderId",
+              select: "username email profilePicture",
+            },
+          });
 
         // Emit the new message to all members in the chat room
-        console.log(populatedMessage)
-        io.to(chatId).emit('message', populatedMessage); // Ensure `chatId` is used here
+
+        io.to(chatId).emit("message", populatedMessage); // Ensure `chatId` is used here
       }
     } catch (error) {
       console.log("Error: ", error);

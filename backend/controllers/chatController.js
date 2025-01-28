@@ -13,13 +13,12 @@ export const createChat = async (req, res) => {
     await User.findByIdAndUpdate(senderId, { $push: { chats: newChat._id } });
     await User.findByIdAndUpdate(recieverId, { $push: { chats: newChat._id } });
 
-
-    res.status(200).json({ message: 'Chat created successfully', newChat });
+    res.status(200).json({ message: "Chat created successfully", newChat });
   } catch (error) {
-    console.log(error, 'Error');
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error(error, "Error");
+    res.status(500).json({ error: "Internal Server Error" });
   }
-}
+};
 
 //-------------------------------------------------------------------
 
@@ -40,20 +39,18 @@ export const getChats = async (req, res) => {
 
     res.status(200).json(chats);
   } catch (error) {
-    console.error(error, 'Error');
-    res.status(500).json({ error: 'Internal Server Error' });
+    console.error(error, "Error");
+    res.status(500).json({ error: "Internal Server Error" });
   }
 };
 
 // // DELETE
 // // http://localhost:3000/api/chat/:chatId
 
-
 export const deleteChat = async (req, res) => {
   try {
     const { chatId } = req.params;
-    const  { userId} = req.body;
-
+    const { userId } = req.body;
 
     // Then we delete the chat
     const updatedChat = await Chat.findByIdAndUpdate(
@@ -67,17 +64,13 @@ export const deleteChat = async (req, res) => {
       { $pull: { chats: chatId } },
       { new: true }
     );
-    console.log("delete chat function test, this is uodated chat in chatController ", updatedChat);
+
     if (updatedChat.participants.length === 0) {
-      console.log("empty participants chat ")
       const deletedChat = await Chat.findByIdAndDelete(chatId);
-      const deleteMessages = await Message.deleteMany({chatId: chatId})
-      console.log("entire chat and all messages associated with it deleted, first the deleted Chat, second the deleted Messages", deletedChat, deleteMessages)
+      const deleteMessages = await Message.deleteMany({ chatId: chatId });
     }
 
-    res
-      .status(200)
-      .json({ message: "Succesfully removed chat" });
+    res.status(200).json({ message: "Succesfully removed chat" });
   } catch (error) {
     console.error(error, "Error");
     res.status(500).json({ error: "Internal Serve r Error" });

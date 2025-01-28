@@ -200,43 +200,43 @@ export default function Setting() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Only require currentPassword if newPassword is provided
-    if (formData.newPassword && !formData.currentPassword) {
-      setError("Please enter your current password to change the password.");
-      return;
-    }
+   
 
     const form = new FormData();
 
     // Add username to the form if it's changed
     if (formData.username) form.append("username", formData.username);
 
-    // Add the current and new passwords only if newPassword is set
-    if (formData.newPassword) {
-      if (!formData.currentPassword) {
-        setError("Please enter your current password to change the password.");
-        return;
-      }
+     // Add profile picture to the form if changed
+     if (formData.profilePicture)
+     form.append("profilePicture", formData.profilePicture);
 
-      // Validation: Check if passwords match
-      if (formData.newPassword !== formData.confirmNewPassword) {
-        setError("Passwords do not match!");
-        return;
-      }
+   // Only validate passwords if the user is trying to change the password
+   if (formData.newPassword || formData.currentPassword || formData.confirmNewPassword) {
+    // Ensure all password fields are provided
+    if (!formData.currentPassword || !formData.newPassword || !formData.confirmNewPassword) {
+      setError("Please fill out all password fields to update your password.");
+      return;
+    }
 
-      // Check the length of the new password
-      if (formData.newPassword.length < 8) {
-        setError("Password must be at least 8 characters long.");
-        return;
-      }
+    // Validation: Check if passwords match
+    if (formData.newPassword !== formData.confirmNewPassword) {
+      setError("Passwords do not match!");
+      return;
+    }
 
-      form.append("password", formData.currentPassword);
+    // Check the length of the new password
+    if (formData.newPassword.length < 8) {
+      setError("Password must be at least 8 characters long.");
+      return;
+    }
+
+      // Add current and new passwords to the form
+      form.append("currentPassword", formData.currentPassword);
       form.append("newPassword", formData.newPassword);
     }
 
-    // Add profile picture to the form if changed
-    if (formData.profilePicture)
-      form.append("profilePicture", formData.profilePicture);
+   
 
     try {
       const token = localStorage.getItem("authToken");
@@ -258,8 +258,6 @@ export default function Setting() {
 
       const data = await response.json();
       if (response.ok) {
-       
-
         setUser(data.user);
         setHasChanges(false);
         setProfilePicPreview(data.user.profilePicture); // Update preview with server response

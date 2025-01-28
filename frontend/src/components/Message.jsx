@@ -15,7 +15,6 @@ import EmojiPicker from "emoji-picker-react";
 function Message({ socket, chosenChatID }) {
   const [message, setMessage] = useState("");
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-
   const userId = localStorage.getItem("userId");
 
   /**
