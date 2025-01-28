@@ -33,18 +33,30 @@ import "../Home.css";
 
 /**
  * Home component represents the homepage of the application.
- * - Displays a welcome message to new users and logged-in users.
- * - Simulates a chat experience with predefined messages that appear sequentially.
- * - Provides login and registration options if the user is not authenticated.
- * - Displays a button to navigate to the chat page if the user is authenticated.
  *
- * @returns {JSX.Element} The rendered Home component with the welcome section and chat simulation.
+ * Features:
+ * - Displays a welcome message to new users and authenticated users.
+ * - Simulates a chat experience with predefined messages appearing sequentially.
+ * - Provides login and registration options for unauthenticated users.
+ * - Displays a button to navigate to the chat page for authenticated users.
+ *
+ * This component uses the `AuthContext` to check if the user is logged in
+ * and `useEffect` to simulate chat messages.
+ *
+ * @component
+ * @returns {JSX.Element} The rendered Home component with a welcome section and chat simulation.
  */
 export default function Home() {
-  const { authState } = useContext(AuthContext); // Using AuthContext to check user authentication state
-  const [messages, setMessages] = useState([]); // State to hold chat messages
+  // Using AuthContext to check user authentication state
+  const { authState } = useContext(AuthContext);
 
-  // Simulating chat messages with a delay using useEffect
+  // State to hold chat messages for the simulation
+  const [messages, setMessages] = useState([]);
+
+  /**
+   * Simulates a chat experience by sequentially adding messages to the chat state.
+   * Uses `useEffect` to set up timers for message addition with delays.
+   */
   useEffect(() => {
     // Initial message
     setMessages([{ text: "Hey there! Welcome to Talki! 🎉", fromRight: true }]);
@@ -53,10 +65,7 @@ export default function Home() {
     const timer1 = setTimeout(() => {
       setMessages((prev) => [
         ...prev,
-        {
-          text: "Hi! Thank you! It looks really cool. 😊",
-          fromRight: false,
-        },
+        { text: "Hi! Thank you! It looks really cool. 😊", fromRight: false },
       ]);
     }, 1000);
 
@@ -91,7 +100,7 @@ export default function Home() {
   }, []);
 
   return (
-    &lt;div className="max-h-screen flex flex-col items-center justify-center overflow-hidden bg-backgroundChat dark:bg-backgroundChatDark px-4 sm:px-6 lg:px-8 ">
+    &lt;div className="max-h-screen flex flex-col items-center justify-center overflow-hidden bg-backgroundChat dark:bg-backgroundChatDark px-4 sm:px-6 lg:px-8">
       {/* Welcome Section */}
       &lt;div className="text-center bg-backgroundBox dark:bg-gray-800 text-white p-6 mt-6 sm:p-8 lg:p-12 rounded-xl w-full max-w-3xl">
         &lt;h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-title dark:text-titleDark">
@@ -102,7 +111,7 @@ export default function Home() {
         &lt;/p>
 
         &lt;div className="mt-6 flex flex-col sm:flex-row justify-center gap-4">
-          {/* Conditionally render login, register or chat buttons based on authState */}
+          {/* Conditionally render login, register, or chat buttons based on authState */}
           {!authState ? (
             &lt;>
               &lt;Link to="/login">
@@ -117,7 +126,7 @@ export default function Home() {
               &lt;/Link>
             &lt;/>
           ) : (
-            &lt;div className=" sm:flex-row justify-center gap-4">
+            &lt;div className="sm:flex-row justify-center gap-4">
               &lt;p className="text-base sm:text-lg lg:text-xl text-dark-text dark:text-dark-text">
                 Welcome back! Ready to chat?
               &lt;/p>
@@ -157,7 +166,7 @@ export default function Home() {
               &lt;/div>
               {/* Display avatar for messages from the right */}
               {message.fromRight &amp;&amp; (
-                &lt;div className="w-10 h-10 rounded-full bg-blue-300 flex items-center justify-center ">
+                &lt;div className="w-10 h-10 rounded-full bg-blue-300 flex items-center justify-center">
                   CD
                 &lt;/div>
               )}
@@ -178,13 +187,13 @@ export default function Home() {
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Body">Body</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#Message">Message</a></li><li><a href="global.html#MessageItem">MessageItem</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#ThemeContext">ThemeContext</a></li><li><a href="global.html#ThemeProvider">ThemeProvider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 21 2025 13:36:06 GMT+0100 (Mitteleuropäische Normalzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 28 2025 11:42:47 GMT+0100 (Mitteleuropäische Normalzeit)
 </footer>
 
 <script> prettyPrint(); </script>

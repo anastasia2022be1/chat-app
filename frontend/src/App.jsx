@@ -16,15 +16,16 @@ import AddContact from "./pages/AddContact.jsx";
 import { ThemeProvider } from "./context/ThemeContext.jsx";
 
 /**
- * Main application component.
- * Wraps the routes and manages context providers for authentication and theme.
- * @returns {JSX.Element} The root component of the app.
+ * The main application component that sets up routing, context providers for authentication and theme.
+ * It defines the application's routes and the components that are rendered for each route.
+ *
+ * @returns {JSX.Element} The root component of the application, wrapped with authentication and theme providers.
  */
 function App() {
   return (
     <AuthProvider>
       <ThemeProvider>
-        {/* Routes definition */}
+        {/* The main routing system of the application */}
         <Routes>
           <Route path="/" element={<Layout />}>
             {/* Public routes */}
@@ -39,16 +40,13 @@ function App() {
             />
             <Route path="/reset-password/:token" element={<ResetPassword />} />
 
-            {/* Protected routes (requires authentication) */}
+            {/* Protected routes, accessible only after authentication */}
             <Route element={<ProtectedRoute />}>
               <Route path="chat" element={<Dashboard />} />
               <Route path="setting" element={<Setting />} />
               <Route path="/AddContact" element={<AddContact />} />
               <Route path="/chat/:contactId" element={<Dashboard />} />
             </Route>
-
-            {/* Catch-all route for 404 page */}
-            {/* <Route path="*" element={<NotFound />} /> */}
           </Route>
         </Routes>
       </ThemeProvider>

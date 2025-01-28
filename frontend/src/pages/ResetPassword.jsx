@@ -5,27 +5,67 @@ import { faInfoCircle } from "@fortawesome/free-solid-svg-icons";
 
 /**
  * ResetPassword component allows users to reset their password by entering a new one.
- * It verifies the new password and confirmation match, then sends a POST request
- * to reset the password.
+ * It verifies the new password and confirmation match, validates the password length,
+ * and then sends a POST request to reset the password.
  *
  * @component
  * @example
  * return (
  *   <ResetPassword />
  * )
+ * @returns {JSX.Element} The rendered ResetPassword component.
  */
 export default function ResetPassword() {
-  const { token } = useParams(); // Token from URL used to identify the user
-  const navigate = useNavigate();
-  const [newPassword, setNewPassword] = useState(""); // Holds the new password entered by the user
-  const [confirmPassword, setConfirmPassword] = useState(""); // Holds the confirmed password entered by the user
-  const [loading, setLoading] = useState(false); // Indicates if the form is being submitted
-  const [error, setError] = useState(""); // Holds any error message
-  const [success, setSuccess] = useState(false); // Indicates if the password reset was successful
+  /**
+   * Token extracted from the URL, used to identify the user for password reset.
+   * @type {string}
+   */
+  const { token } = useParams();
 
-   // States for toggling password visibility
+  const navigate = useNavigate();
+
+  /**
+   * Holds the new password entered by the user.
+   * @type {string}
+   */
+  const [newPassword, setNewPassword] = useState("");
+
+  /**
+   * Holds the confirmed password entered by the user.
+   * @type {string}
+   */
+  const [confirmPassword, setConfirmPassword] = useState("");
+
+  /**
+   * Indicates whether the form is being submitted.
+   * @type {boolean}
+   */
+  const [loading, setLoading] = useState(false);
+
+  /**
+   * Holds any error message to be displayed to the user.
+   * @type {string}
+   */
+  const [error, setError] = useState("");
+
+  /**
+   * Indicates whether the password reset was successful.
+   * @type {boolean}
+   */
+  const [success, setSuccess] = useState(false);
+
+  /**
+   * Toggles the visibility of the new password field.
+   * @type {boolean}
+   */
   const [showNewPassword, setShowNewPassword] = useState(false);
+
+  /**
+   * Toggles the visibility of the confirm password field.
+   * @type {boolean}
+   */
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
+
   console.log(token);
 
   /**
@@ -33,7 +73,9 @@ export default function ResetPassword() {
    * It checks if the new password and confirmation match, and sends a POST request to the server.
    *
    * @param {Object} e - The event object from the form submission.
+   * @param {EventTarget} e.target - The form element that triggered the event.
    * @async
+   * @returns {void}
    */
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,7 +85,7 @@ export default function ResetPassword() {
       return;
     }
 
-    // Validate password length (exactly 8 characters)
+    // Validate password length (must be at least 8 characters long)
     if (newPassword.length < 8) {
       setError("Password must be at least 8 characters long.");
       return;
@@ -140,18 +182,18 @@ export default function ResetPassword() {
               required
             />
             <button
-                type="button"
-                onClick={() => setShowNewPassword((prev) => !prev)}
-                className="absolute right-12  text-gray-600">
-                {showNewPassword ? (
-                  <FontAwesomeIcon
-                    icon="fa-solid fa-eye-slash"
-                    className="mt-6"
-                  />
-                ) : (
-                  <FontAwesomeIcon icon="fa-solid fa-eye" className="mt-6" />
-                )}
-              </button>
+              type="button"
+              onClick={() => setShowNewPassword((prev) => !prev)}
+              className="absolute right-12  text-gray-600">
+              {showNewPassword ? (
+                <FontAwesomeIcon
+                  icon="fa-solid fa-eye-slash"
+                  className="mt-6"
+                />
+              ) : (
+                <FontAwesomeIcon icon="fa-solid fa-eye" className="mt-6" />
+              )}
+            </button>
           </div>
 
           <div>
@@ -170,18 +212,18 @@ export default function ResetPassword() {
               required
             />
             <button
-                type="button"
-                onClick={() => setShowConfirmNewPassword((prev) => !prev)}
-                className="absolute right-12  text-gray-600">
-                {showConfirmNewPassword ? (
-                  <FontAwesomeIcon
-                    icon="fa-solid fa-eye-slash"
-                    className="mt-6"
-                  />
-                ) : (
-                  <FontAwesomeIcon icon="fa-solid fa-eye" className="mt-6" />
-                )}
-              </button>
+              type="button"
+              onClick={() => setShowConfirmNewPassword((prev) => !prev)}
+              className="absolute right-12  text-gray-600">
+              {showConfirmNewPassword ? (
+                <FontAwesomeIcon
+                  icon="fa-solid fa-eye-slash"
+                  className="mt-6"
+                />
+              ) : (
+                <FontAwesomeIcon icon="fa-solid fa-eye" className="mt-6" />
+              )}
+            </button>
           </div>
 
           <button

@@ -94,6 +94,154 @@
     
 
     
+        <h3 class="subsection-title">Members</h3>
+
+        
+            
+<h4 class="name" id="AuthContext"><span class="type-signature">(constant) </span>AuthContext<span class="type-signature"> :React.Context</span></h4>
+
+
+
+
+<div class="description">
+    <p>Authentication context used to manage the authentication state.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">React.Context</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="context_AuthContext.jsx.html">context/AuthContext.jsx</a>, <a href="context_AuthContext.jsx.html#line3">line 3</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+            
+<h4 class="name" id="ThemeContext"><span class="type-signature">(constant) </span>ThemeContext<span class="type-signature"> :React.Context</span></h4>
+
+
+
+
+<div class="description">
+    <p>Theme context used to manage the current theme (light or dark) across the application.</p>
+</div>
+
+
+
+    <h5>Type:</h5>
+    <ul>
+        <li>
+            
+<span class="param-type">React.Context</span>
+
+
+        </li>
+    </ul>
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="context_ThemeContext.jsx.html">context/ThemeContext.jsx</a>, <a href="context_ThemeContext.jsx.html#line3">line 3</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+        
+    
 
     
         <h3 class="subsection-title">Methods</h3>
@@ -112,8 +260,8 @@
 
 
 <div class="description">
-    <p>Main application component.
-Wraps the routes and manages context providers for authentication and theme.</p>
+    <p>The main application component that sets up routing, context providers for authentication and theme.
+It defines the application's routes and the components that are rendered for each route.</p>
 </div>
 
 
@@ -157,7 +305,7 @@ Wraps the routes and manages context providers for authentication and theme.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="App.jsx.html">App.jsx</a>, <a href="App.jsx.html#line22">line 22</a>
+        <a href="App.jsx.html">App.jsx</a>, <a href="App.jsx.html#line24">line 24</a>
     </li></ul></dd>
     
 
@@ -186,7 +334,7 @@ Wraps the routes and manages context providers for authentication and theme.</p>
 
         
 <div class="param-desc">
-    <p>The root component of the app.</p>
+    <p>The root component of the application, wrapped with authentication and theme providers.</p>
 </div>
 
 
@@ -215,7 +363,7 @@ Wraps the routes and manages context providers for authentication and theme.</p>
     
 
     
-    <h4 class="name" id="ChatList"><span class="type-signature"></span>ChatList<span class="signature">(chats, handleChatClick)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    <h4 class="name" id="AuthProvider"><span class="type-signature"></span>AuthProvider<span class="signature">(props)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
     
 
     
@@ -223,8 +371,7 @@ Wraps the routes and manages context providers for authentication and theme.</p>
 
 
 <div class="description">
-    <p>ChatList component renders a list of chats.
-Each list item represents a single chat, and when a chat is clicked, the <code>handleChatClick</code> function is called.</p>
+    <p>Authentication provider component that provides authentication state and login/logout methods.</p>
 </div>
 
 
@@ -260,13 +407,13 @@ Each list item represents a single chat, and when a chat is clicked, the <code>h
 
         <tr>
             
-                <td class="name"><code>chats</code></td>
+                <td class="name"><code>props</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array</span>
+<span class="param-type">Object</span>
 
 
             
@@ -276,20 +423,39 @@ Each list item represents a single chat, and when a chat is clicked, the <code>h
 
             
 
-            <td class="description last"><p>An array of chats to display.</p></td>
-        </tr>
+            <td class="description last"><p>Component properties.</p>
+                <h6>Properties</h6>
+                
 
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
 
         <tr>
             
-                <td class="name"><code>handleChatClick</code></td>
+                <td class="name"><code>children</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">function</span>
+<span class="param-type">React.ReactNode</span>
 
 
             
@@ -299,7 +465,14 @@ Each list item represents a single chat, and when a chat is clicked, the <code>h
 
             
 
-            <td class="description last"><p>A function that is called when a chat is clicked. It receives the chat object as an argument.</p></td>
+            <td class="description last"><p>Child components that will have access to the authentication context.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -340,7 +513,7 @@ Each list item represents a single chat, and when a chat is clicked, the <code>h
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="components_Sidebar_ChatList.jsx.html">components/Sidebar/ChatList.jsx</a>, <a href="components_Sidebar_ChatList.jsx.html#line9">line 9</a>
+        <a href="context_AuthContext.jsx.html">context/AuthContext.jsx</a>, <a href="context_AuthContext.jsx.html#line25">line 25</a>
     </li></ul></dd>
     
 
@@ -369,7 +542,534 @@ Each list item represents a single chat, and when a chat is clicked, the <code>h
 
         
 <div class="param-desc">
-    <p>A list of chats with a click handler for each chat.</p>
+    <ul>
+<li>JSX element that provides authentication context to the child components.</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">JSX.Element</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Example usage:
+&lt;AuthProvider>
+  &lt;YourComponent />
+&lt;/AuthProvider></code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="Body"><span class="type-signature"></span>Body<span class="signature">(props)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Chat body component that renders messages for the chosen chat.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Component props.</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>socket</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The WebSocket connection instance.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>chosenChatID</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The ID of the selected chat.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>chosenChatMessages</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>List of messages for the chosen chat.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="components_Body.jsx.html">components/Body.jsx</a>, <a href="components_Body.jsx.html#line14">line 14</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>Rendered chat messages.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">JSX.Element</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="ChatList"><span class="type-signature"></span>ChatList<span class="signature">(props)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>ChatList component displays a list of chats with options to open or delete a chat.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Component props.</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>chats</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>An array of chat objects to display.
+Each chat object should have the following structure:
+{
+_id: string,             // Unique identifier for the chat
+participants: Array&lt;{    // List of participants in the chat
+username: string,      // Username of the participant
+}&gt;
+}</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>handleChatClick</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Callback function triggered when a chat is clicked.
+Receives the chat object as a parameter.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>handleDeleteChat</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Callback function triggered when the delete button is clicked.
+Receives the chat's ID as a parameter.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="components_Sidebar_ChatList.jsx.html">components/Sidebar/ChatList.jsx</a>, <a href="components_Sidebar_ChatList.jsx.html#line22">line 22</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>A list of chats with delete functionality.</p>
 </div>
 
 
@@ -455,7 +1155,7 @@ Each list item represents a single chat, and when a chat is clicked, the <code>h
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="components_ChatRoom.jsx.html">components/ChatRoom.jsx</a>, <a href="components_ChatRoom.jsx.html#line17">line 17</a>
+        <a href="components_ChatRoom.jsx.html">components/ChatRoom.jsx</a>, <a href="components_ChatRoom.jsx.html#line18">line 18</a>
     </li></ul></dd>
     
 
@@ -513,7 +1213,7 @@ Each list item represents a single chat, and when a chat is clicked, the <code>h
     
 
     
-    <h4 class="name" id="ContactList"><span class="type-signature"></span>ContactList<span class="signature">(contacts, handleContactClick)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    <h4 class="name" id="ContactList"><span class="type-signature"></span>ContactList<span class="signature">(props)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
     
 
     
@@ -522,7 +1222,7 @@ Each list item represents a single chat, and when a chat is clicked, the <code>h
 
 <div class="description">
     <p>ContactList component displays a grouped list of contacts.
-Contacts are grouped by the first letter of their username.</p>
+Contacts are grouped alphabetically by the first letter of their username.</p>
 </div>
 
 
@@ -535,6 +1235,48 @@ Contacts are grouped by the first letter of their username.</p>
 
     <h5>Parameters:</h5>
     
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Component props.</p>
+                <h6>Properties</h6>
+                
 
 <table class="params">
     <thead>
@@ -574,7 +1316,13 @@ Contacts are grouped by the first letter of their username.</p>
 
             
 
-            <td class="description last"><p>A list of contacts to display.</p></td>
+            <td class="description last"><p>A list of contact objects to display.
+Each contact object should have the following structure:
+{
+_id: string,            // Unique identifier for the contact
+username: string,       // Username of the contact
+profilePicture: string, // URL of the contact's profile picture (optional)
+}</p></td>
         </tr>
 
     
@@ -597,7 +1345,15 @@ Contacts are grouped by the first letter of their username.</p>
 
             
 
-            <td class="description last"><p>A function to call when a contact is clicked.</p></td>
+            <td class="description last"><p>Callback function triggered when a contact is clicked.
+Receives the contact's ID as a parameter.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -638,7 +1394,7 @@ Contacts are grouped by the first letter of their username.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="components_Sidebar_ContactList.jsx.html">components/Sidebar/ContactList.jsx</a>, <a href="components_Sidebar_ContactList.jsx.html#line9">line 9</a>
+        <a href="components_Sidebar_ContactList.jsx.html">components/Sidebar/ContactList.jsx</a>, <a href="components_Sidebar_ContactList.jsx.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -667,7 +1423,7 @@ Contacts are grouped by the first letter of their username.</p>
 
         
 <div class="param-desc">
-    <p>A grouped list of contacts.</p>
+    <p>A list of grouped contacts with sticky headers.</p>
 </div>
 
 
@@ -696,7 +1452,7 @@ Contacts are grouped by the first letter of their username.</p>
     
 
     
-    <h4 class="name" id="Header"><span class="type-signature"></span>Header<span class="signature">()</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    <h4 class="name" id="Dashboard"><span class="type-signature"></span>Dashboard<span class="signature">()</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
     
 
     
@@ -704,14 +1460,9 @@ Contacts are grouped by the first letter of their username.</p>
 
 
 <div class="description">
-    <p>Header component represents the top navigation bar for the app.
-It includes:</p>
-<ul>
-<li>The &quot;Talki&quot; logo on the left side (visible on larger screens).</li>
-<li>A button for navigating to the settings page.</li>
-<li>A logout button to log the user out.</li>
-</ul>
-<p>The component uses React Router's <code>useNavigate</code> hook for navigation to the settings page.</p>
+    <p><code>Dashboard</code> component represents the main chat dashboard, displaying a sidebar, header, body (chat messages), and message input area.
+It establishes a connection with the server using Socket.io and manages the state for the selected chat and its messages.
+The component also listens for new messages in a chosen chat room and updates the chat view accordingly.</p>
 </div>
 
 
@@ -755,7 +1506,132 @@ It includes:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="components_Header.jsx.html">components/Header.jsx</a>, <a href="components_Header.jsx.html#line16">line 16</a>
+        <a href="pages_Dashboard.jsx.html">pages/Dashboard.jsx</a>, <a href="pages_Dashboard.jsx.html#line24">line 24</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <ul>
+<li>A JSX element representing the dashboard layout with header, sidebar, chat body, and message input area.</li>
+</ul>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">JSX.Element</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Usage:
+&lt;Dashboard /></code></pre>
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="Header"><span class="type-signature"></span>Header<span class="signature">()</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Header component represents the top navigation bar for the app.</p>
+<p>Features:</p>
+<ul>
+<li><strong>App Logo</strong>: The &quot;Talki&quot; logo displayed on the left side (visible on larger screens only).</li>
+<li><strong>Settings Button</strong>: A button that navigates the user to the settings page.</li>
+<li><strong>Logout Button</strong>: A button to log the user out, implemented in the <code>Logout</code> component.</li>
+</ul>
+<p>This component uses the <code>useNavigate</code> hook from React Router for navigation.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="components_Header.jsx.html">components/Header.jsx</a>, <a href="components_Header.jsx.html#line18">line 18</a>
     </li></ul></dd>
     
 
@@ -870,7 +1746,7 @@ It includes:</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="components_Logout.jsx.html">components/Logout.jsx</a>, <a href="components_Logout.jsx.html#line14">line 14</a>
+        <a href="components_Logout.jsx.html">components/Logout.jsx</a>, <a href="components_Logout.jsx.html#line19">line 19</a>
     </li></ul></dd>
     
 
@@ -899,7 +1775,7 @@ It includes:</p>
 
         
 <div class="param-desc">
-    <p>The rendered Logout button component.</p>
+    <p>The rendered Logout button component with an icon.</p>
 </div>
 
 
@@ -921,6 +1797,13 @@ It includes:</p>
 
 
 
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>return (
+  &lt;Logout />
+)</code></pre>
+
+
 
         
             
@@ -928,7 +1811,7 @@ It includes:</p>
     
 
     
-    <h4 class="name" id="SearchBar"><span class="type-signature"></span>SearchBar<span class="signature">(searchQuery, handleQueryChange, handleSearch)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    <h4 class="name" id="Message"><span class="type-signature"></span>Message<span class="signature">(props)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
     
 
     
@@ -936,8 +1819,12 @@ It includes:</p>
 
 
 <div class="description">
-    <p>SearchBar component renders a search input field for searching contacts.
-It also includes a magnifying glass icon that triggers the search action when clicked.</p>
+    <p>Message component allows users to send messages in a chat.</p>
+<ul>
+<li>Provides an input field for typing a message.</li>
+<li>Displays an emoji picker to add emojis to the message.</li>
+<li>Sends the message via the socket connection to the server.</li>
+</ul>
 </div>
 
 
@@ -973,13 +1860,81 @@ It also includes a magnifying glass icon that triggers the search action when cl
 
         <tr>
             
-                <td class="name"><code>searchQuery</code></td>
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The component props.</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>socket</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The socket instance used to send messages.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>chosenChatID</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">string</span>
+|
+
+<span class="param-type">null</span>
 
 
             
@@ -989,53 +1944,14 @@ It also includes a magnifying glass icon that triggers the search action when cl
 
             
 
-            <td class="description last"><p>The current search query input by the user.</p></td>
+            <td class="description last"><p>The ID of the currently selected chat.</p></td>
         </tr>
 
     
+    </tbody>
+</table>
 
-        <tr>
-            
-                <td class="name"><code>handleQueryChange</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
             </td>
-
-            
-
-            
-
-            <td class="description last"><p>Function to handle changes in the search input field.</p></td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>handleSearch</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last"><p>Function to perform the search action when the search icon is clicked.</p></td>
         </tr>
 
     
@@ -1076,7 +1992,351 @@ It also includes a magnifying glass icon that triggers the search action when cl
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="components_Sidebar_SearchBar.jsx.html">components/Sidebar/SearchBar.jsx</a>, <a href="components_Sidebar_SearchBar.jsx.html#line12">line 12</a>
+        <a href="components_Message.jsx.html">components/Message.jsx</a>, <a href="components_Message.jsx.html#line15">line 15</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    <p>The rendered message input and send button components.</p>
+</div>
+
+
+
+<dl>
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">JSX.Element</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="MessageItem"><span class="type-signature"></span>MessageItem<span class="signature">()</span><span class="type-signature"></span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>MessageItem component renders individual chat messages.</p>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="components_Body.jsx.html">components/Body.jsx</a>, <a href="components_Body.jsx.html#line104">line 104</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="SearchBar"><span class="type-signature"></span>SearchBar<span class="signature">(props)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>SearchBar component renders a search input field with a magnifying glass icon.
+The input allows users to type in a query to search contacts, while the icon can trigger the search action.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Component props.</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>searchQuery</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>The current search query entered by the user.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>handleQueryChange</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Callback function triggered on input change.
+Receives the input event as a parameter.</p></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>handleSearch</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Callback function triggered when the search icon is clicked.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="components_Sidebar_SearchBar.jsx.html">components/Sidebar/SearchBar.jsx</a>, <a href="components_Sidebar_SearchBar.jsx.html#line16">line 16</a>
     </li></ul></dd>
     
 
@@ -1134,7 +2394,7 @@ It also includes a magnifying glass icon that triggers the search action when cl
     
 
     
-    <h4 class="name" id="Sidebar"><span class="type-signature"></span>Sidebar<span class="signature">(props)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    <h4 class="name" id="Sidebar"><span class="type-signature"></span>Sidebar<span class="signature">(props)</span><span class="type-signature"></span></h4>
     
 
     
@@ -1142,9 +2402,8 @@ It also includes a magnifying glass icon that triggers the search action when cl
 
 
 <div class="description">
-    <p>Sidebar component that handles displaying contacts and chats.
-Allows users to toggle between contact list and chat list,
-search for contacts, and initiate new chats.</p>
+    <p>Sidebar component for displaying and interacting with contacts and chats.
+Allows users to search, add contacts, view contacts or chats, and handle messages.</p>
 </div>
 
 
@@ -1196,7 +2455,7 @@ search for contacts, and initiate new chats.</p>
 
             
 
-            <td class="description last"><p>The component's props.</p>
+            <td class="description last">
                 <h6>Properties</h6>
                 
 
@@ -1238,7 +2497,7 @@ search for contacts, and initiate new chats.</p>
 
             
 
-            <td class="description last"><p>Function to handle selecting a chat.</p></td>
+            <td class="description last"><p>Function to handle the selection of a chat.</p></td>
         </tr>
 
     
@@ -1261,7 +2520,7 @@ search for contacts, and initiate new chats.</p>
 
             
 
-            <td class="description last"><p>Function to handle updating chosen chat messages.</p></td>
+            <td class="description last"><p>Function to handle the chosen chat messages.</p></td>
         </tr>
 
     
@@ -1309,7 +2568,194 @@ search for contacts, and initiate new chats.</p>
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="components_Sidebar.jsx.html">components/Sidebar.jsx</a>, <a href="components_Sidebar.jsx.html#line18">line 18</a>
+        <a href="components_Sidebar.jsx.html">components/Sidebar.jsx</a>, <a href="components_Sidebar.jsx.html#line16">line 16</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        
+            
+
+    
+
+    
+    <h4 class="name" id="ThemeProvider"><span class="type-signature"></span>ThemeProvider<span class="signature">(props)</span><span class="type-signature"> &rarr; {JSX.Element}</span></h4>
+    
+
+    
+
+
+
+<div class="description">
+    <p>Theme provider component that provides the current theme and a method to toggle between light and dark themes.
+It also handles saving the selected theme in localStorage and applying it when the component mounts.</p>
+</div>
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>props</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Component properties.</p>
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>children</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">React.ReactNode</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last"><p>Child components that will have access to the theme context.</p></td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+<dl class="details">
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="context_ThemeContext.jsx.html">context/ThemeContext.jsx</a>, <a href="context_ThemeContext.jsx.html#line26">line 26</a>
     </li></ul></dd>
     
 
@@ -1338,7 +2784,9 @@ search for contacts, and initiate new chats.</p>
 
         
 <div class="param-desc">
-    <p>The Sidebar component.</p>
+    <ul>
+<li>JSX element that provides theme context to the child components.</li>
+</ul>
 </div>
 
 
@@ -1360,6 +2808,14 @@ search for contacts, and initiate new chats.</p>
 
 
 
+    <h5>Example</h5>
+    
+    <pre class="prettyprint"><code>// Example usage:
+&lt;ThemeProvider>
+  &lt;YourComponent />
+&lt;/ThemeProvider></code></pre>
+
+
 
         
     
@@ -1377,13 +2833,13 @@ search for contacts, and initiate new chats.</p>
 </div>
 
 <nav>
-    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li></ul>
+    <h2><a href="index.html">Home</a></h2><h3>Classes</h3><ul><li><a href="ContactList-groupedContacts.html">groupedContacts</a></li></ul><h3>Global</h3><ul><li><a href="global.html#App">App</a></li><li><a href="global.html#AuthContext">AuthContext</a></li><li><a href="global.html#AuthProvider">AuthProvider</a></li><li><a href="global.html#Body">Body</a></li><li><a href="global.html#ChatList">ChatList</a></li><li><a href="global.html#ChatRoom">ChatRoom</a></li><li><a href="global.html#ContactList">ContactList</a></li><li><a href="global.html#Dashboard">Dashboard</a></li><li><a href="global.html#Header">Header</a></li><li><a href="global.html#Logout">Logout</a></li><li><a href="global.html#Message">Message</a></li><li><a href="global.html#MessageItem">MessageItem</a></li><li><a href="global.html#SearchBar">SearchBar</a></li><li><a href="global.html#Sidebar">Sidebar</a></li><li><a href="global.html#ThemeContext">ThemeContext</a></li><li><a href="global.html#ThemeProvider">ThemeProvider</a></li></ul>
 </nav>
 
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 21 2025 13:36:06 GMT+0100 (Mitteleuropäische Normalzeit)
+    Documentation generated by <a href="https://github.com/jsdoc/jsdoc">JSDoc 4.0.4</a> on Tue Jan 28 2025 11:42:47 GMT+0100 (Mitteleuropäische Normalzeit)
 </footer>
 
 <script> prettyPrint(); </script>

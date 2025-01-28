@@ -4,15 +4,18 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
 /**
- * Login component provides a user interface for users to log into the application.
- * It includes form validation, error handling, and sending login data to the server.
- * Upon successful login, it stores the authentication token and user ID in local storage and redirects to the chat page.
+ * `Login` component provides a user interface for users to log into the application.
+ * It includes form validation, error handling, and sends login data to the server.
+ * Upon successful login, it stores the authentication token and user ID in local storage
+ * and redirects to the chat page.
  *
  * @component
  * @example
  * return (
  *   <Login />
  * )
+ *
+ * @returns {JSX.Element} - A JSX element representing the login form with email, password input, and error handling.
  */
 export default function Login() {
   const [formData, setFormData] = useState({
@@ -50,7 +53,6 @@ export default function Login() {
       return;
     }
 
-
     // Clear any previous errors
     setError("");
 
@@ -72,8 +74,6 @@ export default function Login() {
         return;
       }
 
-      console.log(data);
-
       // Store token and userId in localStorage
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("userId", data.userId);
@@ -86,6 +86,12 @@ export default function Login() {
     }
   }
 
+  /**
+   * Handles resending the verification email.
+   * Sends a POST request to the server to resend the verification email if the account is not verified.
+   *
+   * @async
+   */
   async function handleResendVerify() {
     const { email, password } = formData;
 
@@ -130,7 +136,7 @@ export default function Login() {
             {error === "Account not verified" && (
               <button
                 onClick={handleResendVerify}
-                className="ml-2 text-md text-blueCustom  hover:underline">
+                className="ml-2 text-md text-blueCustom hover:underline">
                 Resend verification E-Mail
               </button>
             )}

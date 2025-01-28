@@ -1,3 +1,14 @@
+import { useEffect, useState } from "react";
+import socketIO from "socket.io-client";
+import Sidebar from "../components/Sidebar.jsx";
+import Header from "../components/Header.jsx";
+import Body from "../components/Body.jsx";
+import Message from "../components/Message.jsx";
+import "./dashboard.css";
+
+// Establishing the socket connection to the server
+const socket = socketIO.connect("http://localhost:3000");
+
 /**
  * `Dashboard` component represents the main chat dashboard, displaying a sidebar, header, body (chat messages), and message input area.
  * It establishes a connection with the server using Socket.io and manages the state for the selected chat and its messages.
@@ -10,25 +21,15 @@
  *
  * @returns {JSX.Element} - A JSX element representing the dashboard layout with header, sidebar, chat body, and message input area.
  */
-import { useEffect, useState } from "react";
-import socketIO from "socket.io-client";
-import Sidebar from "../components/Sidebar.jsx";
-import Header from "../components/Header.jsx";
-import Body from "../components/Body.jsx";
-import Message from "../components/Message.jsx";
-import "./dashboard.css";
-
-// Establishing the socket connection to the server
-const socket = socketIO.connect("http://localhost:3000");
-
 const Dashboard = () => {
   // State variables to store the selected chat ID and messages of the chosen chat
-  const [chosenChatID, setChosenChatID] = useState(null);
-  const [chosenChatMessages, setChosenChatMessages] = useState([]);
+  const [chosenChatID, setChosenChatID] = useState(null); // Store the ID of the selected chat
+  const [chosenChatMessages, setChosenChatMessages] = useState([]); // Store messages for the selected chat
 
   /**
    * Hook to manage the registration of the chosen chat room and listen for new messages.
    * The effect runs when the `chosenChatID` or `chosenChatMessages` change.
+   * It emits a 'register' event to the server to join the selected chat room.
    *
    * @returns {void}
    */
@@ -36,10 +37,10 @@ const Dashboard = () => {
     // Registering to the chat room with the chosen chat ID
     if (chosenChatID !== null) {
       socket.emit("register", {
-        chatRoomId: chosenChatID,
+        chatRoomId: chosenChatID, // Sending the chat room ID to the server
       });
     }
-  }, [chosenChatID, chosenChatMessages]);
+  }, [chosenChatID, chosenChatMessages]); // Runs whenever the selected chat ID or messages change
 
   /**
    * Handles the incoming chat message and updates the chat messages state.
@@ -61,12 +62,10 @@ const Dashboard = () => {
     setChosenChatID(chatId); // Update the selected chat room ID
   };
 
-
-
   return (
     <div
       id="main-dashboard"
-      className=" flex flex-col justify-center pt-5 lg:p-auto lg:my-auto ">
+      className="flex flex-col justify-center pt-5 lg:p-auto lg:my-auto">
       {/* Header */}
       <header className="bg-white shadow-md sticky top-0 z-10">
         <Header />

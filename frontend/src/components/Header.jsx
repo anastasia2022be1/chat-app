@@ -4,21 +4,25 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
  * Header component represents the top navigation bar for the app.
- * It includes:
- * - The "Talki" logo on the left side (visible on larger screens).
- * - A button for navigating to the settings page.
- * - A logout button to log the user out.
  *
- * The component uses React Router's `useNavigate` hook for navigation to the settings page.
+ * Features:
+ * - **App Logo**: The "Talki" logo displayed on the left side (visible on larger screens only).
+ * - **Settings Button**: A button that navigates the user to the settings page.
+ * - **Logout Button**: A button to log the user out, implemented in the `Logout` component.
  *
+ * This component uses the `useNavigate` hook from React Router for navigation.
+ *
+ * @component
  * @returns {JSX.Element} The rendered header containing the app logo, settings button, and logout button.
  */
 const Header = () => {
   const navigate = useNavigate();
 
   /**
-   * handleSettingsClick is triggered when the settings button is clicked.
-   * It navigates to the settings page.
+   * Navigates to the settings page when the settings button is clicked.
+   *
+   * @function
+   * @returns {void}
    */
   const handleSettingsClick = () => {
     navigate("/setting");
@@ -26,13 +30,15 @@ const Header = () => {
 
   return (
     <header className="flex items-center justify-between bg-button text-white p-3 shadow-md sm:px-6 lg:px-8">
-      <div className="hidden sm:flex items-center justify-center relative ">
-        <div className="bg-white text-blueCustom font-bold text-lg lg:text-xl px-6 py-3 rounded-full shadow-md relative ">
+      {/* App Logo */}
+      <div className="hidden sm:flex items-center justify-center relative">
+        <div className="bg-white text-blueCustom font-bold text-lg lg:text-xl px-6 py-3 rounded-full shadow-md relative">
           Talki
         </div>
         <div className="absolute bg-white h-4 w-4 rounded-full -bottom-2 left-4 shadow-md transform rotate-45"></div>
       </div>
 
+      {/* Settings Button */}
       <button
         onClick={handleSettingsClick}
         aria-label="Settings"
@@ -43,6 +49,7 @@ const Header = () => {
         />
       </button>
 
+      {/* Logout Button */}
       <Logout />
     </header>
   );
