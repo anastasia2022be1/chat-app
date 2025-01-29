@@ -1,6 +1,5 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 /**
  * `VerifyEmail` component is responsible for verifying a user's email address.

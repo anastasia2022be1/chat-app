@@ -34,7 +34,7 @@ Die Anwendung richtet sich an jeden, der über ein Smartphone oder andere intern
 **Programmiersprachen und Frameworks**:
 **Frontend**:
 React: Für die Benutzeroberfläche.
-CSS-Frameworks: Tailwind CSS oder Bootstrap für responsives und modernes Design.
+CSS-Frameworks: Tailwind CSS für responsives und modernes Design.
 **Backend**:
 Node.js mit Express: Für die REST-API und die Integration der WebSocket-Kommunikation (z. B. mit socket.io).
 MongoDB: Zur Speicherung von Benutzerdaten, Nachrichten und Chatinformationen.
