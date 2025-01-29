@@ -22,7 +22,7 @@ const SearchBar = ({ searchQuery, handleQueryChange, handleSearch }) => (
       placeholder="Search Contacts"
       className="w-full p-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500 placeholder-gray-400 transition"
     />
-    <span className="absolute right-3 top-1/2 transform -translate-y-1/2">
+    <span className="absolute right-3 top-2 transform -translate-y-1/2">
       <FontAwesomeIcon
         icon="fa-solid fa-magnifying-glass"
         onClick={handleSearch}

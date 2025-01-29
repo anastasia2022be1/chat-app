@@ -258,7 +258,7 @@ export default function Setting() {
 
       const data = await response.json();
       if (response.ok) {
-        console.log(data);
+       
 
         setUser(data.user);
         setHasChanges(false);
