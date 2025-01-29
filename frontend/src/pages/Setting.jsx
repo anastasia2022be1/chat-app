@@ -102,7 +102,7 @@ export default function Setting() {
           setFormData({ ...formData, username: data.username });
 
           if (data.profilePicture) {
-            setProfilePicPreview(data.profilePicture); // Set existing profile picture
+            setProfilePicPreview(null); // Set existing profile picture
           }
         }
       } catch (error) {
@@ -164,10 +164,10 @@ export default function Setting() {
       const newFormData = { ...formData, profilePicture: file };
       setFormData(newFormData);
 
-      // Create a preview URL for the selected file
+      // Create a preview URL for the selected file (this is the new image before update)
       const reader = new FileReader();
       reader.onloadend = () => {
-        setProfilePicPreview(reader.result);
+        setProfilePicPreview(reader.result); // Show the temporary preview
       };
       reader.readAsDataURL(file);
 
@@ -258,11 +258,9 @@ export default function Setting() {
 
       const data = await response.json();
       if (response.ok) {
-       
-
         setUser(data.user);
         setHasChanges(false);
-        setProfilePicPreview(data.user.profilePicture); // Update preview with server response
+        setProfilePicPreview(null); // Reset temporary preview
         setIsUpdated(true);
         setFormData((prev) => ({
           ...prev,
@@ -359,13 +357,21 @@ export default function Setting() {
           {/* Profile Picture */}
           <div className="flex flex-col items-center">
             <div className="w-32 h-32 rounded-full border-4 border-blue-500 flex items-center justify-center mb-4 overflow-hidden shadow-lg sm:w-30 sm:h-30">
+              {/* If profilePicPreview is set (new image selected), show that. Otherwise, show the current image from the server */}
               {profilePicPreview ? (
                 <img
-                  src={"http://localhost:3000" + profilePicPreview}
+                  src={profilePicPreview} // Use the temporary preview if image is selected
                   className="w-full h-full object-cover rounded-full"
                 />
               ) : (
-                <div className="w-full h-full bg-gray-200 rounded-full"></div>
+                <img
+                  src={
+                    user?.profilePicture
+                      ? "http://localhost:3000" + user.profilePicture
+                      : ""
+                  } // Use the current image from server if no new image
+                  className="w-full h-full object-cover rounded-full"
+                />
               )}
             </div>
 
