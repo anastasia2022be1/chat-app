@@ -1,6 +1,5 @@
 import User from "../models/User.js";
 
-
 // Add a new contact
 // POST: api/addcontact
 export const addContact = async (req, res) => {

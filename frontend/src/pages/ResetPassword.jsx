@@ -66,7 +66,7 @@ export default function ResetPassword() {
    */
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
 
-  console.log(token);
+ 
 
   /**
    * Handles the form submission for resetting the password.
@@ -107,7 +107,7 @@ export default function ResetPassword() {
 
       const data = await response.json();
 
-      console.log(data);
+   
 
       if (!response.ok) {
         setError(

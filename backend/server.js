@@ -6,8 +6,8 @@ import chatRoutes from "./routes/chatRoutes.js";
 import messageRoutes from "./routes/messageRoutes.js";
 import Message from "./models/Message.js";
 import Chat from "./models/Chat.js";
-import http from 'http';
-import { Server as SocketIOServer } from 'socket.io';
+import http from "http";
+import { Server as SocketIOServer } from "socket.io";
 
 // Verbindung zur MongoDB
 await connect();
@@ -48,6 +48,15 @@ io.on("connection", (socket) => {
       socket.join(chatRoomId);
     } catch (error) {
       console.log("Error: ", error);
+    }
+  });
+
+  socket.on("leave", async ({ chatRoomId }) => {
+    try {
+      console.log("Leaving chat room:", chatRoomId);
+      socket.leave(chatRoomId);
+    } catch (error) {
+      console.log("Error leaving room: ", error); 
     }
   });
 

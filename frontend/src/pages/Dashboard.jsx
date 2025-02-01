@@ -36,13 +36,26 @@ const Dashboard = () => {
    * @returns {void}
    */
   useEffect(() => {
-    // Registering to the chat room with the chosen chat ID
+    // Leave previous chat room if it exists
+    if (socket.lastRoom) {
+      socket.emit("leave", { chatRoomId: socket.lastRoom });
+    }
+  
+    // Join new chat room
     if (chosenChatID !== null) {
       socket.emit("register", {
-        chatRoomId: chosenChatID, // Sending the chat room ID to the server
+        chatRoomId: chosenChatID,
       });
+      socket.lastRoom = chosenChatID; // Store current room
     }
-  }, [chosenChatID, chosenChatMessages]); // Runs whenever the selected chat ID or messages change
+  
+    // Cleanup when component unmounts
+    return () => {
+      if (socket.lastRoom) {
+        socket.emit("leave", { chatRoomId: socket.lastRoom });
+      }
+    };
+  }, [chosenChatID]); // Remove chosenChatMessages from dependencies
 
   /**
    * Handles the incoming chat message and updates the chat messages state.

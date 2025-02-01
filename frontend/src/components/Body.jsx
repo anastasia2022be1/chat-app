@@ -7,11 +7,10 @@ import { faCheck, faTimes } from "@fortawesome/free-solid-svg-icons";
  *
  * @param {Object} props - Component props.
  * @param {Object} props.socket - The WebSocket connection instance.
- * @param {string} props.chosenChatID - The ID of the selected chat.
  * @param {Array} props.chosenChatMessages - List of messages for the chosen chat.
  * @returns {JSX.Element} Rendered chat messages.
  */
-const Body = ({ socket, chosenChatID, chosenChatMessages }) => {
+const Body = ({ socket, chosenChatMessages }) => {
   const [messages, setMessages] = useState([]);
   const [activeDelete, setActiveDelete] = useState(null);
   const userId = localStorage.getItem("userId");

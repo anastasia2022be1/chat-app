@@ -24,7 +24,12 @@ const router = express.Router();
 
 //-------------------------------------------------------
 // Register new user (POST: api/register)
-router.post("/register", upload.single("profilePicture"), validatePassword, registerUser);
+router.post(
+  "/register",
+  upload.single("profilePicture"),
+  validatePassword,
+  registerUser
+);
 
 //--------------------------------------------------------
 // Verify user email by token (GET: api/verify/:token)
@@ -33,7 +38,7 @@ router.get("/verify/:token", verifyUser);
 //--------------------------------------------------------
 
 // POST: api/resend
-router.post("/resend", resendVerifyToken)
+router.post("/resend", resendVerifyToken);
 
 // Login user (POST: api/login)
 router.post("/login", loginUser);
@@ -58,7 +63,8 @@ router.get("/settings", authenticate, getUserSettings);
 // Update user settings (PUT: api/settings/update)
 router.put(
   "/settings/update",
-  authenticate, validatePassword,
+  authenticate,
+  validatePassword,
   upload.single("profilePicture"),
   updateUserSettings
 );
