@@ -29,7 +29,13 @@ io.sockets.setMaxListeners(100);
 
 // Middleware zur JSON-Parsierung
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+  origin: [
+    "http://localhost:5173",
+  ],
+  credentials: true,
+}));
+
 
 // static routes for uploaded files
 app.use("/uploads", express.static("uploads"));
