@@ -19,6 +19,7 @@ export default function AddContact() {
   const [contactEmail, setContactEmail] = useState(""); // State to store the entered contact email
   const [error, setError] = useState(""); // State to store error messages
   const [successMessage, setSuccessMessage] = useState(""); // State to store success messages
+  const API_URL = import.meta.env.VITE_API_URL;
 
   const navigate = useNavigate(); // Hook to navigate to different routes
 
@@ -52,7 +53,7 @@ export default function AddContact() {
     try {
       const token = localStorage.getItem("authToken"); // Get the auth token from localStorage
 
-      const response = await fetch("http://localhost:3000/api/addcontact", {
+      const response = await fetch(`${API_URL}/api/addcontact`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

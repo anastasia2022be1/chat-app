@@ -33,6 +33,8 @@ export default function Register() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   /**
    * Opens the file input dialog for the user to select a profile picture.
    */
@@ -115,7 +117,7 @@ export default function Register() {
     form.append("profilePicture", formData.profilePicture);
 
     try {
-      const response = await fetch("http://localhost:3000/api/register", {
+      const response = await fetch(`${API_URL}/api/register`, {
         method: "POST",
         body: form,
       });

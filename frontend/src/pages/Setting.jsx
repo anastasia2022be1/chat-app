@@ -37,6 +37,8 @@ export default function Setting() {
     profilePicture: null,
   });
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   /**
    * Holds the URL of the profile picture preview.
    * @type {string|null}
@@ -86,7 +88,7 @@ export default function Setting() {
           return;
         }
 
-        const response = await fetch("http://localhost:3000/api/settings", {
+        const response = await fetch(`${API_URL}/api/settings`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -246,7 +248,7 @@ export default function Setting() {
       }
 
       const response = await fetch(
-        "http://localhost:3000/api/settings/update",
+        `${API_URL}/api/settings/update`,
         {
           method: "PUT",
           headers: {
@@ -297,7 +299,7 @@ export default function Setting() {
         return;
       }
 
-      const response = await fetch("http://localhost:3000/api/delete-account", {
+      const response = await fetch(`${API_URL}/api/delete-account`, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ${token}`,
@@ -367,7 +369,7 @@ export default function Setting() {
                 <img
                   src={
                     user?.profilePicture
-                      ? "http://localhost:3000" + user.profilePicture
+                      ? API_URL + user.profilePicture
                       : ""
                   } // Use the current image from server if no new image
                   className="w-full h-full object-cover rounded-full"

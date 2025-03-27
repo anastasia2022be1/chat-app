@@ -18,6 +18,7 @@ export default function ForgotPassword() {
   const [email, setEmail] = useState(""); // Holds the email entered by the user
   const [message, setMessage] = useState(""); // Holds the success message
   const [error, setError] = useState(""); // Holds the error message
+  const API_URL = import.meta.env.VITE_API_URL;
 
   /**
    * Handles the form submission for the password reset request.
@@ -41,7 +42,7 @@ export default function ForgotPassword() {
     try {
       // Sending POST request to the server to request a password reset
       const response = await fetch(
-        "http://localhost:3000/api/forgot-password",
+        `${API_URL}/api/forgot-password`,
         {
           method: "POST",
           headers: {

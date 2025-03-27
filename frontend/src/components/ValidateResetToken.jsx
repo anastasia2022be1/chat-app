@@ -19,6 +19,7 @@ export default function ValidateResetToken() {
   const [loading, setLoading] = useState(true); // State to track loading status.
   const [error, setError] = useState(""); // State to store any error message.
   const navigate = useNavigate(); // React Router hook to navigate programmatically.
+  const API_URL = import.meta.env.VITE_API_URL;
 
   /**
    * Effect hook that validates the reset password token on component mount.
@@ -34,7 +35,7 @@ export default function ValidateResetToken() {
     const validateToken = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/validate-reset-password/${token}`
+          `${API_URL}/api/validate-reset-password/${token}`
         );
         const data = await response.json();
 

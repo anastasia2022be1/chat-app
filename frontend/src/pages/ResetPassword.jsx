@@ -66,7 +66,7 @@ export default function ResetPassword() {
    */
   const [showConfirmNewPassword, setShowConfirmNewPassword] = useState(false);
 
- 
+  const API_URL = import.meta.env.VITE_API_URL;
 
   /**
    * Handles the form submission for resetting the password.
@@ -95,7 +95,7 @@ export default function ResetPassword() {
     try {
       // Sending POST request to reset the password
       const response = await fetch(
-        `http://localhost:3000/api/reset-password/${token}`,
+        `${API_URL}/api/reset-password/${token}`,
         {
           method: "POST",
           headers: {

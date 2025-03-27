@@ -46,7 +46,7 @@ const ContactList = ({ contacts, handleContactClick }) => {
    *
    * @type {string}
    */
-  const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
 
   return (
     <ul>
@@ -65,7 +65,7 @@ const ContactList = ({ contacts, handleContactClick }) => {
               <div className="mr-2">
                 {contact.profilePicture ? (
                   <img
-                    src={baseUrl + contact.profilePicture}
+                    src={API_URL + contact.profilePicture}
                     alt="Profile"
                     width={40}
                     className="rounded-full"

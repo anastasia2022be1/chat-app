@@ -23,6 +23,8 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
 
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   /**
    * Fetches contacts and updates the state with the retrieved data.
    */
@@ -31,7 +33,7 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
       try {
         const token = localStorage.getItem("authToken");
 
-        const response = await fetch("http://localhost:3000/api/contactslist", {
+        const response = await fetch(`${API_URL}/api/contactslist`, {
           method: "GET",
           headers: {
             Authorization: `Bearer ${token}`,
@@ -59,7 +61,7 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
         const userId = localStorage.getItem("userId");
 
         const response = await fetch(
-          `http://localhost:3000/api/chat/${userId}`,
+          `${API_URL}/api/chat/${userId}`,
           {
             method: "GET",
             headers: {
@@ -118,7 +120,7 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
       handleChosenChatMessage([]);
       try {
         const response = await fetch(
-          `http://localhost:3000/api/message/${chosenChat._id}`,
+          `${API_URL}/api/message/${chosenChat._id}`,
           {
             method: "GET",
           }
@@ -140,7 +142,7 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
       try {
         const token = localStorage.getItem("authToken");
 
-        const response = await fetch("http://localhost:3000/api/chat", {
+        const response = await fetch(`${API_URL}/api/chat`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -175,7 +177,7 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
 
     try {
       const response = await fetch(
-        `http://localhost:3000/api/message/${chat._id}`,
+        `${API_URL}/api/message/${chat._id}`,
         {
           method: "GET",
         }
@@ -205,7 +207,7 @@ const Sidebar = ({ handleSelectChat, handleChosenChatMessage }) => {
       const token = localStorage.getItem("authToken");
       const userId = localStorage.getItem("userId");
 
-      const response = await fetch(`http://localhost:3000/api/chat/${chatId}`, {
+      const response = await fetch(`${API_URL}/api/chat/${chatId}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

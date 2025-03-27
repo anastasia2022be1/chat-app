@@ -14,7 +14,7 @@ const Body = ({ socket, chosenChatMessages }) => {
   const [messages, setMessages] = useState([]);
   const [activeDelete, setActiveDelete] = useState(null);
   const userId = localStorage.getItem("userId");
-  const baseUrl = import.meta.env.VITE_API_URL || "http://localhost:3000";
+  const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000";
   const messagesEndRef = useRef(null);
 
   // Set messages when chosenChatMessages changes
@@ -53,7 +53,7 @@ const Body = ({ socket, chosenChatMessages }) => {
   // Delete message handler
   const handleDeleteMessage = async (messageId) => {
     try {
-      const response = await fetch(`${baseUrl}/api/message/${messageId}`, {
+      const response = await fetch(`${API_URL}/api/message/${messageId}`, {
         method: "DELETE",
         headers: { "Content-Type": "application/json" },
       });

@@ -20,6 +20,8 @@ export default function VerifyEmail() {
   const [error, setError] = useState(null); // State to store any error messages.
   const [loading, setLoading] = useState(true); // State to track the loading status.
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   /**
    * Effect hook that triggers the email verification process.
    * It sends the verification request to the server and handles success or failure.
@@ -32,7 +34,7 @@ export default function VerifyEmail() {
     const verifyAccount = async () => {
       try {
         const response = await fetch(
-          `http://localhost:3000/api/verify/${token}`
+          `${API_URL}/api/verify/${token}`
         );
         const data = await response.json();
 

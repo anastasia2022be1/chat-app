@@ -26,6 +26,8 @@ export default function Login() {
   const [error, setError] = useState("");
   const navigate = useNavigate();
 
+  const API_URL = import.meta.env.VITE_API_URL;
+
   /**
    * Handles input field changes and updates the form data state.
    *
@@ -58,7 +60,7 @@ export default function Login() {
 
     try {
       // Send the login data to the backend for verification
-      const response = await fetch("http://localhost:3000/api/login", {
+      const response = await fetch(`${API_URL}/api/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -96,7 +98,7 @@ export default function Login() {
     const { email, password } = formData;
 
     try {
-      const response = await fetch("http://localhost:3000/api/resend", {
+      const response = await fetch(`${API_URL}/api/resend`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
