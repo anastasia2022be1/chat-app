@@ -20,6 +20,7 @@ const server = http.Server(app);
 const io = new SocketIOServer(server, {
   cors: {
     origin: "http://localhost:5173",
+    credentials: true,
   },
 });
 
