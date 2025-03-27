@@ -56,7 +56,7 @@ io.on("connection", (socket) => {
       console.log("Leaving chat room:", chatRoomId);
       socket.leave(chatRoomId);
     } catch (error) {
-      console.log("Error leaving room: ", error); 
+      console.log("Error leaving room: ", error);
     }
   });
 
@@ -78,7 +78,6 @@ io.on("connection", (socket) => {
           .populate({ path: 'messages', populate: { path: 'senderId', select: 'username email profilePicture' } });
 
         // Emit the new message to all members in the chat room
-        console.log(populatedMessage)
         io.to(chatId).emit('message', populatedMessage); // Ensure `chatId` is used here
       }
     } catch (error) {
