@@ -50,6 +50,7 @@ export const registerUser = async (req, res) => {
     const varificationLink = `http://localhost:5173/verify/${verificationToken}`;
 
     console.log("📨 Trying to send email to:", user.email);
+    console.log("📨 Sending verification email to:", user.email);
 
     // Send a verification email to the user with the verification token link
     const emailResponse = await transporter.sendMail({
