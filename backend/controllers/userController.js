@@ -1,13 +1,10 @@
 import bcrypt from "bcrypt";
 import crypto from "node:crypto";
-import { Resend } from "resend";
 import User from "../models/User.js";
 import jwt from "jsonwebtoken";
 import Chat from "../models/Chat.js";
 import Message from "../models/Message.js";
-
-// Create a new instance of Resend for sending emails
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { transporter } from "./emailService.js";
 
 // -------------------------------------------------
 // Register a new user
@@ -53,11 +50,11 @@ export const registerUser = async (req, res) => {
     const varificationLink = `http://localhost:5173/verify/${verificationToken}`;
 
     // Send a verification email to the user with the verification token link
-    const emailResponse = await resend.emails.send({
-      from: "talki@resend.dev",
-      to: email, 
+    const emailResponse = await transporter.sendMail({
+      from: `"Talki.dev" <${process.env.BREVO_EMAIL}>`,
+      to: user.email, 
       subject:
-        "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
+        "Willkommen bei Talki! Bitte bestätigen Sie Ihre E-Mail-Adresse",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
           <h1 style="color:#4B89FF; text-align: center;">Willkommen bei Talki.dev!</h1>
@@ -156,9 +153,9 @@ export const resendVerifyToken = async (req, res) => {
     const varificationLink = `http://localhost:5173/verify/${verificationToken}`;
 
     // Send a verification email to the user with the verification token link
-    const emailResponse = await resend.emails.send({
-      from: "talki@resend.dev",
-      to: email, 
+    const emailResponse = await transporter.sendMail({
+      from: `"Talki.dev" <${process.env.BREVO_EMAIL}>`,
+      to: user.email, 
       subject:
         "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
       html: `
@@ -271,9 +268,9 @@ export const forgotPassword = async (req, res) => {
     const resetLink = `http://localhost:5173/validate-reset-password/${resetToken}`;
 
     // Send email with reset link
-    const emailResponse = await resend.emails.send({
-      from: "talki@resend.dev",
-      to: email,
+    const emailResponse = await transporter.sendMail({
+      from: `"Talki.dev" <${process.env.BREVO_EMAIL}>`,
+      to: user.email,
       subject: "Password Reset Request",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">

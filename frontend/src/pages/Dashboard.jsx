@@ -1,13 +1,9 @@
 import { useEffect, useState } from "react";
-import socketIO from "socket.io-client";
+import socket from "../socket.js"
 import Sidebar from "../components/Sidebar.jsx";
 import Header from "../components/Header.jsx";
 import Body from "../components/Body.jsx";
 import Message from "../components/Message.jsx";
-
-
-// Establishing the socket connection to the server
-const socket = socketIO.connect("http://localhost:3000");
 
 /**
  * `Dashboard` component represents the main chat dashboard, displaying a sidebar, header, body (chat messages), and message input area.

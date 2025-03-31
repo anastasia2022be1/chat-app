@@ -1,10 +1,7 @@
-import socketIO from "socket.io-client";
+import socket from "../socket.js";
 import Body from "./Body.jsx";
 import Message from "./Message.jsx";
 
-const socket = socketIO.connect(
-  import.meta.env.VITE_API_URL || "http://localhost:3000"
-);
 
 /**
  * ChatRoom component renders a chat room structure with two main sections:

@@ -86,7 +86,7 @@ const Body = ({ socket, chosenChatMessages }) => {
             activeDelete={activeDelete}
             toggleDeleteButton={toggleDeleteButton}
             handleDeleteMessage={handleDeleteMessage}
-            baseUrl={baseUrl}
+            baseUrl={API_URL}
           />
         ))}
         <div ref={messagesEndRef} />
