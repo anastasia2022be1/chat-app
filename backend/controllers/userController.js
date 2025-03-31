@@ -5,6 +5,7 @@ import jwt from "jsonwebtoken";
 import Chat from "../models/Chat.js";
 import Message from "../models/Message.js";
 import { transporter } from "./emailService.js";
+import nodemailer from "nodemailer";
 
 // -------------------------------------------------
 // Register a new user
