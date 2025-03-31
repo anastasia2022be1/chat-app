@@ -54,7 +54,7 @@ export const registerUser = async (req, res) => {
 
     // Send a verification email to the user with the verification token link
     const emailResponse = await transporter.sendMail({
-      from: `"Talki.dev" <${process.env.BREVO_EMAIL}>`,
+      from: `"Talki.dev" <${process.env.BREVO_SMTP_USER}>`,
       to: email, 
       subject:
         "Willkommen bei Talki! Bitte bestätigen Sie Ihre E-Mail-Adresse",
@@ -158,8 +158,8 @@ export const resendVerifyToken = async (req, res) => {
 
     // Send a verification email to the user with the verification token link
     const emailResponse = await transporter.sendMail({
-      from: `"Talki.dev" <${process.env.BREVO_EMAIL}>`,
-      to: user.email, 
+      from: `"Talki.dev" <${process.env.BREVO_SMTP_USER}>`,
+      to: email, 
       subject:
         "Willkommen bei Talki.dev! Bitte bestätigen Sie Ihre E-Mail-Adresse",
       html: `
@@ -273,8 +273,8 @@ export const forgotPassword = async (req, res) => {
 
     // Send email with reset link
     const emailResponse = await transporter.sendMail({
-      from: `"Talki.dev" <${process.env.BREVO_EMAIL}>`,
-      to: user.email,
+      from: `"Talki.dev" <${process.env.BREVO_SMTP_USER}>`,
+      to: email,
       subject: "Password Reset Request",
       html: `
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
