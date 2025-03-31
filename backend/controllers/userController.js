@@ -55,7 +55,7 @@ export const registerUser = async (req, res) => {
     // Send a verification email to the user with the verification token link
     const emailResponse = await transporter.sendMail({
       from: `"Talki.dev" <${process.env.BREVO_EMAIL}>`,
-      to: user.email, 
+      to: email, 
       subject:
         "Willkommen bei Talki! Bitte bestätigen Sie Ihre E-Mail-Adresse",
       html: `
