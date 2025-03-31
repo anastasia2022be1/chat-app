@@ -74,6 +74,7 @@ export const registerUser = async (req, res) => {
     });
     
     console.log("📨 Email Response:", emailResponse);
+    console.log("📨 Preview URL:", nodemailer.getTestMessageUrl(emailResponse));
     // Check if email was sent successfully, otherwise respond with an error
     if (emailResponse.error) {
       return res.status(500).json({
@@ -176,6 +177,8 @@ export const resendVerifyToken = async (req, res) => {
         </div>
       `,
     });
+
+    console.log("📨 Preview URL:", nodemailer.getTestMessageUrl(emailResponse));
 
     // Check if email was sent successfully, otherwise respond with an error
     if (emailResponse.error) {
@@ -296,6 +299,8 @@ export const forgotPassword = async (req, res) => {
         </div>
       `,
     });
+
+    console.log("📨 Preview URL:", nodemailer.getTestMessageUrl(emailResponse));
 
     if (emailResponse.error) {
       return res.status(500).json({
