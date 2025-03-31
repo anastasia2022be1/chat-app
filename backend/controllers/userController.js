@@ -49,10 +49,12 @@ export const registerUser = async (req, res) => {
     // Generate varification link
     const varificationLink = `http://localhost:5173/verify/${verificationToken}`;
 
+    console.log("📨 Trying to send email to:", user.email);
+
     // Send a verification email to the user with the verification token link
     const emailResponse = await transporter.sendMail({
       from: `"Talki.dev" <${process.env.BREVO_EMAIL}>`,
-      to: user.email, 
+      to: email, 
       subject:
         "Willkommen bei Talki! Bitte bestätigen Sie Ihre E-Mail-Adresse",
       html: `
@@ -69,7 +71,8 @@ export const registerUser = async (req, res) => {
         </div>
       `,
     });
-
+    
+    console.log("📨 Email Response:", emailResponse);
     // Check if email was sent successfully, otherwise respond with an error
     if (emailResponse.error) {
       return res.status(500).json({
