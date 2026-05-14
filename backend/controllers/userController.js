@@ -82,8 +82,17 @@ export const registerUser = async (req, res) => {
       });
     }
 
-    // Respond with the created user object
-    res.status(201).json(user);
+    // Respond without sensitive fields like password or verification tokens.
+    res.status(201).json({
+      message: "Registration successful. Please verify your email.",
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        profilePicture: user.profilePicture,
+        isVerified: user.isVerified,
+      },
+    });
   } catch (error) {
     console.error("Error during registration:", error.message);
     res.status(500).json({ error: error.message });
@@ -185,8 +194,7 @@ export const resendVerifyToken = async (req, res) => {
       });
     }
 
-    // Respond with the created user object
-    res.status(201).json(user);
+    res.status(200).json({ message: "Verification email sent successfully" });
   } catch (error) {
     console.error("Error during registration:", error.message);
     res.status(500).json({ error: error.message });
@@ -232,7 +240,17 @@ export const loginUser = async (req, res) => {
       expiresIn: "1h",
     }); // 1-hour token expiry
 
-    res.json({ user, token, userId: user._id });
+    res.json({
+      user: {
+        id: user._id,
+        username: user.username,
+        email: user.email,
+        profilePicture: user.profilePicture,
+        isVerified: user.isVerified,
+      },
+      token,
+      userId: user._id,
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
