@@ -14,13 +14,17 @@ await connect();
 
 const app = express();
 const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
+const corsOrigins = (process.env.CORS_ORIGINS || frontendUrl)
+  .split(",")
+  .map((origin) => origin.trim())
+  .filter(Boolean);
 
 const server = http.Server(app);
 
 // Initializing Socket.IO
 const io = new SocketIOServer(server, {
   cors: {
-    origin: frontendUrl,
+    origin: corsOrigins,
   },
 });
 
@@ -29,7 +33,7 @@ io.sockets.setMaxListeners(100);
 
 // Middleware zur JSON-Parsierung
 app.use(express.json());
-app.use(cors({ origin: frontendUrl }));
+app.use(cors({ origin: corsOrigins }));
 
 // static routes for uploaded files
 app.use("/uploads", express.static("uploads"));
