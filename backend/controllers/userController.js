@@ -355,6 +355,10 @@ export const resetPassword = async (req, res) => {
       resetPasswordExpires: { $gt: Date.now() }, // Token should not be expired
     });
 
+    if (!user) {
+      return res.status(400).json({ error: "Invalid or expired token" });
+    }
+
     // Hash the new password
     const hashedPassword = await bcrypt.hash(newPassword, 10);
 
@@ -398,7 +402,7 @@ export const getUserSettings = async (req, res) => {
 // Update settings (Username, Password, Profile Picture)
 // PUT api/settings/update
 export const updateUserSettings = async (req, res) => {
-  const { username, password, newPassword } = req.body;
+  const { username, currentPassword, newPassword } = req.body;
   try {
     const user = await User.findById(req.user.userId);
     if (!user) {
@@ -411,8 +415,11 @@ export const updateUserSettings = async (req, res) => {
     }
 
     // Change password
-    if (password && newPassword) {
-      const passwordCorrect = await bcrypt.compare(password, user.password);
+    if (currentPassword && newPassword) {
+      const passwordCorrect = await bcrypt.compare(
+        currentPassword,
+        user.password
+      );
       if (!passwordCorrect) {
         return res.status(400).json({ error: "Current password is incorrect" });
       }

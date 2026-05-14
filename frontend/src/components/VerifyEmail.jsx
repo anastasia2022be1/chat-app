@@ -44,7 +44,7 @@ export default function VerifyEmail() {
           // If verification fails, show error message.
           setError(data.error || "Verification failed");
         }
-      } catch (error) {
+      } catch {
         // Handle error if the verification request fails.
         setError("Verification failed, please try again later.");
       } finally {

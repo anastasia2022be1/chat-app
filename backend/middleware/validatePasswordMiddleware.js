@@ -1,10 +1,12 @@
 export function validatePassword(req, res, next) {
-  const { password, newPassword } = req.body;
+  const { password, currentPassword, newPassword } = req.body;
 
   // Regex to check for at least 8 characters
   const passwordRegex = /^.{8,}$/;
 
-  if (password && !passwordRegex.test(password)) {
+  const passwordToValidate = password || currentPassword;
+
+  if (passwordToValidate && !passwordRegex.test(passwordToValidate)) {
     return res.status(400).json({
       message: "Password is invalid. It must be at least 8 characters long.",
     });

@@ -99,13 +99,13 @@ export default function Setting() {
           setError(data.error);
         } else {
           setUser(data);
-          setFormData({ ...formData, username: data.username });
+          setFormData((prev) => ({ ...prev, username: data.username }));
 
           if (data.profilePicture) {
             setProfilePicPreview(null); // Set existing profile picture
           }
         }
-      } catch (error) {
+      } catch {
         setError("Failed to load user settings");
       }
     };
@@ -274,7 +274,7 @@ export default function Setting() {
       } else {
         setError(data.error);
       }
-    } catch (error) {
+    } catch {
       setError("Failed to update user settings");
     }
   };
@@ -313,7 +313,7 @@ export default function Setting() {
       } else {
         setError(data.error || "Failed to delete account.");
       }
-    } catch (err) {
+    } catch {
       setError("An error occurred while deleting your account.");
     }
   };

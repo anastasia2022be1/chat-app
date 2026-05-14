@@ -51,7 +51,7 @@ export default function ValidateResetToken() {
           // Redirect to reset password page if token is valid.
           navigate(`/reset-password/${token}`);
         }
-      } catch (err) {
+      } catch {
         setError("An error occurred. Please try again.");
         setLoading(false);
       }

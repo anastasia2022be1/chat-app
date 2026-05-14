@@ -120,7 +120,7 @@ export default function ResetPassword() {
 
       setSuccess(true);
       setLoading(false);
-    } catch (err) {
+    } catch {
       setError("An error has occurred. Please try again.");
       setLoading(false);
     }

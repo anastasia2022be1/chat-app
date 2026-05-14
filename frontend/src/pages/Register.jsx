@@ -23,7 +23,6 @@ export default function Register() {
   });
 
   const [error, setError] = useState("");
-  const [isVerifying, setIsVerifying] = useState(false);
   const [profilePicPreview, setProfilePicPreview] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -126,7 +125,6 @@ export default function Register() {
         return;
       }
 
-      setIsVerifying(true);
       setError(
         "Registration successful! Please check your email to verify your account."
       );

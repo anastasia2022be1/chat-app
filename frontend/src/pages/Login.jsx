@@ -197,7 +197,7 @@ export default function Login() {
 
           {/* Link to Register Page */}
           <p>
-            Don't have an account? <span> </span>
+            Don&apos;t have an account? <span> </span>
             <a href="/register" className="text-title hover:underline">
               Register here
             </a>
