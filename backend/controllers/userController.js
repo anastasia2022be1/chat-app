@@ -8,6 +8,7 @@ import Message from "../models/Message.js";
 
 // Create a new instance of Resend for sending emails
 const resend = new Resend(process.env.RESEND_API_KEY);
+const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
 
 // -------------------------------------------------
 // Register a new user
@@ -51,7 +52,7 @@ export const registerUser = async (req, res) => {
     });
 
     // Generate varification link
-    const varificationLink = `http://localhost:5173/verify/${verificationToken}`;
+    const varificationLink = `${frontendUrl}/verify/${verificationToken}`;
 
     // Send a verification email to the user with the verification token link
     const emailResponse = await resend.emails.send({
@@ -163,7 +164,7 @@ export const resendVerifyToken = async (req, res) => {
     const verificationToken = user.verificationToken;
 
     // Generate varification link
-    const varificationLink = `http://localhost:5173/verify/${verificationToken}`;
+    const varificationLink = `${frontendUrl}/verify/${verificationToken}`;
 
     // Send a verification email to the user with the verification token link
     const emailResponse = await resend.emails.send({
@@ -287,7 +288,7 @@ export const forgotPassword = async (req, res) => {
     await user.save();
 
     // Generate reset link
-    const resetLink = `http://localhost:5173/validate-reset-password/${resetToken}`;
+    const resetLink = `${frontendUrl}/validate-reset-password/${resetToken}`;
 
     // Send email with reset link
     const emailResponse = await resend.emails.send({

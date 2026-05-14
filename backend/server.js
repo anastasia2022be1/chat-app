@@ -13,13 +13,14 @@ import { Server as SocketIOServer } from "socket.io";
 await connect();
 
 const app = express();
+const frontendUrl = process.env.FRONTEND_URL || "http://localhost:5173";
 
 const server = http.Server(app);
 
 // Initializing Socket.IO
 const io = new SocketIOServer(server, {
   cors: {
-    origin: "http://localhost:5173",
+    origin: frontendUrl,
   },
 });
 
@@ -28,7 +29,7 @@ io.sockets.setMaxListeners(100);
 
 // Middleware zur JSON-Parsierung
 app.use(express.json());
-app.use(cors());
+app.use(cors({ origin: frontendUrl }));
 
 // static routes for uploaded files
 app.use("/uploads", express.static("uploads"));
